@@ -1,41 +1,29 @@
 import React, { Component } from 'react';
-// import css from './FileListView.less';
-import FileListItem from './FileListItem.js';
-// https://react.semantic-ui.com/collections/table/
-import { Container, Icon, Table } from 'semantic-ui-react'
+import PropTypes from 'prop-types';
+import { Icon, Table } from 'semantic-ui-react'
 
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
 
 
 class FileListView extends Component {
+  static propTypes = {
+    compHeight: PropTypes.number.isRequired,
+    compWitdh: PropTypes.number.isRequired,
+    fileList: PropTypes.array.isRequired,
+    switchPage: PropTypes.func.isRequired,
+  }
+
   constructor (props) {
     super(props);
-
-    this.state = {
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight,
-    };
   }
 
   componentDidMount () {
-    window.addEventListener('resize', this.onResize);
+    //
   }
 
   componentDidUpdate () {
     //
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('resize', this.onResize);
-  }
-
-  onResize = (ev) => {
-    console.log('resize', ev);
-    this.setState({
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight,
-    });
   }
 
   onScroll = (ev) => {
@@ -55,16 +43,16 @@ class FileListView extends Component {
 
   onClickRow = (ev) => {
     console.log('onClickRow', ev);
+    this.props.switchPage('grid', ev);
   }
 
   render() {
     const margin = 10;
-    const { fileList } = this.props;
-    const { windowWidth, windowHeight } = this.state;
+    const { fileList, compHeight, compWitdh } = this.props;
 
     return (
       <div style={{ marginLeft:margin, marginRight:margin, marginBottom:margin }}>
-        <Table celled singleLine style={{width:(windowWidth - scrollbarSize() - 2 * margin), marginBottom:0}}>
+        <Table celled singleLine style={{width:(compWitdh - scrollbarSize() - 2 * margin), marginBottom:0}}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell colSpan="4">File List (Count: {fileList.length})</Table.HeaderCell>
@@ -77,7 +65,7 @@ class FileListView extends Component {
             </Table.Row>
           </Table.Header>
         </Table>
-        <div style={{ width:'100%', height:(windowHeight - 160), overflow:'auto' }} onScroll={this.onScroll}>
+        <div style={{ width:'100%', height:(compHeight - 110), overflow:'auto' }} onScroll={this.onScroll}>
           <Table celled singleLine selectable style={{width:'100%', marginTop:0}}>
             <Table.Body>
               {fileList.map((data, idx) => {

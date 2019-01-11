@@ -3,6 +3,8 @@ import logo from '../logo.svg';
 import css from './MainFrame.less';
 
 import FileListView from './FileListView.js';
+import DataGrid from '../grid/DataGrid.js';
+
 import apiProxy from '../apiProxy.js';
 
 import {
@@ -26,21 +28,32 @@ class MainFrame extends Component {
     super(props);
 
     this.state = {
-      fileList: [],
       activeMenu: 'Home',
+      fileList: [],
       loading: false,
+      pageType: 'grid', // 'list',
+
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
     };
   }
 
   componentDidMount () {
-    //
+    window.addEventListener('resize', this.onResize);
   }
 
   componentWillUnmount () {
-    //
+    window.removeEventListener('resize', this.onResize);
   }
 
-  reload = () => {
+  onResize = (ev) => {
+    this.setState({
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+    });
+  }
+
+  handleReload = () => {
     this.setState({ loading:false });
 
     apiProxy.ls((res) => {
@@ -60,8 +73,12 @@ class MainFrame extends Component {
     this.setState({ activeMenu: data.name });
 
     if (data.name === 'refresh') {
-      this.reload();
+      this.handleReload();
     }
+  }
+
+  handleSwitch = (type, arg) => {
+    this.setState({ pageType: type });
   }
 
   render() {
@@ -82,7 +99,18 @@ class MainFrame extends Component {
 
         {this.state.loading ? (<Dimmer active inverted><Loader content='Loading' /></Dimmer>) : null}
 
-        <FileListView fileList={this.state.fileList} />
+        {this.state.pageType === 'grid'
+          ? <DataGrid
+              height={this.state.windowHeight - 60}
+              width={this.state.windowWidth}
+            />
+          : <FileListView
+              fileList={this.state.fileList}
+              compHeight={this.state.windowHeight - 60}
+              compWidth={this.state.windowWidth}
+              switchPage={this.handleSwitch}
+            />
+        }
       </div>
     );
   }
