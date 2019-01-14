@@ -2,9 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {isvalid} from '../common/tool.js';
 
+import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+
+import DataSource from './DataSource.js';
+
 import './DataGrid.css';
 
-import scrollbarSize from 'dom-helpers/util/scrollbarSize';
+import CornerHeader from './CornerHeader.js';
+import RowHeader from './RowHeader.js';
+import ColumnHeader from './ColumnHeader.js';
+import DataContainer from './DataContainer.js';
 
 
 
@@ -23,13 +30,10 @@ class DataGrid extends Component {
   constructor (props) {
     super(props);
 
+    this._elementRef = {};
+
     this.state = {
-      columnWidth: 100,
-      columnCount: 50,
-      overscanColumnCount: 0,
-      overscanRowCount: 5,
-      rowHeight: 40,
-      rowCount: 1000000,
+    	dataSource: new DataSource({ title: 'TEST', columnCount: 30, rowCount: 1000 })
     };
   }
 
@@ -41,65 +45,77 @@ class DataGrid extends Component {
     //
   }
 
+  handleHeadClick = (ev) => {
+  	const dataArea = this._elementRef['dataArea'];
+  	console.log('Head Corner clicked.', dataArea);
+
+  	if( isvalid(dataArea) ) {
+			dataArea.scrollLeft += 100;
+  	}
+  }
+
+  setElemReference = (type) => (ref: Element) => {
+    this._elementRef[type] = ref;
+  }
+
+  onDataAreaScroll = (ev) => {
+    const $this = ev.target;
+
+    console.log(
+      'DataArea Scroll',
+      $this.clientHeight,
+      $this.clientWidth,
+      $this.scrollHeight,
+      $this.scrollLeft,
+      $this.scrollTop,
+      $this.scrollWidth,
+      $this, this._elementRef['dataArea']
+    ); // */
+
+  }
+
   render () {
   	const {width, height} = this.props;
+  	const {dataSource} = this.state;
 
-    const {
-      columnCount,
-      columnWidth,
-      overscanColumnCount,
-      overscanRowCount,
-      rowHeight,
-      rowCount,
-    } = this.state;
+  	const
+    	cnHeight = dataSource.getRowHeight(),
+    	rhWidth = dataSource.getHeadColumnWidth(),
+    	rhHeight = height - cnHeight,
+    	chWidth = width - rhWidth,
+    	dataWidth = chWidth,
+    	dataHeight = rhHeight
+    ;
+
+    const scrollLeft = 300;
+    const visibleRow = { begin: 0, end: 40 };
 
     return (
-      <div className="wrapGrid"
-      	style={{
-        width:this.props.width,
-        height: this.props.height,
-        overflow: 'hidden',
-      }}>
-      	<div className="wrapRow"
-      		style={{
-      			flexBasis: columnWidth
-      		}}>
-	        <div className="headCorner"
-	          style={{
-	            width: columnWidth,
-	            height: rowHeight,
-	          }}
+      <div className="wrapGrid" style={{ width, height }}>
+      	<div className="wrapRow" style={{ flexBasis: rhWidth }}>
+	        <div className="headCorner" style={{ width: rhWidth, height: cnHeight }}
+	        	onClick={this.handleHeadClick}
 	        >
-	          {'Corner'}
+	          <CornerHeader dataSource={dataSource}/>
 	        </div>
-	        <div className="rowHeader"
-	        	style={{
-		      		height: (height - rowHeight),
-		      		flexGlow: 1
-	      	}}>
-	      		{'Row'}
+	        <div className="rowHeader" style={{ height: rhHeight, flexGlow: 1 }}>
+	      		<RowHeader ref={this.setElemReference('rowHeader')}
+	      			dataSource={dataSource} visibleRow={visibleRow}
+	      		/>
 	        </div>
 	      </div>
 
-	      <div className="wrapColumn"
-	      	style={{
-	      		width: (width - columnWidth),
-	      		flexBasis: (width - columnWidth)
-	      	}}>
-	        <div className="columns"
-	        	style={{
-	            width: (width - columnWidth),
-	            height: rowHeight,
-	        	}}
-	        >
-	        	{'Columns'}
+	      <div className="wrapColumn" style={{ height, width: chWidth, flexBasis: chWidth}}>
+	        <div className="columns" style={{ width: chWidth, height: cnHeight }} >
+	        	<ColumnHeader ref={this.setElemReference('columnHeader')}
+	        		dataSource={dataSource} scrollLeft={scrollLeft}
+	        	/>
 	        </div>
-	        <div className="dataArea"
-	        	style={{
-		      		height: (height - rowHeight),
-		      		flexGlow: 1
-	      	}}>
-	      		{'Data'}
+	        <div className="dataArea" style={{ height: rhHeight, width: chWidth, flexGlow: 1 }}>
+	        	<DataContainer ref={this.setElemReference('dataArea')}
+	        		dataSource={dataSource} visibleRow={visibleRow}
+	        		onScroll={this.onDataAreaScroll}
+	        	/>
 	        </div>
 	      </div>
       </div>
