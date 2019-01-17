@@ -18,31 +18,41 @@
 }
 
 .headCorner {
-  background-color: red;
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-right: 1px solid #a0a0a0;
+	border-bottom: 1px solid #a0a0a0;
+  background-color: #e0e0e0;
+  padding: 4px;
+  text-overflow: ellipsis;
+  text-align: center;
   overflow: hidden;
-  border: 1px solid white;
 }
 
 .columns {
-  background-color: blue;
+  background-color: #e0e0e0;
   overflow: hidden;
 }
 
 .rowHeader {
-	background-color: green;
+	background-color: #e0e0e0;
 	overflow: hidden;
 }
 
 .dataArea {
-	background-color: gray;
+	background-color: #ffffff;
 }
 
 
 /* ColumnHader.js */
 .column {
-	border-right: 1px solid white;
-	border-top: 1px solid white;
-	border-bottom: 1px solid white;
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-right: 1px solid #a0a0a0;
+	border-bottom: 1px solid #a0a0a0;
+	background-color: #e0e0e0;
+	padding: 4px;
+	text-overflow: ellipsis;
 	position: absolute;
 	top: 0px;
 	overflow: hidden;
@@ -50,7 +60,6 @@
 }
 
 .columnsDiv {
-	background-color: blue;
   overflow: hidden;
 	position: relative;
 	width: 100%;
@@ -59,8 +68,13 @@
 
 /* RowHeader.js */
 .rowCell {
-	border-right: 1px solid white;
-	border-bottom: 1px solid white;
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-right: 1px solid #a0a0a0;
+	border-bottom: 1px solid #a0a0a0;
+	background-color: #e0e0e0;
+	padding: 4px;
+	text-align: center;
 	overflow: hidden;
 	width: 100%;	
 }
@@ -84,10 +98,24 @@
 }
 
 .dataCell {
-	border-right: 1px solid white;
-	border-bottom: 1px solid white;
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-right: 1px solid #a0a0a0;
+	border-bottom: 1px solid #a0a0a0;
+	background-color: #ffffff;
+	padding: 4px;
 	position: absolute;
 	top: 0px;
 	overflow: hidden;
 	height: 100%;
+}
+
+.selectedCell {
+	color: #ffffff !important;
+	background-color: #3399ff !important;
+}
+
+.selectedHeader {
+	color: #ffffff !important;
+	background-color: darkgray !important;
 }
