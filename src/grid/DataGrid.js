@@ -28,11 +28,10 @@ class CornerHeader extends Component {
 
   render () {
     const { dataSource, ...rest } = this.props;
-    console.log(dataSource);
 
     return (
       <div {...rest}>
-        {'dataSource.getTitle()'}
+        { isvalid(dataSource) ? dataSource.getTitle() : '' }
       </div>
     );
   }
@@ -181,9 +180,12 @@ class DataGrid extends Component {
 
     this._elementRef = {};
 
+    const ds = new DataSource({ title: 'TEST', columnCount: 30, rowCount: 50, rowHeight: 30 });
+    const rowPerHeight = Math.ceil(props.height / ds.getRowHeight() - 1);
+
     this.state = {
-    	dataSource: new DataSource({ title: 'TEST', columnCount: 30, rowCount: 100 }),
-    	visibleRow: { begin: 0, end: 40 },
+    	dataSource: ds,
+    	visibleRow: { begin: 0, end: rowPerHeight }
     };
   }
 
@@ -191,53 +193,51 @@ class DataGrid extends Component {
     //
   }
 
+  componentWillReceiveProps(nextProps){
+    //
+	}
+
+  // eslint-disable-next-line
+  shouldComponentUpdate(nextProps, nextState){
+    // console.log("shouldComponentUpdate: " + JSON.stringify(nextProps) + " " + JSON.stringify(nextState));
+    return true;
+	}
+
   componentWillUnmount () {
     //
-  }
-
-  handleHeadClick = (ev) => {
-  	const dataArea = this._elementRef['dataArea'];
-  	console.log('Head Corner clicked.', dataArea);
-
-  	if( isvalid(dataArea) ) {
-			dataArea.scrollLeft += 100;
-  	}
   }
 
   setElemReference = (type) => (ref) => {
     this._elementRef[type] = ref;
   }
 
+  handleHeadClick = (ev) => {
+  	console.log('Head Corner clicked.');
+  }
+
   onDataAreaScroll = (ev) => {
-    const $this = ev.target;
-
-    console.log(
-      'DataArea Scroll',
-      $this.clientHeight,
-      $this.clientWidth,
-      $this.scrollHeight,
-      $this.scrollLeft,
-      $this.scrollTop,
-      $this.scrollWidth
-    ); // */
-
-    this._elementRef['columnArea'].scrollLeft = $this.scrollLeft;
+    // const $this = ev.target;
+    // clientHeight, clientWidth, scrollHeight, scrollLeft, scrollTop, scrollWidth
+    this._elementRef['columnArea'].scrollLeft = ev.target.scrollLeft;
   }
 
   onDataAreaWheel = (ev) => {
-  	console.log('onDataAreaWheel', ev.deltaX, ev.deltaY, ev.deltaMode);
-
+  	// console.log('onDataAreaWheel', ev.deltaX, ev.deltaY, ev.deltaMode);
   	ev.preventDefault();
 		ev.stopPropagation();
 
   	const {dataSource, visibleRow} = this.state;
+  	const rowPerHeight = Math.ceil(this.props.height / dataSource.getRowHeight() - 1);
+  	const rowCount = dataSource.getRowCount();
 
   	// down: +, up: -
   	const gap = (ev.deltaY < 0 ? -1 : 1) * Math.floor(Math.abs(ev.deltaY) / 50);
-  	const newVisible = {
-  		begin: Math.max(0, visibleRow.begin + gap),
-  		end: Math.min(visibleRow.end + gap, dataSource.getRowCount())
-  	};
+
+  	// newVisible.begin: [0, rowCount - rowPerHeight + 1]
+
+  	const newVisible = {};
+  	newVisible.begin = Math.min(Math.max(0, visibleRow.begin + gap), rowCount - rowPerHeight + 1);
+  	newVisible.end = newVisible.begin + rowPerHeight;
 
   	if( visibleRow.begin === newVisible.begin || visibleRow.end === newVisible.end )
   		return;
@@ -259,7 +259,7 @@ class DataGrid extends Component {
     ;
 
     const begin = visibleRow.begin;
-    const end = Math.min(visibleRow.end + 1, dataSource.getRowCount());
+    const end = Math.min(visibleRow.end, dataSource.getRowCount());
 
     let dataTagList = [], rhTagList = [];
 
@@ -275,9 +275,10 @@ class DataGrid extends Component {
 
     let colWidthTotal = 0;
     let chTagList = [];
+    const columnCount = dataSource.getColumnCount();
 
-    for(let c = 0; c < dataSource.getColumnCount(); ++c) {
-      const colWidth = dataSource.getColumnWidth(c);
+    for(let c = 0; c < columnCount; ++c) {
+      const colWidth = dataSource.getColumnWidth(c) + (c === columnCount - 1 ? scrollbarSize() : 0);
 
       chTagList.push(
         <ColumnCell key={'ck-' + c} index={c} title={dataSource.getColumnName(c)} width={colWidth} left={colWidthTotal} />

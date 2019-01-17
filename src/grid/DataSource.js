@@ -1,6 +1,10 @@
+import {nvl} from '../common/tool.js';
+
+
 
 class DataSource {
 	constructor (props) {
+		this.props = props;
 		this.colCount = props.columnCount;
 		this.rowCount = props.rowCount;
 
@@ -43,7 +47,7 @@ class DataSource {
 	}
 
 	getRowHeight = () => {
-		return 40;
+		return nvl(this.props.rowHeight, 30);
 	}
 
 	getCellValue = (col, row) => {
