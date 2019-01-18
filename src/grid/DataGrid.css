@@ -39,10 +39,6 @@
 	overflow: hidden;
 }
 
-.dataArea {
-	background-color: #ffffff;
-}
-
 
 /* ColumnHader.js */
 .column {
@@ -88,7 +84,8 @@
 /* Data Container.js */
 .dataContainer {
 	width: 100%;
-	overflow: auto;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
 .dataCells {
@@ -118,4 +115,8 @@
 .selectedHeader {
 	color: #ffffff !important;
 	background-color: darkgray !important;
+}
+
+.resizeCursor {
+	cursor: col-resize;
 }

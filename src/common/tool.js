@@ -69,6 +69,12 @@ export const uuid4 = () => {
 };
 
 
+// returns true if val is in [f, t)
+export const isBetween = (val, f, t) => {
+	return f <= val && val < t;
+}
+
+
 export const isIn = (val, valList) => {
 	if (!isvalid(val) || !isvalid(valList)) return false;
 

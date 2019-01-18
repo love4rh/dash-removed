@@ -1,3 +1,5 @@
+ctrlKey, altKey, shiftKey
+
 keydown 37 ArrowLeft
 keydown 39 ArrowRight
 keydown 38 ArrowUp
