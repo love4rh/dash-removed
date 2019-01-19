@@ -1,27 +1,27 @@
 .wrapGrid {
-	display: flex;
-	flex-direction: row;
-	overflow: hidden;
-	border: 1px solid darkgray;
-}	
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  border: 1px solid darkgray;
+}  
 
 .wrapRow {
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .wrapColumn {
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .headCorner {
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-right: 1px solid #a0a0a0;
-	border-bottom: 1px solid #a0a0a0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
   background-color: #e0e0e0;
   padding: 4px;
   text-overflow: ellipsis;
@@ -35,88 +35,88 @@
 }
 
 .rowHeader {
-	background-color: #e0e0e0;
-	overflow: hidden;
+  background-color: #e0e0e0;
+  overflow: hidden;
 }
 
 
 /* ColumnHader.js */
 .column {
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-right: 1px solid #a0a0a0;
-	border-bottom: 1px solid #a0a0a0;
-	background-color: #e0e0e0;
-	padding: 4px;
-	text-overflow: ellipsis;
-	position: absolute;
-	top: 0px;
-	overflow: hidden;
-	height: 100%;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
+  background-color: #e0e0e0;
+  padding: 4px;
+  text-overflow: ellipsis;
+  position: absolute;
+  top: 0px;
+  overflow: hidden;
+  height: 100%;
 }
 
 .columnsDiv {
   overflow: hidden;
-	position: relative;
-	width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 
 /* RowHeader.js */
 .rowCell {
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-right: 1px solid #a0a0a0;
-	border-bottom: 1px solid #a0a0a0;
-	background-color: #e0e0e0;
-	padding: 4px;
-	text-align: center;
-	overflow: hidden;
-	width: 100%;	
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
+  background-color: #e0e0e0;
+  padding: 4px;
+  text-align: center;
+  overflow: hidden;
+  width: 100%;  
 }
 
 .rowCells {
-	position: relative;
-	width: 100%;
-	height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 /* Data Container.js */
 .dataContainer {
-	width: 100%;
-	overflow-x: auto;
-	overflow-y: auto;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .dataCells {
-	position: relative;
-	width: 100%;
-	height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .dataCell {
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-right: 1px solid #a0a0a0;
-	border-bottom: 1px solid #a0a0a0;
-	background-color: #ffffff;
-	padding: 4px;
-	position: absolute;
-	top: 0px;
-	overflow: hidden;
-	height: 100%;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #a0a0a0;
+  border-bottom: 1px solid #a0a0a0;
+  background-color: #ffffff;
+  padding: 4px;
+  position: absolute;
+  top: 0px;
+  overflow: hidden;
+  height: 100%;
 }
 
 .selectedCell {
-	color: #ffffff !important;
-	background-color: #3399ff !important;
+  color: #ffffff !important;
+  background-color: #3399ff !important;
 }
 
 .selectedHeader {
-	color: #ffffff !important;
-	background-color: darkgray !important;
+  color: #ffffff !important;
+  background-color: darkgray !important;
 }
 
 .resizeCursor {
-	cursor: col-resize;
+  cursor: col-resize;
 }

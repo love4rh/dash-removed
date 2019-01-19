@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import logo from '../logo.svg';
-import css from './MainFrame.less';
+// import css from './MainFrame.less';
 
 import FileListView from './FileListView.js';
 import DataGrid from '../grid/DataGrid.js';
@@ -9,15 +9,9 @@ import apiProxy from '../apiProxy.js';
 
 import {
   Container,
-  Divider,
-  Dropdown,
-  Grid,
-  Header,
   Icon,
   Image,
-  List,
   Menu,
-  Segment,
   Loader,
   Dimmer,
 } from 'semantic-ui-react';

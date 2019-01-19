@@ -14,10 +14,6 @@ class FileListView extends Component {
     switchPage: PropTypes.func.isRequired,
   }
 
-  constructor (props) {
-    super(props);
-  }
-
   componentDidMount () {
     //
   }

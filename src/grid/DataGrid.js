@@ -14,37 +14,6 @@ import DataSource from './DataSource.js';
 const _testDs = new DataSource({ title: 'TEST', columnCount: 20, rowCount: 50, rowHeight: 40 });
 
 
-class CornerHeader extends Component {
-  static propTypes = {
-    dataSource: PropTypes.object,
-  }
-
-  constructor (props) {
-    super(props);
-  }
-
-  componentDidMount () {
-    //
-  }
-
-  componentWillUnmount () {
-    //
-  }
-
-  render () {
-    const { dataSource, ...rest } = this.props;
-    const rowHeight = dataSource.getRowHeight();
-    const lineHeight = (rowHeight - 10) + 'px';
-
-    return (
-      <div style={{}} {...rest}>
-        { isvalid(dataSource) ? dataSource.getTitle() : '' }
-      </div>
-    );
-  }
-}
-
-
 
 class ColumnCell extends Component {
   static propTypes = {
@@ -56,25 +25,8 @@ class ColumnCell extends Component {
     width: PropTypes.number,
   }
 
-  constructor (props) {
-    super(props);
-  }
-
-  componentDidMount () {
-    //
-  }
-
-  // eslint-disable-next-line
-  componentDidUpdate (prevProps, prevState) {
-    //
-  }
-
-  componentWillUnmount () {
-    //
-  }
-
   render () {
-    const {index, title, width, left, selected, rowHeight} = this.props;
+    const { title, width, left, selected, rowHeight } = this.props;
     const lineHeight = (rowHeight - 10) + 'px';
 
     return (
@@ -97,18 +49,6 @@ class RowCell extends Component {
     selected: PropTypes.bool,
   }
 
-  constructor (props) {
-    super(props);
-  }
-
-  componentDidMount () {
-    //
-  }
-
-  componentWillUnmount () {
-    //
-  }
-
   render () {
     const {index, height, selected} = this.props;
     const lineHeight = (height - 10) + 'px';
@@ -116,7 +56,7 @@ class RowCell extends Component {
     return (
       <div className={cn({ 'rowCell': true, 'selectedHeader': selected })}
         style={{ height, lineHeight: lineHeight }}
-			>
+      >
         {index + 1}
       </div>
     );
@@ -132,18 +72,6 @@ class DataRecord extends Component {
     getColumnWidth: PropTypes.func,
     isSelected: PropTypes.func,
     row: PropTypes.number,
-  }
-
-  constructor (props) {
-    super(props);
-  }
-
-  componentDidMount () {
-    //
-  }
-
-  componentWillUnmount () {
-    //
   }
 
   render () {
@@ -185,7 +113,6 @@ class DataRecord extends Component {
  * Column
  * @required  react-virtualized
  */
-// @keydown
 class DataGrid extends Component {
   static propTypes = {
     height: PropTypes.number.isRequired,
@@ -226,7 +153,7 @@ class DataGrid extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-  	const { dataSource } = this.state;
+    const { dataSource } = this.state;
     this.setState({ rowPerHeight: Math.ceil(nextProps.height / dataSource.getRowHeight() - 1) });
   }
 
@@ -245,22 +172,22 @@ class DataGrid extends Component {
   }
 
   getColumnWidth = (col) => {
-  	const { columnWidth } = this.state;
-  	return columnWidth[col + 1] - columnWidth[col];
+    const { columnWidth } = this.state;
+    return columnWidth[col + 1] - columnWidth[col];
   }
 
   setColumnWidth = (col, size) => {
-  	const { dataSource, columnWidth } = this.state;
-  	const old = columnWidth[col + 1] - columnWidth[col];
+    const { dataSource, columnWidth } = this.state;
+    const old = columnWidth[col + 1] - columnWidth[col];
 
-  	if( old === size )
-  		return;
+    if( old === size )
+      return;
 
-  	for(let c = col; c < dataSource.getColumnCount(); ++c) {
-  		columnWidth[c + 1] += size - old;
-  	}
-  	
-  	this.setState({ columnWidth: columnWidth });
+    for(let c = col; c < dataSource.getColumnCount(); ++c) {
+      columnWidth[c + 1] += size - old;
+    }
+    
+    this.setState({ columnWidth: columnWidth });
   }
 
   changeState = (state) => {
@@ -274,25 +201,25 @@ class DataGrid extends Component {
   }
 
   isSelectedColumn = (col) => {
-  	const { selectedRange } = this.state;
-  	const col2 = nvl(selectedRange.col2, selectedRange.col);
+    const { selectedRange } = this.state;
+    const col2 = nvl(selectedRange.col2, selectedRange.col);
 
-  	return isBetween(col, Math.min(selectedRange.col, col2), Math.max(selectedRange.col, col2) + 1);
+    return isBetween(col, Math.min(selectedRange.col, col2), Math.max(selectedRange.col, col2) + 1);
   }
 
   isSelectedRow = (row) => {
-  	const { selectedRange } = this.state;
-  	const row2 = nvl(selectedRange.row2, selectedRange.row);
+    const { selectedRange } = this.state;
+    const row2 = nvl(selectedRange.row2, selectedRange.row);
 
-  	return isBetween(row, Math.min(selectedRange.row, row2), Math.max(selectedRange.row, row2) + 1);
+    return isBetween(row, Math.min(selectedRange.row, row2), Math.max(selectedRange.row, row2) + 1);
   }
 
   isSelected = (col, row) => {
-  	return this.isSelectedRow(row) && this.isSelectedColumn(col);
+    return this.isSelectedRow(row) && this.isSelectedColumn(col);
   }
 
   moveVisibleRow = (offsetY) => {
-    const { dataSource, visibleRow, selectedRange, rowPerHeight } = this.state;
+    const { dataSource, visibleRow, rowPerHeight } = this.state;
     const rowCount = dataSource.getRowCount();
 
     // newVisible.begin: [0, rowCount - rowPerHeight + 1]
@@ -309,60 +236,60 @@ class DataGrid extends Component {
   }
 
   moveCellPosition = (offsetX, offsetY, selecting) => {
-  	if( offsetX === 0 && offsetY === 0 )
-  		return false;
+    console.log('moveCellPosition', offsetX, offsetY, selecting);
+    if( offsetX === 0 && offsetY === 0 )
+      return false;
 
-  	const { width, height } = this.props;
+    const { width, height } = this.props;
     const { dataSource, columnWidth, visibleRow, selectedRange, scrollLeft, rowPerHeight } = this.state;
 
-    const rowFitted = 0 === (this.props.height % dataSource.getRowHeight());
+    const rowFitted = 0 === (height % dataSource.getRowHeight());
     const rowCount = dataSource.getRowCount();
 
-    const newPos = {
+    const newPos = { ...selectedRange,
       col: Math.min(Math.max(0, selectedRange.col + offsetX), dataSource.getColumnCount() - 1),
       row: Math.min(Math.max(0, selectedRange.row + offsetY), dataSource.getRowCount() - 1)
-  	};
+    };
 
-  	if( selectedRange.col == newPos.col && selectedRange.row == newPos.row )
-  		return false;
+    if( selectedRange.col === newPos.col && selectedRange.row === newPos.row )
+      return false;
 
-  	if( !selecting ) {
-	  	newPos.row2 = newPos.row;
-	  	newPos.col2 = newPos.col;
-	  }
+    if( !selecting ) {
+      newPos.row2 = newPos.row;
+      newPos.col2 = newPos.col;
+    }
 
-  	const dataWidth = width - dataSource.getHeadColumnWidth(),
-  	  vX1 = scrollLeft,
-  	  vX2 = vX1 + dataWidth;
+    const dataWidth = width - dataSource.getHeadColumnWidth(),
+      vX1 = scrollLeft,
+      vX2 = vX1 + dataWidth;
 
-  	if( columnWidth[newPos.col] < vX1 || columnWidth[newPos.col + 1] > vX2 ) {
-  		this.setScrollLeft( offsetX < 0 ? columnWidth[newPos.col] : Math.max(0, columnWidth[newPos.col + 1] - dataWidth) );
-  	}
+    if( columnWidth[newPos.col] < vX1 || columnWidth[newPos.col + 1] > vX2 ) {
+      this.setScrollLeft( offsetX < 0 ? columnWidth[newPos.col] : Math.max(0, columnWidth[newPos.col + 1] - dataWidth) );
+    }
 
-  	const newVisible = { ...visibleRow };
-  	if( newPos.row < visibleRow.begin || newPos.row >= visibleRow.end - (rowFitted ? 0 : 1) ) {
-  		if( offsetY < 0 ) {
-  			newVisible.begin = Math.max(0, Math.min(newPos.row, rowCount - rowPerHeight + 1));
-  			newVisible.end = newVisible.begin + rowPerHeight;
-  		} else {
-  			newVisible.end = Math.max(rowPerHeight, Math.min(newPos.row + (rowFitted ? 1 : 2), rowCount + 1));
-  			newVisible.begin = newVisible.end - rowPerHeight;
-  		}
+    const newVisible = { ...visibleRow };
+    if( newPos.row < visibleRow.begin || newPos.row >= visibleRow.end - (rowFitted ? 0 : 1) ) {
+      if( offsetY < 0 ) {
+        newVisible.begin = Math.max(0, Math.min(newPos.row, rowCount - rowPerHeight + 1));
+        newVisible.end = newVisible.begin + rowPerHeight;
+      } else {
+        newVisible.end = Math.max(rowPerHeight, Math.min(newPos.row + (rowFitted ? 1 : 2), rowCount + 1));
+        newVisible.begin = newVisible.end - rowPerHeight;
+      }
+      // console.log(JSON.stringify(visibleRow), JSON.stringify(newVisible));
+    }
 
-  		console.log(JSON.stringify(visibleRow), JSON.stringify(newVisible));
-  	}
+    this.setState({ visibleRow: newVisible, selectedRange: newPos });
 
-  	this.setState({ visibleRow: newVisible, selectedRange: newPos });
-
-  	return true;
+    return true;
   }
 
   setScrollLeft = (left) => {
-  	if( this.state.scrollLeft === left )
-  		return;
+    if( this.state.scrollLeft === left )
+      return;
 
-  	this._elementRef['columnArea'].scrollLeft = left;
-  	this._elementRef['dataContainer'].scrollLeft = left;
+    this._elementRef['columnArea'].scrollLeft = left;
+    this._elementRef['dataContainer'].scrollLeft = left;
     this.setState({ scrollLeft: left });
   }
 
@@ -379,121 +306,130 @@ class DataGrid extends Component {
 
     // down: +, up: -
     this.moveVisibleRow( (ev.deltaY < 0 ? -1 : 1) * Math.ceil(Math.abs(ev.deltaY) / 50) );
+
+    if( Math.abs(ev.deltaX) >= 1 ) {
+      this.setScrollLeft(this.state.scrollLeft + ev.deltaX);  
+    }
   }
 
   onKeyDown = (ev) => {
-    console.log('keydown', ev.keyCode, ev.key, ev.ctrlKey, ev.altKey, ev.shiftKey);
-
+    // console.log('keydown', ev.keyCode, ev.key, ev.ctrlKey, ev.altKey, ev.shiftKey);
     let processed = true;
-    let offsetY = 0, offsetX = 0;
+    let { keyCode, ctrlKey, shiftKey } = ev;
     const { dataSource, selectedRange, rowPerHeight } = this.state;
     const colCount = dataSource.getColumnCount(), rowCount = dataSource.getRowCount();
 
-    switch( ev.keyCode) {
-    	case 37: // ArrowLeft
-    		if( ev.shiftKey )
-    			this.setColumnWidth(selectedRange.col, this.getColumnWidth(selectedRange.col) - 2); // shrink column size
-    		else 
-    			this.moveCellPosition(-1, 0); // go to previous column
-    		break;
-			case 39: // ArrowRight
-				if( ev.shiftKey )
-					this.setColumnWidth(selectedRange.col, this.getColumnWidth(selectedRange.col) + 2); // grow column size
-				else
-					this.moveCellPosition(1, 0, ev.ctrlKey); // go to next column
-				break;
-			case 38: // ArrowUp
-				this.moveCellPosition(0, -1, ev.ctrlKey); // go to previous row
-				break;
-			case 40: // ArrowDown
-				this.moveCellPosition(0, 1, ev.ctrlKey); // go to next row
-				break;
-			case 33: // PageUp
-				if( ev.ctrlKey )
-					this.moveCellPosition(-colCount, -rowCount); // go to (0, 0), but not worked
-				else
-					this.moveCellPosition(0, - rowPerHeight + 2); // go to previous page
-				break;
-			case 34: // PageDown
-				if( ev.ctrlKey )
-					this.moveCellPosition(colCount, rowCount); // go to last cell, but not worked
-				else
-					this.moveCellPosition(0, rowPerHeight - 2); // go to next page
-				break;
-			case 36: // Home
-				if( ev.ctrlKey || selectedRange.col === 0 )
-					this.moveCellPosition(0, -rowCount); // go to last row
-				else
-					this.moveCellPosition(-colCount, 0);
-				break;
-			case 35: // End
-				if( ev.ctrlKey || selectedRange.col === colCount - 1)
-					this.moveCellPosition(0, rowCount);
-				else
-					this.moveCellPosition(colCount, 0);
-				break;
+    switch( keyCode ) {
+      case 37: // ArrowLeft
+        if( shiftKey )
+          this.setColumnWidth(selectedRange.col, this.getColumnWidth(selectedRange.col) - 2); // shrink column size
+        else 
+          this.moveCellPosition(-1, 0, ctrlKey); // go to previous column
+        break;
+      case 39: // ArrowRight
+        if( shiftKey )
+          this.setColumnWidth(selectedRange.col, this.getColumnWidth(selectedRange.col) + 2); // grow column size
+        else
+          this.moveCellPosition(1, 0, ctrlKey); // go to next column
+        break;
+      case 38: // ArrowUp
+        this.moveCellPosition(0, -1, ctrlKey); // go to previous row
+        break;
+      case 40: // ArrowDown
+        this.moveCellPosition(0, 1, ctrlKey); // go to next row
+        break;
+      case 33: // PageUp
+        if( ctrlKey )
+          this.moveCellPosition(-colCount, -rowCount, false); // go to (0, 0), but not worked
+        else
+          this.moveCellPosition(0, - rowPerHeight + 2, false); // go to previous page
+        break;
+      case 34: // PageDown
+        if( ctrlKey )
+          this.moveCellPosition(colCount, rowCount, false); // go to last cell, but not worked
+        else
+          this.moveCellPosition(0, rowPerHeight - 2, false); // go to next page
+        break;
+      case 36: // Home
+        if( ctrlKey || selectedRange.col === 0 )
+          this.moveCellPosition(0, -rowCount, false); // go to last row
+        else
+          this.moveCellPosition(-colCount, 0, false);
+        break;
+      case 35: // End
+        if( ctrlKey || selectedRange.col === colCount - 1)
+          this.moveCellPosition(0, rowCount, false);
+        else
+          this.moveCellPosition(colCount, 0, false);
+        break;
+      default:
+        processed = false;
+        break;
+    }
 
-			case 67: // c
-				if( ev.ctrlKey ) {
-					// TODO implement
-				} else
-					processed = false;
-				break;
-			default:
-			  processed = false;
-			  break;
-		}
+    if( !processed && ctrlKey ) {
+      processed = true;
 
-		if( processed ) {
-			ev.preventDefault();
-    	ev.stopPropagation();
-		}
+      if( keyCode === 67 ) { // c
+        // TODO implement
+      } else if( keyCode === 65 ) { // a
+        // select all
+        this.setState({ selectedRange:{col:0, row:0, col2:colCount - 1, row2:rowCount - 1} });
+      } else
+        processed = false;
+    }
+
+    if( processed ) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
   }
 
   hitTest = (x, y) => {
-  	let col = null, row = null, colEdge = false, rowEdge = false;
+    let col = null, row = null, colEdge = false, rowEdge = false;
 
-  	const edgeMargin = 2;
-    const { dataSource, columnWidth, scrollLeft, visibleRow } = this.state;
+    const edgeMargin = 2;
+    const { dataSource, columnWidth, visibleRow, scrollLeft } = this.state;
 
     const cnHeight = dataSource.getRowHeight(),
       rhWidth = dataSource.getHeadColumnWidth();
 
     // find column index matching to x
     if( x <= rhWidth + edgeMargin ) {
-    	col = -1;
-    	colEdge = (x >= rhWidth - edgeMargin);
-  	} else {
-	  	x -= rhWidth - scrollLeft;
+      col = -1;
+      colEdge = (x >= rhWidth - edgeMargin);
+    } else {
+      x -= rhWidth - scrollLeft;
 
-	  	// TODO change find-logic to using binary search.
-	  	for(let c = 1; c < dataSource.getColumnCount(); ++c) {
-	  		if( x <= columnWidth[c] + edgeMargin ) {
-	  			col = c - 1;
-	    		colEdge = (x >= columnWidth[c] - edgeMargin);
-	    		break;
-	  		}
-	  	}
-	  }
+      // TODO change find-logic to using binary search.
+      for(let c = 1; c < dataSource.getColumnCount(); ++c) {
+        if( x <= columnWidth[c] + edgeMargin ) {
+          col = c - 1;
+          colEdge = (x >= columnWidth[c] - edgeMargin);
+          break;
+        }
+      }
+    }
 
-	  // find row index matching to y
-	  if( y <= cnHeight + edgeMargin ) {
-	  	row = -1;
-	  	rowEdge = (y >= cnHeight - edgeMargin);
-	  } else {
-	  	y -= cnHeight;
-	  	row = Math.floor(y / cnHeight)
-	  	rowEdge = Math.abs(y - row * cnHeight) <= edgeMargin;
-	  }
+    // find row index matching to y
+    if( y <= cnHeight + edgeMargin ) {
+      row = -1;
+      rowEdge = (y >= cnHeight - edgeMargin);
+    } else {
+      y -= cnHeight;
+      row = Math.floor(y / cnHeight)
+      rowEdge = Math.abs(y - row * cnHeight) <= edgeMargin;
+      row += visibleRow.begin;
+    }
 
-  	return { col: col, row: row, colEdge: colEdge, rowEdge: rowEdge };
+    return { col: col, row: row, colEdge: colEdge, rowEdge: rowEdge };
   }
 
   onMouseEvent = (ev) => {
     const target = ev.currentTarget;
     const
-    	x = ev.clientX - target.offsetLeft,
-    	y = ev.clientY - target.offsetTop
+      x = ev.clientX - target.offsetLeft,
+      y = ev.clientY - target.offsetTop
     ;
 
     /*
@@ -504,13 +440,13 @@ class DataGrid extends Component {
 
     const t = this.hitTest(x, y)
 
-    if( 'mousedown' == ev.type ) {
-    	this.setState({ selectedRange: t });
-    } else if( 'mouseup' == ev.type ) {
-    	//
-    } else if( 'mousemove' == ev.type ) {
-    	this.setState({ overCell: t });
-    	// console.log( JSON.stringify(t) );
+    if( 'mousedown' === ev.type ) {
+      this.setState({ selectedRange: t });
+    } else if( 'mouseup' === ev.type ) {
+      //
+    } else if( 'mousemove' === ev.type ) {
+      this.setState({ overCell: t });
+      // console.log( JSON.stringify(t) );
     }
 
     ev.preventDefault();
@@ -519,7 +455,7 @@ class DataGrid extends Component {
 
   render () {
     const { width, height } = this.props;
-    const { dataSource, visibleRow, selectedRange, columnWidth } = this.state;
+    const { dataSource, visibleRow, columnWidth } = this.state;
 
     const
       rowHeight = dataSource.getRowHeight(),
@@ -553,7 +489,6 @@ class DataGrid extends Component {
       );
     }
 
-    let colWidthTotal = 0;
     let chTagList = [];
     const columnCount = dataSource.getColumnCount();
 
