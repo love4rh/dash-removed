@@ -4,6 +4,7 @@ import logo from '../logo.svg';
 
 import FileListView from './FileListView.js';
 import DataGrid from '../grid/DataGrid.js';
+import DataSource from '../grid/DataSource.js';
 
 import apiProxy from '../apiProxy.js';
 
@@ -15,6 +16,9 @@ import {
   Loader,
   Dimmer,
 } from 'semantic-ui-react';
+
+
+const _testDs = new DataSource({ title: 'TEST', columnCount: 20, rowCount: 50, rowHeight: 40 });
 
 
 class MainFrame extends Component {
@@ -97,6 +101,9 @@ class MainFrame extends Component {
           ? <DataGrid
               height={this.state.windowHeight - 60}
               width={this.state.windowWidth}
+              dataSource={_testDs}
+              rowNumber={true}
+              columnNumber={true}
             />
           : <FileListView
               fileList={this.state.fileList}
