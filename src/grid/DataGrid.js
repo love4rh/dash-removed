@@ -114,6 +114,12 @@ class DataGrid extends Component {
     dataSource: PropTypes.object,
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
+    rowNumber: PropTypes.bool,
+    columnNumber: PropTypes.bool,
+  }
+
+  static CalcRowNumPerpage = (height, rowHeight, headerCount) => {
+    return Math.ceil((height - rowHeight * headerCount) / rowHeight);
   }
 
   constructor (props) {
@@ -124,7 +130,7 @@ class DataGrid extends Component {
     this._elementRef = {};
 
     const columnWidth = [0];
-    const rowPerHeight = Math.ceil(props.height / ds.getRowHeight() - 1);
+    const rowPerHeight = DataGrid.CalcRowNumPerpage(props.height, ds.getRowHeight(), (props.columnNumber ? 2 : 1));
 
     let widthSum = 0;
     const columnCount = ds.getColumnCount();
@@ -134,7 +140,7 @@ class DataGrid extends Component {
     }
 
     this.state = {
-      visibleRow: { begin:0, end:rowPerHeight },
+      beginRow: 0,
       scrollLeft: 0,
       selectedRange: { row:0, col:0, row2:0, col2:0 },
       columnWidth: columnWidth,
@@ -149,8 +155,9 @@ class DataGrid extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { dataSource } = this.props;
-    this.setState({ rowPerHeight: Math.ceil(nextProps.height / dataSource.getRowHeight() - 1) });
+    const { dataSource, height, columnNumber } = nextProps;
+
+    this.setState({ rowPerHeight: DataGrid.CalcRowNumPerpage(height, dataSource.getRowHeight(), (columnNumber ? 2 : 1)) });
   }
 
   // eslint-disable-next-line
@@ -215,31 +222,26 @@ class DataGrid extends Component {
     return this.isSelectedRow(row) && this.isSelectedColumn(col);
   }
 
-  moveVisibleRow = (offsetY) => {
+  calcNewBeginRow = (offsetY) => {
     const { dataSource } = this.props;
-    const { visibleRow, rowPerHeight } = this.state;
+    const { beginRow, rowPerHeight } = this.state;
     const rowCount = dataSource.getRowCount();
 
-    // newVisible.begin: [0, rowCount - rowPerHeight + 1]
-    const newVisible = {};
-    newVisible.begin = Math.min(Math.max(0, visibleRow.begin + offsetY), rowCount - rowPerHeight + 1);
-    newVisible.end = newVisible.begin + rowPerHeight;
+    // beginRow: [0, rowCount - rowPerHeight + 1]
+    const newBegin = Math.min(Math.max(0, beginRow + offsetY), rowCount - rowPerHeight + 1);
 
-    if( visibleRow.begin === newVisible.begin || visibleRow.end === newVisible.end )
-      return false;
+    if( beginRow === newBegin )
+      return -1;
 
-    this.setState({ visibleRow: newVisible });
-
-    return true;
+    return newBegin;
   }
 
   moveCellPosition = (offsetX, offsetY, selecting) => {
-    console.log('moveCellPosition', offsetX, offsetY, selecting);
     if( offsetX === 0 && offsetY === 0 )
       return false;
 
     const { width, height, dataSource } = this.props;
-    const { columnWidth, visibleRow, selectedRange, scrollLeft, rowPerHeight } = this.state;
+    const { beginRow, columnWidth, selectedRange, scrollLeft, rowPerHeight } = this.state;
 
     const rowFitted = 0 === (height % dataSource.getRowHeight());
     const rowCount = dataSource.getRowCount();
@@ -265,19 +267,17 @@ class DataGrid extends Component {
       this.setScrollLeft( offsetX < 0 ? columnWidth[newPos.col] : Math.max(0, columnWidth[newPos.col + 1] - dataWidth) );
     }
 
-    const newVisible = { ...visibleRow };
-    if( newPos.row < visibleRow.begin || newPos.row >= visibleRow.end - (rowFitted ? 0 : 1) ) {
+    let newBegin = beginRow;
+    if( newPos.row < beginRow || newPos.row >= beginRow + rowPerHeight - 1 ) {
       if( offsetY < 0 ) {
-        newVisible.begin = Math.max(0, Math.min(newPos.row, rowCount - rowPerHeight + 1));
-        newVisible.end = newVisible.begin + rowPerHeight;
+        newBegin = Math.max(0, Math.min(newPos.row, rowCount - rowPerHeight + 1));
       } else {
-        newVisible.end = Math.max(rowPerHeight, Math.min(newPos.row + (rowFitted ? 1 : 2), rowCount + 1));
-        newVisible.begin = newVisible.end - rowPerHeight;
+        newBegin = Math.max(rowPerHeight, Math.min(newPos.row, rowCount) + (rowFitted ? 1 : 2)) - rowPerHeight;
       }
-      // console.log(JSON.stringify(visibleRow), JSON.stringify(newVisible));
     }
+    // console.log(JSON.stringify(newPos), beginRow, newBegin);
 
-    this.setState({ visibleRow: newVisible, selectedRange: newPos });
+    this.setState({ beginRow: newBegin, selectedRange: newPos });
 
     return true;
   }
@@ -299,7 +299,7 @@ class DataGrid extends Component {
 
   onDataAreaVScroll = (ev) => {
     const { dataSource } = this.props;
-    const { visibleRow, rowPerHeight } = this.state;
+    const { beginRow, rowPerHeight } = this.state;
     const rowCount = dataSource.getRowCount();
 
     const $this = ev.target;
@@ -307,13 +307,12 @@ class DataGrid extends Component {
     // console.log( $this, clientHeight, clientWidth, scrollHeight, scrollLeft, scrollTop, scrollWidth );
     const { clientHeight, scrollHeight, scrollTop } = $this;
 
-    const firstRow = Math.ceil((rowCount - rowPerHeight) * scrollTop / (scrollHeight - clientHeight));
-    const offsetY = firstRow - visibleRow.begin;
+    const newBegin = Math.floor( scrollTop / (scrollHeight - clientHeight) * (rowCount - rowPerHeight) );
 
-    console.log( clientHeight, scrollHeight, scrollTop, scrollTop / (scrollHeight - clientHeight), firstRow );
+    console.log( clientHeight, scrollHeight, scrollTop, rowPerHeight, newBegin );
 
-    this.moveVisibleRow(offsetY);
-
+    if( newBegin !== beginRow )
+      this.setState({ beginRow: newBegin });
   }
 
   onDataAreaWheel = (ev) => {
@@ -322,16 +321,22 @@ class DataGrid extends Component {
     ev.stopPropagation();
 
     // down: +, up: -
-    this.moveVisibleRow( (ev.deltaY < 0 ? -1 : 1) * Math.ceil(Math.abs(ev.deltaY) / 50) );
-
-    const { dataSource } = this.props;
-    const { visibleRow, rowPerHeight } = this.state;
-
-    this._elementRef['scrollContainer'].scrollTop = visibleRow.begin * dataSource.getRowHeight();
+    const offsetY = (ev.deltaY < 0 ? -1 : 1) * Math.ceil(Math.abs(ev.deltaY) / 80);
+    const newBegin = this.calcNewBeginRow(offsetY);
 
     if( Math.abs(ev.deltaX) >= 1 ) {
       this.setScrollLeft(this.state.scrollLeft + ev.deltaX);  
     }
+
+    console.log('onDataAreaWheel', newBegin, ev.deltaY, offsetY);
+
+    if( newBegin === -1 )
+      return;
+
+    this.setState({ beginRow: newBegin });
+
+    const { dataSource } = this.props;
+    this._elementRef['scrollContainer'].scrollTop = newBegin * dataSource.getRowHeight();
   }
 
   onKeyDown = (ev) => {
@@ -413,7 +418,7 @@ class DataGrid extends Component {
 
     const edgeMargin = 2;
     const { dataSource, rowNumber, columnNumber } = this.props;
-    const { columnWidth, visibleRow, scrollLeft } = this.state;
+    const { columnWidth, beginRow, scrollLeft } = this.state;
 
     const rowHeight = dataSource.getRowHeight(),
       cnHeight = rowHeight * (columnNumber ? 2 : 1),
@@ -444,7 +449,7 @@ class DataGrid extends Component {
       y -= cnHeight;
       row = Math.floor(y / rowHeight)
       rowEdge = Math.abs(y - row * rowHeight) <= edgeMargin;
-      row += visibleRow.begin;
+      row += beginRow;
     }
 
     return { col: col, row: row, colEdge: colEdge, rowEdge: rowEdge };
@@ -480,7 +485,7 @@ class DataGrid extends Component {
 
   render () {
     const { width, height, dataSource, rowNumber, columnNumber } = this.props;
-    const { visibleRow, columnWidth } = this.state;
+    const { beginRow, columnWidth, rowPerHeight } = this.state;
 
     const
       rowHeight = dataSource.getRowHeight(),
@@ -495,8 +500,8 @@ class DataGrid extends Component {
     const hScroll = chWidth < columnWidth[columnWidth.length - 1];
     const vScroll = rhHeight < (totalHeight + (hScroll ? sbs : 0));
 
-    const begin = visibleRow.begin;
-    const end = Math.min(visibleRow.end, dataSource.getRowCount());
+    const begin = beginRow;
+    const end = Math.min(beginRow + rowPerHeight, dataSource.getRowCount());
 
     let dataTagList = [], rhTagList = [];
 
