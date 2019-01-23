@@ -10,6 +10,12 @@ import './DataGrid.css';
 
 
 
+const scrollbarSizeEx = () => {
+  const sbs = scrollbarSize();
+
+  return sbs === 0 ? 20 : sbs;
+}
+
 class ColumnCell extends Component {
   static propTypes = {
     changeState: PropTypes.func,
@@ -79,7 +85,7 @@ class DataRecord extends Component {
     const lineHeight = (dataSource.getRowHeight() - 10) + 'px';
 
     for(let c = 0; c < colCount; ++c) {
-      const width = getColumnWidth(c) - (c === colCount - 1 ? scrollbarSize() : 0);
+      const width = getColumnWidth(c) - (c === colCount - 1 ? scrollbarSizeEx() : 0);
 
       tagList.push(
         <div key={'r' + row + 'c' + c}
@@ -135,9 +141,12 @@ class DataGrid extends Component {
     let widthSum = 0;
     const columnCount = ds.getColumnCount();
     for(let c = 0; c < columnCount; ++c) {
-      widthSum += ds.getColumnWidth(c) + (c === columnCount - 1 ? scrollbarSize() : 0);
+      widthSum += ds.getColumnWidth(c) + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
       columnWidth.push(widthSum);
     }
+
+    // scroll basis to change to new mode
+    this._scrollNewMode_ = 50000;
 
     this.state = {
       beginRow: 0,
@@ -146,6 +155,8 @@ class DataGrid extends Component {
       columnWidth: columnWidth,
       overCell: { row:-1, col:-1, colEdge:false, rowEdge:false },
       rowPerHeight: rowPerHeight,
+      preventVScroll: false,
+      scrollByRatio: ds.getRowCount() >= this._scrollNewMode_,
       status: 'normal'
     };
   }
@@ -241,7 +252,7 @@ class DataGrid extends Component {
       return false;
 
     const { width, height, dataSource } = this.props;
-    const { beginRow, columnWidth, selectedRange, scrollLeft, rowPerHeight } = this.state;
+    const { beginRow, columnWidth, selectedRange, scrollLeft, rowPerHeight, scrollByRatio } = this.state;
 
     const rowFitted = 0 === (height % dataSource.getRowHeight());
     const rowCount = dataSource.getRowCount();
@@ -277,7 +288,14 @@ class DataGrid extends Component {
     }
     // console.log(JSON.stringify(newPos), beginRow, newBegin);
 
-    this.setState({ beginRow: newBegin, selectedRange: newPos });
+    if( newBegin !== beginRow ) {
+      this.setState({ beginRow: newBegin, selectedRange: newPos, preventVScroll: true });
+      this._elementRef['scrollContainer'].scrollTop = scrollByRatio
+        ? newBegin / (rowCount - rowPerHeight + 1) * this._scrollNewMode_
+        : newBegin * dataSource.getRowHeight();
+    } else {
+      this.setState({ selectedRange: newPos });
+    }
 
     return true;
   }
@@ -298,21 +316,33 @@ class DataGrid extends Component {
   }
 
   onDataAreaVScroll = (ev) => {
+    const { beginRow, rowPerHeight, preventVScroll, scrollByRatio } = this.state;
+
+    if( preventVScroll ) {
+      this.setState({ preventVScroll: false });
+      return;
+    }
+
     const { dataSource } = this.props;
-    const { beginRow, rowPerHeight } = this.state;
     const rowCount = dataSource.getRowCount();
 
     const $this = ev.target;
     // const { clientHeight, clientWidth, scrollHeight, scrollLeft, scrollTop, scrollWidth } = $this;
-    // console.log( $this, clientHeight, clientWidth, scrollHeight, scrollLeft, scrollTop, scrollWidth );
     const { clientHeight, scrollHeight, scrollTop } = $this;
 
-    const newBegin = Math.floor( scrollTop / (scrollHeight - clientHeight) * (rowCount - rowPerHeight) );
+    let newBegin = beginRow;
+    const tmpVal = rowCount - rowPerHeight;
 
-    console.log( clientHeight, scrollHeight, scrollTop, rowPerHeight, newBegin );
+    if( scrollByRatio ) {
+      newBegin = Math.min(Math.floor(scrollTop / this._scrollNewMode_ * tmpVal), tmpVal + 1);
+    } else {
+      newBegin = Math.floor(scrollTop / (scrollHeight - clientHeight) * tmpVal);
+    }
+
+    console.log(clientHeight, scrollHeight, scrollTop, rowPerHeight, newBegin);
 
     if( newBegin !== beginRow )
-      this.setState({ beginRow: newBegin });
+      this.setState({ beginRow: newBegin, preventVScroll: false });
   }
 
   onDataAreaWheel = (ev) => {
@@ -328,15 +358,16 @@ class DataGrid extends Component {
       this.setScrollLeft(this.state.scrollLeft + ev.deltaX);  
     }
 
-    console.log('onDataAreaWheel', newBegin, ev.deltaY, offsetY);
+    // console.log('onDataAreaWheel', newBegin, ev.deltaY, offsetY);
 
     if( newBegin === -1 )
       return;
 
-    this.setState({ beginRow: newBegin });
+    this.setState({ beginRow: newBegin, preventVScroll: true });
 
     const { dataSource } = this.props;
-    this._elementRef['scrollContainer'].scrollTop = newBegin * dataSource.getRowHeight();
+    const { scrollByRatio } = this.state;
+    this._elementRef['scrollContainer'].scrollTop = scrollByRatio ? newBegin : newBegin * dataSource.getRowHeight();
   }
 
   onKeyDown = (ev) => {
@@ -485,7 +516,7 @@ class DataGrid extends Component {
 
   render () {
     const { width, height, dataSource, rowNumber, columnNumber } = this.props;
-    const { beginRow, columnWidth, rowPerHeight } = this.state;
+    const { beginRow, columnWidth, rowPerHeight, scrollByRatio } = this.state;
 
     const
       rowHeight = dataSource.getRowHeight(),
@@ -495,13 +526,14 @@ class DataGrid extends Component {
       chWidth = width - rhWidth
     ;
 
-    const sbs = scrollbarSize();
-    const totalHeight = dataSource.getRowCount() * rowHeight;
+    const sbs = scrollbarSizeEx();
+    const rowCount = dataSource.getRowCount();
+    const totalHeight = scrollByRatio ? this._scrollNewMode_ + height : rowCount * rowHeight;
     const hScroll = chWidth < columnWidth[columnWidth.length - 1];
-    const vScroll = rhHeight < (totalHeight + (hScroll ? sbs : 0));
+    const vScroll = scrollByRatio || rhHeight < (totalHeight + (hScroll ? sbs : 0));
 
     const begin = beginRow;
-    const end = Math.min(beginRow + rowPerHeight, dataSource.getRowCount());
+    const end = Math.min(beginRow + rowPerHeight, rowCount);
 
     let dataTagList = [], rhTagList = [];
 
@@ -561,40 +593,42 @@ class DataGrid extends Component {
     const adjDataWidth = chWidth - (vScroll ? sbs : 0);
 
     return (
-      <div className="wrapGrid"
-        style={{ width, height }}
-        onMouseMove={this.onMouseEvent}
-        onMouseDown={this.onMouseEvent}
-        onMouseUp={this.onMouseEvent}
-      >
-        <div className="wrapRow" style={{ flexBasis: rhWidth }}>
-          <div className="headCorner"
-            style={{ width: rhWidth, height: cnHeight, lineHeight: lineHeight }}
-          >
-            <div>&nbsp;</div>
-          </div>
-          <div className="rowHeader" style={{ height: rhHeight, flexGlow: 1 }}>
-            <div ref={this.setElemReference('rowHeader')} className="rowCells">
-              {rhTagList.map((tag) => tag)}
+      <div className="wrapGrid" style={{ width, height }}>
+        <div className="wrapContainer"
+          style={{ height, flexBasis: (width - (vScroll ? sbs : 0)) }}
+          onMouseMove={this.onMouseEvent}
+          onMouseDown={this.onMouseEvent}
+          onMouseUp={this.onMouseEvent}
+        >
+          <div className="wrapRow" style={{ flexBasis: rhWidth }}>
+            <div className="headCorner"
+              style={{ width: rhWidth, height: cnHeight, lineHeight: lineHeight }}
+            >
+              <div>&nbsp;</div>
+            </div>
+            <div className="rowHeader" style={{ height: rhHeight, flexGlow: 1 }}>
+              <div ref={this.setElemReference('rowHeader')} className="rowCells">
+                {rhTagList.map((tag) => tag)}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="wrapColumn" style={{ width: adjDataWidth, height, flexBasis: adjDataWidth}}>
-          <div ref={this.setElemReference('columnArea')}
-            className={cn({ 'columnsDiv': true, 'resizeCursor': this.state.overCell.colEdge })}
-            style={{ height: cnHeight }}
-          >
-            { columnNumber ? (<div>{chNoList.map((tag) => tag)}</div>) : null };
-            <div>{ chTagList.map((tag) => tag) }</div>
-          </div>
-          <div ref={this.setElemReference('dataContainer')}
-            className="dataContainer"
-            style={{ height: rhHeight }}
-            onScroll={this.onDataAreaScroll}
-            onWheel={this.onDataAreaWheel}
-          >
-            {dataTagList.map((tag) => tag)}
+          <div className="wrapColumn" style={{ width: adjDataWidth, height, flexBasis: adjDataWidth}}>
+            <div ref={this.setElemReference('columnArea')}
+              className={cn({ 'columnsDiv': true, 'resizeCursor': this.state.overCell.colEdge })}
+              style={{ height: cnHeight }}
+            >
+              { columnNumber ? (<div>{chNoList.map((tag) => tag)}</div>) : null };
+              <div>{ chTagList.map((tag) => tag) }</div>
+            </div>
+            <div ref={this.setElemReference('dataContainer')}
+              className="dataContainer"
+              style={{ height: rhHeight }}
+              onScroll={this.onDataAreaScroll}
+              onWheel={this.onDataAreaWheel}
+            >
+              {dataTagList.map((tag) => tag)}
+            </div>
           </div>
         </div>
         { vScroll ? (

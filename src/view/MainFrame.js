@@ -18,7 +18,7 @@ import {
 } from 'semantic-ui-react';
 
 
-const _testDs = new DataSource({ title: 'TEST', columnCount: 20, rowCount: 50, rowHeight: 40 });
+const _testDs = new DataSource({ title: 'TEST', columnCount: 20, rowCount: 500000000, rowHeight: 32 });
 
 
 class MainFrame extends Component {

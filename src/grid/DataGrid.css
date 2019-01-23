@@ -2,6 +2,12 @@
   display: flex;
   flex-direction: row;
   overflow: hidden;
+}  
+
+.wrapContainer {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
   border: 1px solid darkgray;
 }  
 
@@ -87,6 +93,7 @@
 
 .scrollContainer {
 	overflow-y: auto;
+	z-index: 9;
 }
 
 /* Data Container.js */
