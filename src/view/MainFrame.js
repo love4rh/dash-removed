@@ -18,7 +18,7 @@ import {
 } from 'semantic-ui-react';
 
 
-const _testDs = new DataSource({ title: 'TEST', columnCount: 20, rowCount: 500000000, rowHeight: 32 });
+const _testDs = new DataSource({ title: 'TEST', columnCount: 7, rowCount: 1000000, rowHeight: 32 });
 
 
 class MainFrame extends Component {
@@ -102,8 +102,8 @@ class MainFrame extends Component {
               height={this.state.windowHeight - 60}
               width={this.state.windowWidth}
               dataSource={_testDs}
-              rowNumber={true}
-              columnNumber={true}
+              showRowNumber={true}
+              showColumnNumber={true}
             />
           : <FileListView
               fileList={this.state.fileList}

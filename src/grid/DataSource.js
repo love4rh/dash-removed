@@ -18,10 +18,6 @@ class DataSource {
 		return this.props.title;
 	}
 
-	getHeadColumnWidth = () => {
-		return 100;
-	}
-
 	getColumnCount = () => {
 		return this.colCount;
 	}

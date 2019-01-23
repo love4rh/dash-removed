@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import {isvalid, isBetween, nvl} from '../common/tool.js';
+import {isvalid, isBetween, nvl, numberWithCommas} from '../common/tool.js';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
 import cn from 'classnames';
@@ -43,7 +43,7 @@ class ColumnCell extends Component {
 
 
 
-class RowCell extends Component {
+class RowHeader extends Component {
   static propTypes = {
     changeState: PropTypes.func,
     height: PropTypes.number,
@@ -59,7 +59,7 @@ class RowCell extends Component {
       <div className={cn({ 'rowCell': true, 'selectedHeader': selected })}
         style={{ height, lineHeight: lineHeight }}
       >
-        {index + 1}
+        {numberWithCommas(index + 1)}
       </div>
     );
   }
@@ -85,7 +85,7 @@ class DataRecord extends Component {
     const lineHeight = (dataSource.getRowHeight() - 10) + 'px';
 
     for(let c = 0; c < colCount; ++c) {
-      const width = getColumnWidth(c) - (c === colCount - 1 ? scrollbarSizeEx() : 0);
+      const width = getColumnWidth(c);
 
       tagList.push(
         <div key={'r' + row + 'c' + c}
@@ -120,8 +120,8 @@ class DataGrid extends Component {
     dataSource: PropTypes.object,
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
-    rowNumber: PropTypes.bool,
-    columnNumber: PropTypes.bool,
+    showRowNumber: PropTypes.bool,
+    showColumnNumber: PropTypes.bool,
   }
 
   static CalcRowNumPerpage = (height, rowHeight, headerCount) => {
@@ -136,7 +136,7 @@ class DataGrid extends Component {
     this._elementRef = {};
 
     const columnWidth = [0];
-    const rowPerHeight = DataGrid.CalcRowNumPerpage(props.height, ds.getRowHeight(), (props.columnNumber ? 2 : 1));
+    const rowPerHeight = DataGrid.CalcRowNumPerpage(props.height, ds.getRowHeight(), (props.showColumnNumber ? 2 : 1));
 
     let widthSum = 0;
     const columnCount = ds.getColumnCount();
@@ -148,6 +148,9 @@ class DataGrid extends Component {
     // scroll basis to change to new mode
     this._scrollNewMode_ = 50000;
 
+    const letterWidth = 9;
+    const rowCountDigit = Math.log(ds.getRowCount()) * Math.LOG10E + 1 | 0;
+
     this.state = {
       beginRow: 0,
       scrollLeft: 0,
@@ -157,8 +160,12 @@ class DataGrid extends Component {
       rowPerHeight: rowPerHeight,
       preventVScroll: false,
       scrollByRatio: ds.getRowCount() >= this._scrollNewMode_,
-      status: 'normal'
+      headerWidth: props.showRowNumber ? (rowCountDigit + Math.floor((rowCountDigit - 1) / 3)) * letterWidth + 24 : 0,
+      status: 'normal',
+      statusParam: {}
     };
+
+    console.log('state', JSON.stringify(this.state));
   }
 
   componentDidMount () {
@@ -166,9 +173,9 @@ class DataGrid extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { dataSource, height, columnNumber } = nextProps;
+    const { dataSource, height, showColumnNumber } = nextProps;
 
-    this.setState({ rowPerHeight: DataGrid.CalcRowNumPerpage(height, dataSource.getRowHeight(), (columnNumber ? 2 : 1)) });
+    this.setState({ rowPerHeight: DataGrid.CalcRowNumPerpage(height, dataSource.getRowHeight(), (showColumnNumber ? 2 : 1)) });
   }
 
   // eslint-disable-next-line
@@ -239,7 +246,7 @@ class DataGrid extends Component {
     const rowCount = dataSource.getRowCount();
 
     // beginRow: [0, rowCount - rowPerHeight + 1]
-    const newBegin = Math.min(Math.max(0, beginRow + offsetY), rowCount - rowPerHeight + 1);
+    const newBegin = Math.min(Math.max(0, beginRow + offsetY), Math.max(0, rowCount - rowPerHeight + 1));
 
     if( beginRow === newBegin )
       return -1;
@@ -252,7 +259,7 @@ class DataGrid extends Component {
       return false;
 
     const { width, height, dataSource } = this.props;
-    const { beginRow, columnWidth, selectedRange, scrollLeft, rowPerHeight, scrollByRatio } = this.state;
+    const { beginRow, columnWidth, selectedRange, scrollLeft, rowPerHeight, scrollByRatio, headerWidth } = this.state;
 
     const rowFitted = 0 === (height % dataSource.getRowHeight());
     const rowCount = dataSource.getRowCount();
@@ -270,7 +277,7 @@ class DataGrid extends Component {
       newPos.col2 = newPos.col;
     }
 
-    const dataWidth = width - dataSource.getHeadColumnWidth(),
+    const dataWidth = width - headerWidth,
       vX1 = scrollLeft,
       vX2 = vX1 + dataWidth;
 
@@ -281,7 +288,7 @@ class DataGrid extends Component {
     let newBegin = beginRow;
     if( newPos.row < beginRow || newPos.row >= beginRow + rowPerHeight - 1 ) {
       if( offsetY < 0 ) {
-        newBegin = Math.max(0, Math.min(newPos.row, rowCount - rowPerHeight + 1));
+        newBegin = Math.max(0, Math.min(newPos.row, Math.max(0, rowCount - rowPerHeight + 1)));
       } else {
         newBegin = Math.max(rowPerHeight, Math.min(newPos.row, rowCount) + (rowFitted ? 1 : 2)) - rowPerHeight;
       }
@@ -290,9 +297,12 @@ class DataGrid extends Component {
 
     if( newBegin !== beginRow ) {
       this.setState({ beginRow: newBegin, selectedRange: newPos, preventVScroll: true });
-      this._elementRef['scrollContainer'].scrollTop = scrollByRatio
-        ? newBegin / (rowCount - rowPerHeight + 1) * this._scrollNewMode_
-        : newBegin * dataSource.getRowHeight();
+
+      if( isvalid(this._elementRef['scrollContainer']) ) {
+        this._elementRef['scrollContainer'].scrollTop = scrollByRatio
+          ? newBegin / (rowCount - rowPerHeight + 1) * this._scrollNewMode_
+          : newBegin * dataSource.getRowHeight();
+      }
     } else {
       this.setState({ selectedRange: newPos });
     }
@@ -331,7 +341,7 @@ class DataGrid extends Component {
     const { clientHeight, scrollHeight, scrollTop } = $this;
 
     let newBegin = beginRow;
-    const tmpVal = rowCount - rowPerHeight;
+    const tmpVal = Math.max(0, rowCount - rowPerHeight);
 
     if( scrollByRatio ) {
       newBegin = Math.min(Math.floor(scrollTop / this._scrollNewMode_ * tmpVal), tmpVal + 1);
@@ -365,9 +375,11 @@ class DataGrid extends Component {
 
     this.setState({ beginRow: newBegin, preventVScroll: true });
 
-    const { dataSource } = this.props;
-    const { scrollByRatio } = this.state;
-    this._elementRef['scrollContainer'].scrollTop = scrollByRatio ? newBegin : newBegin * dataSource.getRowHeight();
+    if( isvalid(this._elementRef['scrollContainer']) ) {
+      const { dataSource } = this.props;
+      const { scrollByRatio } = this.state;
+      this._elementRef['scrollContainer'].scrollTop = scrollByRatio ? newBegin : newBegin * dataSource.getRowHeight();
+    }
   }
 
   onKeyDown = (ev) => {
@@ -448,12 +460,12 @@ class DataGrid extends Component {
     let col = null, row = null, colEdge = false, rowEdge = false;
 
     const edgeMargin = 2;
-    const { dataSource, rowNumber, columnNumber } = this.props;
-    const { columnWidth, beginRow, scrollLeft } = this.state;
+    const { dataSource, showColumnNumber } = this.props;
+    const { columnWidth, beginRow, scrollLeft, headerWidth } = this.state;
 
     const rowHeight = dataSource.getRowHeight(),
-      cnHeight = rowHeight * (columnNumber ? 2 : 1),
-      rhWidth = rowNumber ? dataSource.getHeadColumnWidth() : 0;
+      cnHeight = rowHeight * (showColumnNumber ? 2 : 1),
+      rhWidth = headerWidth;
 
     // find column index matching to x
     if( x <= rhWidth + edgeMargin ) {
@@ -487,8 +499,8 @@ class DataGrid extends Component {
   }
 
   onMouseEvent = (ev) => {
-    const target = ev.currentTarget;
     const
+      target = ev.currentTarget,
       x = ev.clientX - target.offsetLeft,
       y = ev.clientY - target.offsetTop
     ;
@@ -499,14 +511,27 @@ class DataGrid extends Component {
       ' / movement: ', ev.movementX, ev.movementY
     ); // */
 
-    const t = this.hitTest(x, y)
+    const cell = this.hitTest(x, y)
 
     if( 'mousedown' === ev.type ) {
-      this.setState({ selectedRange: t });
+      const { dataSource } = this.props;
+
+      if( cell.row < 0 ) {
+        if( cell.colEdge ) {
+
+        }
+        cell.row = 0;
+        cell.row2 = dataSource.getRowCount() - 1;
+      } else if( cell.col < 0 ) {
+        cell.col = 0;
+        cell.col2 = dataSource.getColumnCount() - 1;
+      }
+
+      this.setState({ selectedRange: cell });
     } else if( 'mouseup' === ev.type ) {
       //
     } else if( 'mousemove' === ev.type ) {
-      this.setState({ overCell: t });
+      this.setState({ overCell: cell });
       // console.log( JSON.stringify(t) );
     }
 
@@ -515,13 +540,13 @@ class DataGrid extends Component {
   }
 
   render () {
-    const { width, height, dataSource, rowNumber, columnNumber } = this.props;
-    const { beginRow, columnWidth, rowPerHeight, scrollByRatio } = this.state;
+    const { width, height, dataSource, showColumnNumber } = this.props;
+    const { beginRow, columnWidth, rowPerHeight, scrollByRatio, headerWidth } = this.state;
 
     const
       rowHeight = dataSource.getRowHeight(),
-      cnHeight = rowHeight * (columnNumber ? 2 : 1),
-      rhWidth = rowNumber ? dataSource.getHeadColumnWidth() : 0,
+      cnHeight = rowHeight * (showColumnNumber ? 2 : 1),
+      rhWidth = headerWidth,
       rhHeight = height - cnHeight,
       chWidth = width - rhWidth
     ;
@@ -539,7 +564,7 @@ class DataGrid extends Component {
 
     for(let r = begin; r < end; ++r) {
       rhTagList.push(
-        <RowCell key={'rk-' + r} index={r}
+        <RowHeader key={'rk-' + r} index={r}
           height={dataSource.getRowHeight()}
           selected={this.isSelectedRow(r)}
           changeState={this.changeState}
@@ -560,9 +585,9 @@ class DataGrid extends Component {
     const columnCount = dataSource.getColumnCount();
 
     for(let c = 0; c < columnCount; ++c) {
-      const colWidth = columnWidth[c + 1] - columnWidth[c];
+      const colWidth = this.getColumnWidth(c);
 
-      if( columnNumber ) {
+      if( showColumnNumber ) {
         chNoList.push(
           <ColumnCell key={'cn-' + c} index={c}
             title={'' + (c + 1)}
@@ -584,7 +609,7 @@ class DataGrid extends Component {
           selected={this.isSelectedColumn(c)}
           changeState={this.changeState}
           rowHeight={rowHeight}
-          top={columnNumber ? (rowHeight - 1) : 0}
+          top={showColumnNumber ? (rowHeight - 1) : 0}
         />
       );
     }
@@ -618,7 +643,7 @@ class DataGrid extends Component {
               className={cn({ 'columnsDiv': true, 'resizeCursor': this.state.overCell.colEdge })}
               style={{ height: cnHeight }}
             >
-              { columnNumber ? (<div>{chNoList.map((tag) => tag)}</div>) : null };
+              { showColumnNumber ? (<div>{chNoList.map((tag) => tag)}</div>) : null };
               <div>{ chTagList.map((tag) => tag) }</div>
             </div>
             <div ref={this.setElemReference('dataContainer')}
