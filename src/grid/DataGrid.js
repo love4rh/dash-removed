@@ -135,28 +135,40 @@ class DataGrid extends Component {
 
     this._elementRef = {};
 
+    const letterWidth = 9;
     const columnWidth = [0];
+    const columnType = []; // 0: string, 1: number, 2: datetime,
     const rowPerHeight = DataGrid.CalcRowNumPerpage(props.height, ds.getRowHeight(), (props.showColumnNumber ? 2 : 1));
 
     let widthSum = 0;
+    const rowCount = ds.getRowCount();
     const columnCount = ds.getColumnCount();
+
     for(let c = 0; c < columnCount; ++c) {
-      const tmpWidth = Math.min(200, Math.max(50, c * 20));
-      widthSum += tmpWidth + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
+      let w = 50;
+      for(let r = 0; r < Math.min(20, rowCount); ++r) {
+        const val = ds.getCellValue(c, r);
+
+        if( isvalid(val) ) {
+          w = Math.max(w, ('' + val).length * letterWidth + 24);
+        }
+      }
+
+      widthSum += w; // + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
       columnWidth.push(widthSum);
     }
 
     // scroll basis to change to new mode
     this._scrollNewMode_ = 50000;
 
-    const letterWidth = 9;
-    const rowCountDigit = Math.log(ds.getRowCount()) * Math.LOG10E + 1 | 0;
+    const rowCountDigit = Math.log(rowCount) * Math.LOG10E + 1 | 0;
 
     this.state = {
       beginRow: 0,
       scrollLeft: 0,
       selectedRange: { row:0, col:0, row2:0, col2:0 },
       columnWidth: columnWidth,
+      columnType: columnType,
       overCell: { row:-1, col:-1, colEdge:false, rowEdge:false },
       rowPerHeight: rowPerHeight,
       preventVScroll: false,
@@ -387,8 +399,7 @@ class DataGrid extends Component {
     } else {
       newBegin = Math.floor(scrollTop / (scrollHeight - clientHeight) * tmpVal);
     }
-
-    console.log(clientHeight, scrollHeight, scrollTop, rowPerHeight, newBegin);
+    // console.log(clientHeight, scrollHeight, scrollTop, rowPerHeight, newBegin);
 
     if( newBegin !== beginRow )
       this.setState({ beginRow: newBegin, preventVScroll: false });

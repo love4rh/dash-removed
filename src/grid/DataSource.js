@@ -7,11 +7,6 @@ class DataSource {
 		this.props = props;
 		this.colCount = props.columnCount;
 		this.rowCount = props.rowCount;
-
-		this.colWidth = [];
-		for(let i = 0; i < this.colCount; ++i) {
-			this.colWidth.push( Math.min(200, Math.max(50, i * 20)) );
-		}
 	}
 
 	getTitle = () => {
