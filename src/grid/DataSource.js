@@ -22,14 +22,6 @@ class DataSource {
 		return this.colCount;
 	}
 
-	getColumnWidth = (col) => {
-		return this.colWidth[col];
-	}
-
-	setColumnWidth = (col, width) => {
-		this.colWidth[col] = width;
-	}
-
 	getColumnName = (col) => {
 		return 'Column' + col;
 	}

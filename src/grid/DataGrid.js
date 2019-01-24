@@ -141,7 +141,8 @@ class DataGrid extends Component {
     let widthSum = 0;
     const columnCount = ds.getColumnCount();
     for(let c = 0; c < columnCount; ++c) {
-      widthSum += ds.getColumnWidth(c) + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
+      const tmpWidth = Math.min(200, Math.max(50, c * 20));
+      widthSum += tmpWidth + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
       columnWidth.push(widthSum);
     }
 
@@ -161,6 +162,7 @@ class DataGrid extends Component {
       preventVScroll: false,
       scrollByRatio: ds.getRowCount() >= this._scrollNewMode_,
       headerWidth: props.showRowNumber ? (rowCountDigit + Math.floor((rowCountDigit - 1) / 3)) * letterWidth + 24 : 0,
+      preStatus: 'selectCell',
       status: 'normal',
       statusParam: {}
     };
@@ -238,6 +240,43 @@ class DataGrid extends Component {
 
   isSelected = (col, row) => {
     return this.isSelectedRow(row) && this.isSelectedColumn(col);
+  }
+
+  copySelected = () => {
+    const ds = this.props.dataSource;
+    const sel = this.state.selectedRange;
+
+    const
+      r1 = Math.max(0, Math.min(sel.row, nvl(sel.row2, sel.row))),
+      r2 = Math.min(ds.getRowCount() - 1, Math.max(sel.row, nvl(sel.row2, sel.row))),
+      c1 = Math.max(0, Math.min(sel.col, nvl(sel.col2, sel.col))),
+      c2 = Math.min(ds.getColumnCount() - 1, Math.max(sel.col, nvl(sel.col2, sel.col)))
+    ;
+
+    const copiedCell = (c2 - c1 + 1) * (r2 - r1 + 1);
+
+    if( copiedCell > 10000 ) {
+      console.log('TOO BIG TO BE COPIED', copiedCell);
+      return;
+    }
+
+    let copyText = '';
+    for(let r = r1; r <= r2; ++r) {
+      copyText += ds.getCellValue(c1, r);
+      for(let c = c1 + 1; c <= c2; ++c) {
+        copyText += '\t';
+        copyText += ds.getCellValue(c, r);
+      }
+
+      copyText += '\n';
+    }
+
+    const t = document.createElement('textarea');
+    document.body.appendChild(t);
+    t.value = copyText;
+    t.select();
+    document.execCommand('copy');
+    document.body.removeChild(t);
   }
 
   calcNewBeginRow = (offsetY) => {
@@ -442,7 +481,7 @@ class DataGrid extends Component {
       processed = true;
 
       if( keyCode === 67 ) { // c
-        // TODO implement
+        this.copySelected();
       } else if( keyCode === 65 ) { // a
         // select all
         this.setState({ selectedRange:{col:0, row:0, col2:colCount - 1, row2:rowCount - 1} });
@@ -499,40 +538,72 @@ class DataGrid extends Component {
   }
 
   onMouseEvent = (ev) => {
-    const
-      target = ev.currentTarget,
+    const { altKey, ctrlKey, shiftKey } = ev;
+    const target = ev.currentTarget,
       x = ev.clientX - target.offsetLeft,
       y = ev.clientY - target.offsetTop
     ;
 
-    /*
-    console.log(ev.type,
-      ' / client: ', x, y,
-      ' / movement: ', ev.movementX, ev.movementY
-    ); // */
-
     const cell = this.hitTest(x, y)
+    const { dataSource } = this.props;
+    const
+      colCount = dataSource.getColumnCount(),
+      rowCount = dataSource.getRowCount()
+    ;
+    const { preStatus, status, statusParam } = this.state;
 
     if( 'mousedown' === ev.type ) {
-      const { dataSource } = this.props;
-
-      if( cell.row < 0 ) {
-        if( cell.colEdge ) {
-
+      if( cell.col < 0 && cell.row < 0 ) { // Header click
+        this.setState({ selectedRange:{col:0, row:0, col2:colCount - 1, row2:rowCount - 1} });
+      } else if( shiftKey ) {
+        if( preStatus === 'selectCol' ) {
+          this.setState({ selectedRange:{col:statusParam.colSel, row:0, col2:cell.col, row2:rowCount - 1}, status:preStatus });
+        } else if( preStatus === 'selectRow' ) {
+          this.setState({ selectedRange:{col:0, row:statusParam.rowSel, col2:colCount - 1, row2:cell.row}, status:preStatus });
+        } else if( preStatus === 'selectCell' ) {
+          const { colSel, rowSel } = statusParam;
+          this.setState({ selectedRange:{col:colSel, row:rowSel, col2:cell.col, row2:cell.row}, status:preStatus });
         }
-        cell.row = 0;
-        cell.row2 = dataSource.getRowCount() - 1;
-      } else if( cell.col < 0 ) {
-        cell.col = 0;
-        cell.col2 = dataSource.getColumnCount() - 1;
-      }
+      } else {
+        let newStatus = status;
+        if( cell.row < 0 ) { // Column Header click
+          if( cell.colEdge ) {  // Column Sizing
+            newStatus = 'sizing';
+          } else { // Column Selecting
+            cell.row = 0;
+            cell.row2 = rowCount - 1;
+            newStatus = 'selectCol';
+          }
+        } else if( cell.col < 0 ) { // Row Header click --> Row Selecting
+          cell.col = 0;
+          cell.col2 = colCount - 1;
+          newStatus = 'selectRow';
+        } else {
+          newStatus = 'selectCell';
+        }
 
-      this.setState({ selectedRange: cell });
+        if( newStatus === 'sizing' ) {
+          this.setState({ status: newStatus, statusParam:{colSel:cell.col, x1:x, y1:y, size:this.getColumnWidth(cell.col)} });
+        } else {
+          this.setState({ selectedRange: cell, status: newStatus, statusParam:{colSel:cell.col, rowSel:cell.row} });
+        }
+      }
     } else if( 'mouseup' === ev.type ) {
-      //
+      this.setState({ status: 'normal', preStatus: status });
     } else if( 'mousemove' === ev.type ) {
-      this.setState({ overCell: cell });
-      // console.log( JSON.stringify(t) );
+      if( status === 'sizing' ) {
+        const { colSel, x1, size } = statusParam;
+        this.setColumnWidth(colSel, Math.max(20, size + x - x1));
+      } else if( status === 'selectCol' ) {
+        this.setState({ selectedRange:{col:statusParam.colSel, row:0, col2:cell.col, row2:rowCount - 1} });
+      } else if( status === 'selectRow' ) {
+        this.setState({ selectedRange:{col:0, row:statusParam.rowSel, col2:colCount - 1, row2:cell.row} });
+      } else if( status === 'selectCell' ) {
+        const { colSel, rowSel } = statusParam;
+        this.setState({ selectedRange:{col:colSel, row:rowSel, col2:cell.col, row2:cell.row} });
+      } else {
+        this.setState({ overCell: cell });
+      }
     }
 
     ev.preventDefault();
@@ -640,7 +711,7 @@ class DataGrid extends Component {
 
           <div className="wrapColumn" style={{ width: adjDataWidth, height, flexBasis: adjDataWidth}}>
             <div ref={this.setElemReference('columnArea')}
-              className={cn({ 'columnsDiv': true, 'resizeCursor': this.state.overCell.colEdge })}
+              className={cn({ 'columnsDiv': true, 'resizeCursor': (this.state.overCell.colEdge || this.state.status === 'sizing') })}
               style={{ height: cnHeight }}
             >
               { showColumnNumber ? (<div>{chNoList.map((tag) => tag)}</div>) : null };
