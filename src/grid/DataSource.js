@@ -22,6 +22,11 @@ class DataSource {
 	}
 
 	getColumnType = (col) => {
+		if( col === 1)
+			return 'number';
+		else if( col === 2 )
+			return 'datetime';
+
 		return 'string';
 	}
 
@@ -34,6 +39,12 @@ class DataSource {
 	}
 
 	getCellValue = (col, row) => {
+		if( col === 1 ) {
+			return (row - 10) * 999 + Math.floor(Math.random() * 100) / 100;
+		} else if( col === 2 ) {
+			return new Date();
+		}
+
 		return 'C' + col + 'R' + row;
 	}
 }

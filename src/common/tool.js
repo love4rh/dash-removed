@@ -138,8 +138,24 @@ export const makeid = (digitNum) => {
 };
 
 
-// https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+// 출처: https://stove99.tistory.com/113 [스토브 훌로구]
 export const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	var reg = /(^[+-]?\d+)(\d{3})/;
+  var n = (x + '');
+
+  while( reg.test(n) )
+  	n = n.replace(reg, '$1,$2');
+
+  return n;
 }
 
+
+export const calcDigits = (n) => {
+	return Math.log(n) * Math.LOG10E + 1 | 0;
+}
+
+
+export const calcDigitsWithCommas = (x) => {
+	const d = calcDigits(x)
+	return d + Math.floor((d - 1) / 3);
+}

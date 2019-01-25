@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import {isvalid, isBetween, nvl, numberWithCommas} from '../common/tool.js';
+import {isvalid, isBetween, nvl, numberWithCommas, calcDigitsWithCommas} from '../common/tool.js';
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
 import cn from 'classnames';
@@ -86,13 +86,15 @@ class DataRecord extends Component {
 
     for(let c = 0; c < colCount; ++c) {
       const width = getColumnWidth(c);
+      const value = dataSource.getCellValue(c, row);
+      const type = dataSource.getColumnType(c);
 
       tagList.push(
         <div key={'r' + row + 'c' + c}
-          className={cn({ 'dataCell': true, 'selectedCell': isSelected(c, row) })}
+          className={cn({ 'dataCell': true, 'selectedCell': isSelected(c, row), 'alignRight': type === 'number' })}
           style={{ left, width, lineHeight:lineHeight }}
         >
-          {dataSource.getCellValue(c, row)}
+          {isvalid(value) ? ('number' === type ? numberWithCommas(value) : '' + value) : ''}
         </div>
       );
 
@@ -135,9 +137,9 @@ class DataGrid extends Component {
 
     this._elementRef = {};
 
-    const letterWidth = 9;
+    const letterWidth = 8.5;
     const columnWidth = [0];
-    const columnType = []; // 0: string, 1: number, 2: datetime,
+    const columnType = []; // 0: string, 1: number, 2: boolean, 3: datetime,
     const rowPerHeight = DataGrid.CalcRowNumPerpage(props.height, ds.getRowHeight(), (props.showColumnNumber ? 2 : 1));
 
     let widthSum = 0;
@@ -145,23 +147,25 @@ class DataGrid extends Component {
     const columnCount = ds.getColumnCount();
 
     for(let c = 0; c < columnCount; ++c) {
-      let w = 50;
+      let w = 50; // minimum size of column
       for(let r = 0; r < Math.min(20, rowCount); ++r) {
         const val = ds.getCellValue(c, r);
 
         if( isvalid(val) ) {
-          w = Math.max(w, ('' + val).length * letterWidth + 24);
+          if( 'number' === ds.getColumnType(c) && typeof val === 'number' ) {
+            w = Math.max(w, numberWithCommas(val).length * letterWidth + 16);
+          } else {
+            w = Math.max(w, ('' + val).length * letterWidth + 16);
+          }
         }
       }
 
-      widthSum += w; // + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
+      widthSum += Math.ceil(w); // + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
       columnWidth.push(widthSum);
     }
 
     // scroll basis to change to new mode
     this._scrollNewMode_ = 50000;
-
-    const rowCountDigit = Math.log(rowCount) * Math.LOG10E + 1 | 0;
 
     this.state = {
       beginRow: 0,
@@ -173,7 +177,7 @@ class DataGrid extends Component {
       rowPerHeight: rowPerHeight,
       preventVScroll: false,
       scrollByRatio: ds.getRowCount() >= this._scrollNewMode_,
-      headerWidth: props.showRowNumber ? (rowCountDigit + Math.floor((rowCountDigit - 1) / 3)) * letterWidth + 24 : 0,
+      headerWidth: props.showRowNumber ? calcDigitsWithCommas(rowCount) * letterWidth + 24 : 0,
       preStatus: 'selectCell',
       status: 'normal',
       statusParam: {}
@@ -549,7 +553,7 @@ class DataGrid extends Component {
   }
 
   onMouseEvent = (ev) => {
-    const { altKey, ctrlKey, shiftKey } = ev;
+    const { shiftKey } = ev; // altKey, ctrlKey,
     const target = ev.currentTarget,
       x = ev.clientX - target.offsetLeft,
       y = ev.clientY - target.offsetTop
@@ -709,7 +713,7 @@ class DataGrid extends Component {
         >
           <div className="wrapRow" style={{ flexBasis: rhWidth }}>
             <div className="headCorner"
-              style={{ width: rhWidth, height: cnHeight, lineHeight: lineHeight }}
+              style={{ width: (rhWidth - 1), height: cnHeight, lineHeight: lineHeight }}
             >
               <div>&nbsp;</div>
             </div>

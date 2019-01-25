@@ -126,6 +126,10 @@
   background-color: #3399ff !important;
 }
 
+.alignRight {
+	text-align: right;
+}
+
 .selectedHeader {
   color: #ffffff !important;
   background-color: darkgray !important;
