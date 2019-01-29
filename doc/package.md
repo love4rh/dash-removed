@@ -21,3 +21,4 @@ https://bvaughn.github.io/react-virtualized
 https://www.npmjs.com/package/react-monaco-editor
 
 
+npm install --save @babel/polyfill

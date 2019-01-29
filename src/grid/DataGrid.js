@@ -147,7 +147,7 @@ class DataGrid extends Component {
     const columnCount = ds.getColumnCount();
 
     for(let c = 0; c < columnCount; ++c) {
-      let w = 50; // minimum size of column
+      let w = Math.max(50, ds.getColumnName(c).length * letterWidth + 16); // minimum size of column
       for(let r = 0; r < Math.min(20, rowCount); ++r) {
         const val = ds.getCellValue(c, r);
 
@@ -160,9 +160,11 @@ class DataGrid extends Component {
         }
       }
 
-      widthSum += Math.ceil(w); // + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
+      widthSum += Math.min(Math.ceil(w), Math.ceil(this.props.width * 0.6)); // + (c === columnCount - 1 ? scrollbarSizeEx() : 0);
       columnWidth.push(widthSum);
     }
+
+    this.dataFetchJob = null;
 
     // scroll basis to change to new mode
     this._scrollNewMode_ = 50000;
@@ -180,7 +182,8 @@ class DataGrid extends Component {
       headerWidth: props.showRowNumber ? calcDigitsWithCommas(rowCount) * letterWidth + 24 : 0,
       preStatus: 'selectCell',
       status: 'normal',
-      statusParam: {}
+      statusParam: {},
+      loading: false,
     };
 
     console.log('state', JSON.stringify(this.state));
@@ -204,6 +207,10 @@ class DataGrid extends Component {
 
   componentWillUnmount () {
     document.removeEventListener('keydown', this.onKeyDown);
+
+    if( isvalid(this.dataFetchJob) ) {
+      clearTimeout(this.dataFetchJob);
+    }
   }
 
   setElemReference = (type) => (ref) => {
@@ -351,7 +358,8 @@ class DataGrid extends Component {
     // console.log(JSON.stringify(newPos), beginRow, newBegin);
 
     if( newBegin !== beginRow ) {
-      this.setState({ beginRow: newBegin, selectedRange: newPos, preventVScroll: true });
+      this.setBeginRow(newBegin, true);
+      this.setState({ selectedRange: newPos });
 
       if( isvalid(this._elementRef['scrollContainer']) ) {
         this._elementRef['scrollContainer'].scrollTop = scrollByRatio
@@ -380,6 +388,28 @@ class DataGrid extends Component {
     this.setScrollLeft( ev.target.scrollLeft );
   }
 
+  setBeginRow = (newBegin, noScroll) => {
+    const { dataSource } = this.props;
+    const { rowPerHeight } = this.state;
+
+    if( dataSource.isValid && dataSource.isValid(newBegin, newBegin + rowPerHeight) ) {
+      this.setState({ beginRow: newBegin, preventVScroll: noScroll, loading: false });
+    }
+
+    if( isvalid(this.dataFetchJob) ) {
+      clearTimeout(this.dataFetchJob);
+    }
+
+    this.dataFetchJob = setTimeout(() => {
+      dataSource.getMore(newBegin, rowPerHeight, () => {
+        this.dataFetchJob = null;
+        this.setState({ beginRow: newBegin, preventVScroll: false, loading: false });
+      });
+    }, 200);
+
+    this.setState({ beginRow: newBegin, preventVScroll: noScroll, loading: true });
+  }
+
   onDataAreaVScroll = (ev) => {
     const { beginRow, rowPerHeight, preventVScroll, scrollByRatio } = this.state;
 
@@ -406,7 +436,7 @@ class DataGrid extends Component {
     // console.log(clientHeight, scrollHeight, scrollTop, rowPerHeight, newBegin);
 
     if( newBegin !== beginRow )
-      this.setState({ beginRow: newBegin, preventVScroll: false });
+      this.setBeginRow(newBegin, false);
   }
 
   onDataAreaWheel = (ev) => {
@@ -427,7 +457,7 @@ class DataGrid extends Component {
     if( newBegin === -1 )
       return;
 
-    this.setState({ beginRow: newBegin, preventVScroll: true });
+    this.setBeginRow(newBegin, true);
 
     if( isvalid(this._elementRef['scrollContainer']) ) {
       const { dataSource } = this.props;
@@ -514,12 +544,20 @@ class DataGrid extends Component {
     let col = null, row = null, colEdge = false, rowEdge = false;
 
     const edgeMargin = 2;
-    const { dataSource, showColumnNumber } = this.props;
+    const { dataSource, showColumnNumber, width, height } = this.props;
     const { columnWidth, beginRow, scrollLeft, headerWidth } = this.state;
 
     const rowHeight = dataSource.getRowHeight(),
       cnHeight = rowHeight * (showColumnNumber ? 2 : 1),
       rhWidth = headerWidth;
+
+    if( (width - rhWidth) < columnWidth[columnWidth.length - 1] && y > height - scrollbarSizeEx() )
+      return null;
+
+    let rhHeight = height - cnHeight;
+
+    if( (rhHeight % rowHeight) === 0 )
+      rhHeight -= scrollbarSizeEx();
 
     // find column index matching to x
     if( x <= rhWidth + edgeMargin ) {
@@ -553,6 +591,9 @@ class DataGrid extends Component {
   }
 
   onMouseEvent = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+
     const { shiftKey } = ev; // altKey, ctrlKey,
     const target = ev.currentTarget,
       x = ev.clientX - target.offsetLeft,
@@ -560,6 +601,10 @@ class DataGrid extends Component {
     ;
 
     const cell = this.hitTest(x, y)
+
+    if( cell === null )
+      return;
+
     const { dataSource } = this.props;
     const
       colCount = dataSource.getColumnCount(),
@@ -620,9 +665,6 @@ class DataGrid extends Component {
         this.setState({ overCell: cell });
       }
     }
-
-    ev.preventDefault();
-    ev.stopPropagation();
   }
 
   render () {
@@ -740,6 +782,13 @@ class DataGrid extends Component {
             >
               {dataTagList.map((tag) => tag)}
             </div>
+            {/* this.state.loading ?
+              <div className="dataLoading"
+                style={{ height: rhHeight + cnHeight, width: adjDataWidth - 2 }}
+              >
+                <div className="loadingText">Loading...</div>
+              </div> : null
+            // */}
           </div>
         </div>
         { vScroll ? (

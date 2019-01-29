@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import logo from '../logo.svg';
-// import css from './MainFrame.less';
 
 import FileListView from './FileListView.js';
 import DataGrid from '../grid/DataGrid.js';
@@ -21,7 +20,7 @@ import {
 const _testDs = new DataSource({ title: 'TEST', columnCount: 15, rowCount: 1000, rowHeight: 32 });
 
 
-class MainFrame extends Component {
+class S3Explorer extends Component {
   constructor (props) {
     super(props);
 
@@ -151,5 +150,5 @@ class MainFrame extends Component {
   }
 }
 
-export default MainFrame;
-export { MainFrame };
+export default S3Explorer;
+export { S3Explorer };

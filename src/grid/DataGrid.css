@@ -96,6 +96,22 @@
 	z-index: 9;
 }
 
+.dataLoading {
+	position: absolute;
+	z-index: 99;
+	text-align: center;
+}
+
+.loadingText {
+  position: relative;
+  font-weight: bolder;
+  font-size: 30px;
+  background-color: white;
+  top: 45%;
+  height: 40px;
+  line-height: 40px;
+}
+
 /* Data Container.js */
 .dataContainer {
   overflow-x: auto;
@@ -119,6 +135,7 @@
   top: 0px;
   overflow: hidden;
   height: 100%;
+  text-overflow: ellipsis;
 }
 
 .selectedCell {

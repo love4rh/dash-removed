@@ -9,7 +9,7 @@ import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 class FileListView extends Component {
   static propTypes = {
     compHeight: PropTypes.number.isRequired,
-    compWitdh: PropTypes.number.isRequired,
+    compWidth: PropTypes.number.isRequired,
     fileList: PropTypes.array.isRequired,
     switchPage: PropTypes.func.isRequired,
   }
@@ -37,18 +37,17 @@ class FileListView extends Component {
     // $this.scrollTop += 500;
   }
 
-  onClickRow = (ev) => {
-    console.log('onClickRow', ev);
-    this.props.switchPage('grid', ev);
+  onClickRow = (data) => (ev) => {
+    this.props.switchPage('grid', { ...data, sampling: true });
   }
 
   render() {
     const margin = 10;
-    const { fileList, compHeight, compWitdh } = this.props;
+    const { fileList, compHeight, compWidth } = this.props;
 
     return (
       <div style={{ marginLeft:margin, marginRight:margin, marginBottom:margin }}>
-        <Table celled singleLine style={{width:(compWitdh - scrollbarSize() - 2 * margin), marginBottom:0}}>
+        <Table celled singleLine style={{width:(compWidth - scrollbarSize() - 2 * margin), marginBottom:0}}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell colSpan="4">File List (Count: {fileList.length})</Table.HeaderCell>
@@ -66,7 +65,7 @@ class FileListView extends Component {
             <Table.Body>
               {fileList.map((data, idx) => {
                 return (
-                  <Table.Row key={idx} onClick={this.onClickRow}>
+                  <Table.Row key={idx} onClick={this.onClickRow(data)}>
                     <Table.Cell width="5">
                       <Icon name="file outline" />{data.name}
                     </Table.Cell>
