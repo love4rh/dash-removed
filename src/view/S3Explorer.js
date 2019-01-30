@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import logo from '../logo.svg';
 
 import FileListView from './FileListView.js';
@@ -20,7 +20,7 @@ import {
 const _testDs = new DataSource({ title: 'TEST', columnCount: 15, rowCount: 1000, rowHeight: 32 });
 
 
-class S3Explorer extends Component {
+class S3Explorer extends React.Component {
   constructor (props) {
     super(props);
 
@@ -29,6 +29,7 @@ class S3Explorer extends Component {
       fileList: [],
       loading: false,
       pageType: 'list', // list, grid
+      dataName: null,
 
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
@@ -73,7 +74,7 @@ class S3Explorer extends Component {
     apiProxy.get({ name, path, sampling }, (res) => {
       if (res && res.data) {
         // console.log(res.data);
-        this.setState({ pageType: 'grid',
+        this.setState({ pageType: 'grid', dataName: name,
           dataSource: new DataSource2({ title: name,
             getMore: (s, len, cb) => {
               apiProxy.getMore({ name, path, start:s, length:len }, (res) => {
@@ -121,6 +122,10 @@ class S3Explorer extends Component {
             S3 Explorer
           </Menu.Item>
           <Menu.Item name='refresh' onClick={this.handleMenuClick}>Refresh</Menu.Item>
+          { this.state.pageType === 'grid'
+            ? <Menu.Item name='dataName'>{this.state.dataName}</Menu.Item>
+            : null
+          }
           <Menu.Item name='setting' position='right' onClick={this.handleMenuClick}>
             <Icon name='setting' size='large' />
           </Menu.Item>
@@ -128,9 +133,9 @@ class S3Explorer extends Component {
 
         <Container text style={{ height: '55px' }}>&nbsp;</Container>
 
-        {this.state.loading ? (<Dimmer active inverted><Loader content='Loading' /></Dimmer>) : null}
+        { this.state.loading ? (<Dimmer active inverted><Loader content='Loading' /></Dimmer>) : null }
 
-        {this.state.pageType === 'grid'
+        { this.state.pageType === 'grid'
           ? <DataGrid
               height={this.state.windowHeight - 60}
               width={this.state.windowWidth}

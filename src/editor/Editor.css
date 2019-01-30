@@ -1,0 +1,28 @@
+.editor {
+	display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.leftPane {
+	display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid darkgray;
+  margin-right: 10px;
+}
+
+.rightPane {
+	display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid darkgray;
+}
+
+.mainPane {
+
+}
+
+.bottomPane {
+
+}

@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import logo from '../logo.svg';
 // import css from './MainFrame.less';
 
-import FileListView from './FileListView.js';
-import DataGrid from '../grid/DataGrid.js';
-import { DataSource, DataSource2 } from '../grid/DataSource.js';
+import { Editor } from '../editor/Editor.js';
 
 import apiProxy from '../apiProxy.js';
 
@@ -18,23 +16,15 @@ import {
 } from 'semantic-ui-react';
 
 
-const _testDs = new DataSource({ title: 'TEST', columnCount: 15, rowCount: 1000, rowHeight: 32 });
-
-
 class MainFrame extends Component {
   constructor (props) {
     super(props);
 
     this.state = {
-      activeMenu: 'Home',
-      fileList: [],
       loading: false,
-      pageType: 'list', // list, grid
 
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
-
-      dataSource: _testDs,
     };
   }
 
@@ -53,66 +43,6 @@ class MainFrame extends Component {
     });
   }
 
-  actionReloadList = () => {
-    this.setState({ loading:true });
-
-    apiProxy.ls((res) => {
-      console.log('api call success', res);
-      if (res && res.data) {
-        this.setState({pageType: 'list', fileList: res.data.list});
-      }
-    }, (err) => {
-      console.log('api call error', err);
-    }, () => {
-      this.setState({ loading:false });
-    });
-  }
-
-  actionGetData = ({ name, path, sampling }) => {
-    this.setState({ loading:true });
-
-    apiProxy.get({ name, path, sampling }, (res) => {
-      if (res && res.data) {
-        // console.log(res.data);
-        this.setState({ pageType: 'grid',
-          dataSource: new DataSource2({ title: name,
-            getMore: (s, len, cb) => {
-              apiProxy.getMore({ name, path, start:s, length:len }, (res) => {
-                if (res && res.data) {
-                  cb(res.data);
-                }
-              }, (err) => {
-                console.log('api getMore error', err);
-              }, () => {
-                // this.setState({ loading:false });
-              });
-            },
-            ...res.data
-          })
-        });
-      }
-    }, (err) => {
-      console.log('api get error', err);
-    }, () => {
-      this.setState({ loading:false });
-    });
-  }
-
-  handleMenuClick = (ev, data) => {
-    // console.log(ev, data);
-    this.setState({ activeMenu: data.name });
-
-    if (data.name === 'refresh') {
-      this.actionReloadList();
-    }
-  }
-
-  handleSwitch = (type, arg) => {
-    if( 'grid' === type ) {
-      this.actionGetData(arg);
-    }
-  }
-
   render() {
     return (
       <div>
@@ -121,31 +51,16 @@ class MainFrame extends Component {
             <Image size='mini' src={logo} style={{ marginRight: '1.5em' }} />
             S3 Explorer
           </Menu.Item>
-          <Menu.Item name='refresh' onClick={this.handleMenuClick}>Refresh</Menu.Item>
-          <Menu.Item name='setting' position='right' onClick={this.handleMenuClick}>
-            <Icon name='setting' size='large' />
-          </Menu.Item>
         </Menu>
 
         <Container text style={{ height: '55px' }}>&nbsp;</Container>
 
         {this.state.loading ? (<Dimmer active inverted><Loader content='Loading' /></Dimmer>) : null}
 
-        {this.state.pageType === 'grid'
-          ? <DataGrid
-              height={this.state.windowHeight - 60}
-              width={this.state.windowWidth}
-              dataSource={this.state.dataSource}
-              showRowNumber={true}
-              showColumnNumber={true}
-            />
-          : <FileListView
-              fileList={this.state.fileList}
-              compHeight={this.state.windowHeight - 60}
-              compWidth={this.state.windowWidth}
-              switchPage={this.handleSwitch}
-            />
-        }
+        <Editor
+          height={this.state.windowHeight - 60}
+          width={this.state.windowWidth}
+        />
       </div>
     );
   }
