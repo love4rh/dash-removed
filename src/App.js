@@ -11,8 +11,11 @@ class App extends Component {
 	constructor (props) {
 		super(props);
 
+    // console.log(window.location.href);
+    const path = window.location.href;
+
 		this.state = {
-			page: 'main'
+			page: path.endsWith('dash') ? 'dash' : 's3'
 		}
 	}
 

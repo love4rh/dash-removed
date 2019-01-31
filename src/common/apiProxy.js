@@ -1,8 +1,8 @@
 import axios from 'axios';
+import appOpt from './appSetting.js';
 
 
-// const _serverBaseUrl_ = 'http://hdtest.tool4.us';
-const _serverBaseUrl_ = 'http://10.186.119.102:7777';
+const _serverBaseUrl_ = appOpt.hostAddrs();
 
 
 const apiProxy = {

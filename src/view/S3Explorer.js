@@ -5,7 +5,7 @@ import FileListView from './FileListView.js';
 import DataGrid from '../grid/DataGrid.js';
 import { DataSource, DataSource2 } from '../grid/DataSource.js';
 
-import apiProxy from '../apiProxy.js';
+import apiProxy from '../common/apiProxy.js';
 
 import {
   Container,

@@ -2,14 +2,15 @@
 	display: flex;
   flex-direction: row;
   overflow: hidden;
+  padding: 5px;
 }
 
 .leftPane {
 	display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid darkgray;
   margin-right: 10px;
+  background-color: red;
 }
 
 .rightPane {
@@ -26,3 +27,25 @@
 .bottomPane {
 
 }
+
+.paneTitle {
+	padding: 2px;
+	border: 1px solid darkgray;
+	height: 24px;
+	width: 100%;
+	line-height: 20px;
+	font-size: 12px;
+}
+
+.gallery {
+	background-color: red;
+}
+
+.workspace {
+	background-color: white;
+}
+
+.scriptView {
+	background-color: yellow;
+}
+

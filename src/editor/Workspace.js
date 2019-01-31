@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import './Editor.css';
+
 
 
 class Workspace extends React.Component {
@@ -16,7 +18,7 @@ class Workspace extends React.Component {
 
   render () {
   	return (
-      <div style={{ width:'100%', height:'100%' }}>
+      <div className="workspace" style={{ width:'100%', height:'100%' }}>
         Workspace
       </div>
     );

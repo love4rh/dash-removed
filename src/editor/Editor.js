@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './Editor.css';
 import GalleryView from './GalleryView.js';
 import ScriptView from './ScriptView.js';
 import Workspace from './Workspace.js';
+
+import './Editor.css';
+
+import { appOpt } from '../common/appSetting.js';
 
 
 
@@ -26,7 +29,7 @@ class Editor extends React.Component {
   	return (
       <div className="editor" style={{ width, height }}>
         <div className="leftPane" style={{ flexBasis: leftWidth }}>
-        	<GalleryView />
+        	<GalleryView galleryList={appOpt.getGalleryList()} />
         </div>
         <div className="rightPane" style={{ flexBasis: (width - leftWidth) }}>
         	<div className="mainPane" style={{ flexBasis: (height - bottomHeight) }}>

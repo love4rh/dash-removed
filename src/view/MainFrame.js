@@ -4,8 +4,6 @@ import logo from '../logo.svg';
 
 import { Editor } from '../editor/Editor.js';
 
-import apiProxy from '../apiProxy.js';
-
 import {
   Container,
   Icon,

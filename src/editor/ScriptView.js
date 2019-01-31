@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import './Editor.css';
+
 
 
 class ScriptView extends React.Component {
@@ -16,7 +18,7 @@ class ScriptView extends React.Component {
 
   render () {
   	return (
-      <div style={{ width:'100%', height:'100%' }}>
+      <div className="scriptView" style={{ width:'100%', height:'100%' }}>
         Script Viewer
       </div>
     );
