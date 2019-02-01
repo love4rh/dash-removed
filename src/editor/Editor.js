@@ -26,16 +26,21 @@ class Editor extends React.Component {
   	const { width, height } = this.props;
   	const leftWidth = 300, bottomHeight = 250;
 
+  	const
+  		wsHeight = height - bottomHeight,
+  		wsWidth = width - leftWidth
+  	;
+
   	return (
       <div className="editor" style={{ width, height }}>
-        <div className="leftPane" style={{ flexBasis: leftWidth }}>
+        <div className="leftPane" style={{ flexBasis:leftWidth }}>
         	<GalleryView galleryList={appOpt.getGalleryList()} />
         </div>
-        <div className="rightPane" style={{ flexBasis: (width - leftWidth) }}>
-        	<div className="mainPane" style={{ flexBasis: (height - bottomHeight) }}>
-        		<Workspace />
+        <div className="rightPane" style={{ flexBasis:wsWidth }}>
+        	<div className="mainPane" style={{ flexBasis:wsHeight }}>
+        		<Workspace width={wsWidth} height={wsHeight} />
         	</div>
-        	<div className="bottomPane" style={{ flexBasis: bottomHeight }}>
+        	<div className="bottomPane" style={{ flexBasis:bottomHeight }}>
         		<ScriptView />
         	</div>
         </div>

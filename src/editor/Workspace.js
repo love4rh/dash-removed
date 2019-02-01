@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 
 import './Editor.css';
 
+import { DiagramEditor } from './DiagramEditor.js';
+
 
 
 class Workspace extends React.Component {
 	static propTypes = {
-    // height: PropTypes.number.isRequired,
-    // width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
   }
 
   constructor (props) {
@@ -17,9 +19,11 @@ class Workspace extends React.Component {
   }
 
   render () {
+    const { height, width } = this.props;
+
   	return (
-      <div className="workspace" style={{ width:'100%', height:'100%' }}>
-        Workspace
+      <div className="workspace" style={{ width:(width - 15), height }}>
+        <DiagramEditor width={width - 15} height={height - 2} />
       </div>
     );
   }
