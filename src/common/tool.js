@@ -1,8 +1,11 @@
 
-export const isvalid = (o) => {
-	return o !== null && typeof(o) !== 'undefined';
+export const isundef = (o) => {
+	return o === null || typeof(o) === 'undefined';
 };
 
+export const isvalid = (o) => {
+	return !isundef(o);
+};
 
 export const makeMap = (list, keyName) => {
 	let map = {};

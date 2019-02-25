@@ -8,7 +8,7 @@ import './Editor.css';
 
 
 class GalleryView extends React.Component {
-	static propTypes = {
+  static propTypes = {
     galleryList: PropTypes.array.isRequired,
     // height: PropTypes.number.isRequired,
     // width: PropTypes.number.isRequired,
@@ -30,7 +30,7 @@ class GalleryView extends React.Component {
     const { galleryList } = this.props;
     const { activeTab } = this.state;
 
-  	return (
+    return (
       <div>
         <div className="paneTitle">Gallery</div>
         <Menu>

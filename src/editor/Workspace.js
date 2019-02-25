@@ -8,7 +8,7 @@ import { DiagramEditor } from './DiagramEditor.js';
 
 
 class Workspace extends React.Component {
-	static propTypes = {
+  static propTypes = {
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
   }
@@ -21,7 +21,7 @@ class Workspace extends React.Component {
   render () {
     const { height, width } = this.props;
 
-  	return (
+    return (
       <div className="workspace" style={{ width:(width - 15), height }}>
         <DiagramEditor width={width - 15} height={height - 2} />
       </div>
