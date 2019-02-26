@@ -115,10 +115,10 @@ class DiagramEditor extends React.Component {
     );
   }
 
-  isSelected = (n, withSelectinf) => {
+  isSelected = (n, withSelecting) => {
   	const { selected, status, statusParam } = this.state;
 
-  	if( withSelectinf && status === 'selecting' ) {
+  	if( withSelecting && status === 'selecting' ) {
   		const { x1, y1, x2, y2 } = statusParam;
   		const
   			sx = Math.min(x1, x2),
