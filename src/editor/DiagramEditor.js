@@ -5,11 +5,25 @@ import {isvalid, istrue, makeid} from '../common/tool.js';
 
 import './DiagramEditor.css';
 
-import sample from '../assets/svg/sample.svg';
 
 
-const iconSize = 48;
-const arrowSize = 10;
+// Pre-defined values
+// -------------------------------
+const _iconSize_ = 48;
+const _arrowSize_ = 10;
+
+const _objCanvas_ = 'canvas';
+const _objNode_ = 'node';
+const _objLink_ = 'link';
+
+const _stNormal_ = 'normal';
+const _stSelect_ = 'selecting';
+const _stDragNode_ = 'dragNode';
+
+const _clrSelect_ = 'blue';
+const _clrLink_ = '#111';
+const _clrRectSelect_ = '#000';
+// -------------------------------
 
 
 const calcCenter = (x, y, size) => {
@@ -30,11 +44,28 @@ const calcTheta = (x1, y1, x2, y2) => {
   return theta;
 }
 
+const isPtInRect = (x1, y1, x2, y2, px, py) => {
+	const
+		sx = Math.min(x1, x2),
+		sy = Math.min(y1, y2),
+		ex = Math.max(x1, x2),
+		ey = Math.max(y1, y2)
+	;
+
+	return sx <= px && sy <= py && px <= ex && py <= ey;
+}
+
+const makeLinkId = (index) => {
+	return index;
+}
+
 
 
 class DiagramEditor extends React.Component {
   static propTypes = {
     height: PropTypes.number.isRequired,
+    links: PropTypes.array.isRequired,
+    nodes: PropTypes.object.isRequired,
     width: PropTypes.number.isRequired,
   }
 
@@ -42,17 +73,10 @@ class DiagramEditor extends React.Component {
     super(props);
 
     this.state = {
-      nodes: {
-        'n1': { id:'n1', name:'test1', image:sample, x:10, y:10 },
-        'n2': { id:'n2', name:'test2', image:sample, x:100, y:100 },
-        'n3': { id:'n3', name:'test3', image:sample, x:100, y:200 }
-      },
+      nodes: this.props.nodes,
+      links: this.props.links,
 
-      links: [
-        { id:'l1', begin:'n1', end:'n2' }
-      ],
-
-      status: 'normal',  // normal, connecting, drag node, drag link, selecting
+      status: _stNormal_,  // normal, connecting, drag node, drag link, selecting
       statusParam: {},
 
       selected: {},
@@ -60,37 +84,41 @@ class DiagramEditor extends React.Component {
   }
 
   componentDidMount () {
-    // this.drawAll();
+    document.addEventListener('keydown', this.onKeyDown);
   }
 
   componentDidUpdate () {
     // this.drawAll();
   }
 
-  drawLink = (linkId, n1, n2) => {
+  componentWillUnmount () {
+    document.removeEventListener('keydown', this.onKeyDown);
+  }
+
+  drawLink = (index, n1, n2) => {
     if( !isvalid(n1) || !isvalid(n2) )
       return null;
 
-    const p1 = calcCenter(n1.x, n1.y, iconSize);
-    const p2 = calcCenter(n2.x, n2.y, iconSize);
+    const p1 = calcCenter(n1.x, n1.y, _iconSize_);
+    const p2 = calcCenter(n2.x, n2.y, _iconSize_);
 
     const dx = p2.x - p1.x, dy = p2.y - p1.y;
     const d = Math.sqrt(dx * dx + dy * dy);
 
-    if( d < iconSize )
+    if( d < _iconSize_ )
       return null;
 
     const radius = 30;
     const
       sX = p1.x + radius * dx / d,
       sY = p1.y + radius * dy / d,
-      eX = p2.x - (radius + arrowSize) * dx / d,
-      eY = p2.y - (radius + arrowSize) * dy / d;
+      eX = p2.x - (radius + _arrowSize_) * dx / d,
+      eY = p2.y - (radius + _arrowSize_) * dy / d;
 
     const th = calcTheta(p1.x, p1.y, p2.x, p2.y);
 
-    const arrowX = [ -arrowSize + 3, -arrowSize, +arrowSize, -arrowSize ];
-    const arrowY = [  0,  -arrowSize + 2,   0,   +arrowSize - 2];
+    const arrowX = [ -_arrowSize_ + 3, -_arrowSize_, +_arrowSize_, -_arrowSize_ ];
+    const arrowY = [  0,  -_arrowSize_ + 2,   0,   +_arrowSize_ - 2];
     
     let path = '';
     for(let i = 0; i < arrowX.length; ++i) {
@@ -101,24 +129,28 @@ class DiagramEditor extends React.Component {
         + ',' + (Math.sin(th) * arrowX[i] + Math.cos(th) * arrowY[i] + eY));
     }
 
+    const linkId = makeLinkId(index);
+    const linkColor = this.isSelectedLink(linkId) ? _clrSelect_ : _clrLink_;
+
     return (
-      <g key={makeid(6)} onMouseDown={this.onMouseDown(linkId)}>
+      <g key={makeid(6)} onMouseDown={this.onMouseDown(_objLink_, linkId)}>
         <line
-          x1={sX}
-          y1={sY}
-          x2={eX}
-          y2={eY}
-          style={{ strokeWidth:4, stroke:'#111' }}
+          x1={sX} y1={sY} x2={eX} y2={eY}
+          style={{ strokeWidth:4, stroke:linkColor }}
         />
-        <polygon points={path} style={{ fill:'#111' }} />
+        <polygon points={path} style={{ fill:linkColor }} />
       </g>
     );
+  }
+
+  isSelectedLink = (id) => {
+  	return istrue(this.state.selected[id]);
   }
 
   isSelected = (n, withSelecting) => {
   	const { selected, status, statusParam } = this.state;
 
-  	if( withSelecting && status === 'selecting' ) {
+  	if( withSelecting && status === _stSelect_ ) {
   		const { x1, y1, x2, y2 } = statusParam;
   		const
   			sx = Math.min(x1, x2),
@@ -127,7 +159,7 @@ class DiagramEditor extends React.Component {
   			ey = Math.max(y1, y2)
   		;
 
-  		return sx <= n.x && sy <= n.y && (n.x + iconSize) <= ex && (n.y + iconSize) <= ey;
+  		return sx <= n.x && sy <= n.y && (n.x + _iconSize_) <= ex && (n.y + _iconSize_) <= ey;
   	}
 
   	return istrue(selected[n.id]);
@@ -138,24 +170,91 @@ class DiagramEditor extends React.Component {
   	const { selected, status, statusParam } = this.state;
 
     return (
-    	<g key={makeid(6)}>
+    	<g key={makeid(6)}
+    		onMouseDown={this.onMouseDown(_objNode_, n.id)}
+    		onMouseMove={this.onMouseMove(_objNode_, n.id)}
+    	>
     		{ !this.isSelected(n, false)
     			? null
-    			: <rect rx={m} ry={m} x={n.x - m} y={n.y - m} width={iconSize + m * 2} height={iconSize + m * 2}
-  						style={{ fill:'none', stroke:'blue', strokeWidth:2 }} />
+    			: <rect rx={m} ry={m} x={n.x - m} y={n.y - m} width={_iconSize_ + m * 2} height={_iconSize_ + m * 2}
+  						style={{ fill:'none', stroke:_clrSelect_, strokeWidth:2 }} />
     		}
 	      <image key={n.id}
 	        x={n.x} y={n.y}
-	        width={iconSize} height={iconSize}
+	        width={_iconSize_} height={_iconSize_}
 	        href={n.image}
-	        onMouseDown={this.onMouseDown(n.id)}
 	      />
 	    </g>
     );
   }
 
+  select = (id, add) => {
+  	let selected = istrue(add) ? this.state.selected : {};
+
+  	selected[id] = true;
+    this.setState({ selected:selected });
+  }
+
+  selectAll = () => {
+  	const { nodes, links } = this.state;
+
+  	const selected = {};
+
+		// check whether node is selected or not
+		for(let id in nodes) {
+			selected[id] = true;
+		}
+
+		// link
+		for(let i = 0; i < links.length; ++i) {
+			selected[makeLinkId(i)] = true;
+		}
+
+		this.setState({ selected:selected });
+  }
+
+  deleteSelected = () => {
+  	const { nodes, links, selected } = this.state;
+  }
+
+  onKeyDown = (ev) => {
+    // console.log('keydown', ev.keyCode, ev.key, ev.ctrlKey, ev.altKey, ev.shiftKey);
+    let processed = false;
+    let { keyCode, ctrlKey, shiftKey } = ev;
+
+    if( ctrlKey ) {
+    	switch( keyCode ) {
+    		case 65: // a -> select all
+    			this.selectAll();
+    			processed = true;
+    			break;
+
+      	case 46: // Delete -> delete
+	      	this.deleteSelected();
+	      	processed = true;
+	      	break;
+
+      	default:
+      		break;
+      }
+    }
+
+    if( processed ) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+  }
+
   // eslint-disable-next-line
-  onMouseDown = (type) => (ev) => {
+  onMouseMove = (type, id) => (ev) => {
+  	// TODO Tooltip Event?
+  	console.log('Mouse Move ', type, id);
+  	ev.preventDefault();
+    ev.stopPropagation();
+  }
+
+  // eslint-disable-next-line
+  onMouseDown = (type, id) => (ev) => {
     const wrapper = this.refs.wrapper;
 
     // const { shiftKey } = ev; // altKey, ctrlKey,
@@ -164,30 +263,26 @@ class DiagramEditor extends React.Component {
       y = ev.clientY - wrapper.offsetTop + wrapper.scrollTop
     ; // */
 
-    let status = 'dragNode';
-    let statusParam = { id:type, x1:x, y1:y, x2:x, y2:y };
-    let selected = {};
+    let status = _stDragNode_;
+    let statusParam = { type:type, id:id, ox:x, oy:y, x1:x, y1:y, x2:x, y2:y };
 
-    console.log(type, ev.type, x, y, ev.button, ev.buttons);
+    console.log(type, id, ev.type, x, y, ev.button, ev.buttons);
 
     // Wrapping area
-    if( type === 'canvas' ) {
-      // hitTest() for link
-      status = 'selecting'; // or dragLink
-    } else {
-      const n = this.state.nodes[type];
+    if( type === _objCanvas_ ) {
+      status = _stSelect_;
+    } else if( type === _objNode_ ) {
+      const n = this.state.nodes[id];
 
-      if( isvalid(n) ) {
-	      statusParam.ox = n.x;
-	      statusParam.oy = n.y;
-
-	      selected[type] = true;
-	    } else { // maybe link
-	    	status = 'normal';
-	    }
+      if( !istrue(this.state.selected[id]) ) {
+      	this.select(id);
+      }
+    } else if( type === _objLink_ ) {
+	    status = _stNormal_;
+	    this.select(id);
     }
 
-    this.setState({ status:status, statusParam:statusParam, selected:selected });
+    this.setState({ status:status, statusParam:statusParam });
 
     ev.preventDefault();
     ev.stopPropagation();
@@ -197,7 +292,7 @@ class DiagramEditor extends React.Component {
   }
 
   onMouseEvent = (ev) => {
-    const { nodes, status, statusParam } = this.state;
+    const { nodes, links, status, statusParam } = this.state;
     const wrapper = this.refs.wrapper;
 
     const
@@ -208,30 +303,68 @@ class DiagramEditor extends React.Component {
     // console.log(ev.type, x, y, ev);
 
     if( 'mousemove' === ev.type ) {
-      if( status === 'selecting' ) {
-        statusParam.x2 = x;
-        statusParam.y2 = y;
-        this.setState({ statusParam:statusParam });
-      } else if( status === 'dragNode' ) {
+    	statusParam.x2 = x;
+      statusParam.y2 = y;
+      if( status === _stSelect_ ) {
+      	//        
+      } else if( status === _stDragNode_ ) {
         const { ox, oy, x1, y1 } = statusParam;
-        const n = nodes[statusParam.id];
-        nodes[statusParam.id] = { ...n, x: ox + (x - x1), y: oy + (y - y1) };
+
+        statusParam.ox = x;
+        statusParam.oy = y;
+
+        for(let id in this.state.selected) {
+        	const n = nodes[id];
+        	if( isvalid(n) ) {
+        		nodes[id] = { ...n, x: n.x + (x - ox), y: n.y + (y - oy) };
+        	}
+        }
+
         this.setState({ nodes:nodes });
       }
+
+      this.setState({ statusParam:statusParam });
     } else if( 'mouseup' === ev.type ) {
-    	if( status === 'selecting' ) {
+    	if( status === _stSelect_ ) {
     		const selected = {};
 
+    		// check whether node is selected or not
     		for(let id in nodes) {
     			if( this.isSelected(nodes[id], true) ) {
     				selected[id] = true;
     			}
     		}
 
+    		// link
+    		const { x1, y1, x2, y2 } = statusParam;
+
+    		for(let i = 0; i < links.length; ++i) {
+    			const L = links[i];
+    			const n1 = nodes[L.begin];
+    			const n2 = nodes[L.end];
+
+    			if( isvalid(n1) && isvalid(n2) ) {
+    				const p1 = calcCenter(n1.x, n1.y, _iconSize_);
+    				const p2 = calcCenter(n2.x, n2.y, _iconSize_);
+
+    				if( isPtInRect(x1, y1, x2, y2, p1.x, p1.y) && isPtInRect(x1, y1, x2, y2, p2.x, p2.y) ) {
+    					selected[makeLinkId(i)] = true;
+    				}
+    			}
+    		}
+
     		this.setState({ selected:selected });
+    	} else if( status === _stDragNode_ ) {
+    		if( statusParam.type === _objNode_ && Math.abs(x - statusParam.x1) <= 1 && Math.abs(y - statusParam.y1) <= 1 ) {
+    			// TODO Node select event
+    			this.select(statusParam.id);
+    		}
     	}
 
-      this.setState({ status:'normal' });
+      this.setState({ status:_stNormal_ });
+
+      ev.preventDefault();
+    	ev.stopPropagation();
 
       document.removeEventListener('mouseup', this.onMouseEvent, {capture: true});
       document.removeEventListener('mousemove', this.onMouseEvent, {capture: true});
@@ -245,29 +378,29 @@ class DiagramEditor extends React.Component {
     const svgTags = [];
 
     for(let i = 0; i < links.length; ++i) {
-      svgTags.push(this.drawLink(links[i].id, nodes[links[i].begin], nodes[links[i].end]));
+      svgTags.push(this.drawLink(i, nodes[links[i].begin], nodes[links[i].end]));
     }
 
     for(let id in nodes) {
       svgTags.push(this.drawNode(nodes[id]));
     }
 
-    if( 'selecting' === status ) {
+    if( _stSelect_ === status ) {
       const { x1, y1, x2, y2 } = statusParam;
       svgTags.push(
-        <rect key="selection"
+        <rect key={_stSelect_}
           x={Math.min(x1, x2)}
           y={Math.min(y1, y2)}
           width={Math.abs(x1 - x2)}
           height={Math.abs(y1 - y2)}
-          style={{ fill:'none', strokeWidth:1, stroke:'#000', strokeDasharray:'10,10' }}
+          style={{ fill:'none', strokeWidth:1, stroke:_clrRectSelect_, strokeDasharray:'10,10' }}
         />
       );
     }
 
     return(
       <div ref="wrapper" style={{ height, width, overflow:'auto' }}>
-        <svg width={width} height={height * 2} onMouseDown={this.onMouseDown('canvas')}>
+        <svg width={width} height={height * 2} onMouseDown={this.onMouseDown(_objCanvas_, _objCanvas_)}>
           { svgTags.map((elem) => (elem)) }
         </svg>
       </div>
