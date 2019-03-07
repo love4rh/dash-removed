@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {isvalid, istrue, makeid} from '../common/tool.js';
+import {isvalid, istrue, makeid, tickCount} from '../common/tool.js';
 
 import './DiagramEditor.css';
 
@@ -21,8 +21,11 @@ const _stSelect_ = 'selecting';
 const _stDragNode_ = 'dragNode';
 
 const _clrSelect_ = 'blue';
-const _clrLink_ = '#111';
+const _clrLink_ = '#333';
 const _clrRectSelect_ = '#000';
+
+const _cssNodeText = { fill:'#000', font:'16px Verdana, Helvetica, Arial, sans-serif' };
+const _cssTextWrap = { stroke:'white', strokeWidth:'0.6em' };
 // -------------------------------
 
 
@@ -63,6 +66,7 @@ const makeLinkId = (index) => {
 
 class DiagramEditor extends React.Component {
   static propTypes = {
+  	eventReciever: PropTypes.func.isRequired,
     height: PropTypes.number.isRequired,
     links: PropTypes.array.isRequired,
     nodes: PropTypes.object.isRequired,
@@ -81,10 +85,17 @@ class DiagramEditor extends React.Component {
 
       selected: {},
     };
+
+    this.lastEvent = {};
   }
 
   componentDidMount () {
     document.addEventListener('keydown', this.onKeyDown);
+
+    // disable context menu when right-button clicked.
+    document.addEventListener('contextmenu', (ev) => {
+        ev.preventDefault();
+    }, false);
   }
 
   componentDidUpdate () {
@@ -168,22 +179,28 @@ class DiagramEditor extends React.Component {
   drawNode = (n) => {
   	const m = 4;
   	const { selected, status, statusParam } = this.state;
+  	const tx = n.x + _iconSize_ / 2,
+  		ty = n.y + _iconSize_ + 16;
 
     return (
     	<g key={makeid(6)}
     		onMouseDown={this.onMouseDown(_objNode_, n.id)}
     		onMouseMove={this.onMouseMove(_objNode_, n.id)}
     	>
-    		{ !this.isSelected(n, false)
-    			? null
-    			: <rect rx={m} ry={m} x={n.x - m} y={n.y - m} width={_iconSize_ + m * 2} height={_iconSize_ + m * 2}
-  						style={{ fill:'none', stroke:_clrSelect_, strokeWidth:2 }} />
-    		}
 	      <image key={n.id}
 	        x={n.x} y={n.y}
 	        width={_iconSize_} height={_iconSize_}
 	        href={n.image}
 	      />
+
+	      <text textAnchor="middle" x={tx} y={ty} style={_cssTextWrap}>{n.name}</text>
+	      <text textAnchor="middle" x={tx} y={ty} style={_cssNodeText}>{n.name}</text>
+
+	      { !this.isSelected(n, false)
+    			? null
+    			: <rect rx={m} ry={m} x={n.x - m} y={n.y - m} width={_iconSize_ + m * 2} height={_iconSize_ + m * 2}
+  						style={{ fill:'none', stroke:_clrSelect_, strokeWidth:2 }} />
+    		}
 	    </g>
     );
   }
@@ -247,8 +264,11 @@ class DiagramEditor extends React.Component {
 
   // eslint-disable-next-line
   onMouseMove = (type, id) => (ev) => {
-  	// TODO Tooltip Event?
-  	console.log('Mouse Move ', type, id);
+  	if( isvalid(this.props.getTooltip) ){
+  		// TODO Tooltip Event?
+  		this.props.getTooltip(type, id);
+  	}
+
   	ev.preventDefault();
     ev.stopPropagation();
   }
@@ -357,6 +377,20 @@ class DiagramEditor extends React.Component {
     	} else if( status === _stDragNode_ ) {
     		if( statusParam.type === _objNode_ && Math.abs(x - statusParam.x1) <= 1 && Math.abs(y - statusParam.y1) <= 1 ) {
     			// TODO Node select event
+    			const tick = tickCount();
+    			const eventParam = { type:'node', id:statusParam.id, x:x, y:y };
+
+    			if( this.lastEvent.event === 'click'
+    				&& this.lastEvent.param.type === eventParam.type
+    				&& this.lastEvent.param.id === eventParam.id
+    				&& (tick - this.lastEvent.occurTime) < 200 ) {
+    				// double click
+    				this.lastEvent = { event:'dblClick', param:eventParam, occurTime:tick };
+    			} else {
+    				this.lastEvent = { event:'click', param:eventParam, occurTime:tick };
+    			}
+
+    			this.props.eventReciever(this.lastEvent.event, eventParam);
     			this.select(statusParam.id);
     		}
     	}

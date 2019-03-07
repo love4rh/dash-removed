@@ -34,6 +34,10 @@ class Workspace extends React.Component {
     };
   }
 
+  onDiagramEvent = (type, param) => {
+    console.log(type, param);
+  }
+
   render () {
     const { height, width } = this.props;
 
@@ -42,6 +46,7 @@ class Workspace extends React.Component {
         <DiagramEditor
           width={width - 15}
           height={height - 2}
+          eventReciever={this.onDiagramEvent}
           nodes={this.state.nodes}
           links={this.state.links}
         />
