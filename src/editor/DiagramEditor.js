@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import C from '../common/Constants.js';
 import {isvalid, istrue, makeid, tickCount} from '../common/tool.js';
 
 import './DiagramEditor.css';
@@ -36,7 +37,7 @@ const calcCenter = (x, y, size) => {
 const calcTheta = (x1, y1, x2, y2) => {
   let theta = 0;
 
-  if( x2 == x1 ) {
+  if( x2 === x1 ) {
     theta = (y2 >= y1 ? 90 : 270) * Math.PI / 180;
   } else {
     theta = x2 > x1
@@ -295,6 +296,7 @@ class DiagramEditor extends React.Component {
       const n = this.state.nodes[id];
 
       if( !istrue(this.state.selected[id]) ) {
+      	this.props.eventReciever(C.evtSelectNode, { id:id, x:x, y:y });
       	this.select(id);
       }
     } else if( type === _objLink_ ) {
@@ -378,16 +380,17 @@ class DiagramEditor extends React.Component {
     		if( statusParam.type === _objNode_ && Math.abs(x - statusParam.x1) <= 1 && Math.abs(y - statusParam.y1) <= 1 ) {
     			// TODO Node select event
     			const tick = tickCount();
-    			const eventParam = { type:'node', id:statusParam.id, x:x, y:y };
+    			const eventParam = { id:statusParam.id, x:x, y:y };
 
-    			if( this.lastEvent.event === 'click'
-    				&& this.lastEvent.param.type === eventParam.type
+    			if( isvalid(this.lastEvent)
+    				&& this.lastEvent.event === C.evtNodeClick
+    				&& isvalid(this.lastEvent.param)
     				&& this.lastEvent.param.id === eventParam.id
     				&& (tick - this.lastEvent.occurTime) < 200 ) {
     				// double click
-    				this.lastEvent = { event:'dblClick', param:eventParam, occurTime:tick };
+    				this.lastEvent = { event:C.evtNodeDblClick, param:eventParam, occurTime:tick };
     			} else {
-    				this.lastEvent = { event:'click', param:eventParam, occurTime:tick };
+    				this.lastEvent = { event:C.evtNodeClick, param:eventParam, occurTime:tick };
     			}
 
     			this.props.eventReciever(this.lastEvent.event, eventParam);
