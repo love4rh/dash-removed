@@ -70,7 +70,6 @@ class Editor extends React.Component {
     	activeIndex: 0,
     	focusedNode: null,
     	projectList: [testProject, testProject2],
-    	attributes: [],
     };
   }
 
@@ -84,16 +83,7 @@ class Editor extends React.Component {
 
   	if( type === C.evtSelectNode ) {
   		const prjData = projectList[activeIndex];
-  		const n = prjData.nodes[param];
-
-  		const attrList = [];
-
-      attrList.push({
-        type: 'text',
-        value: n.name
-      });
-
-  		this.setState({ attributes:attrList, focusedNode:param });
+  		this.setState({ focusedNode:prjData.nodes[param] });
   	}
   }
 
@@ -113,7 +103,9 @@ class Editor extends React.Component {
   		return;
   	}
 
-  	projectList[activeIndex].nodes[focusedNode].name = value;
+  	console.log('valueChanged', propIdx, value);
+
+  	focusedNode.name = value;
 
   	this.setState({ projectList: projectList });
   }
@@ -149,7 +141,12 @@ class Editor extends React.Component {
         		<Tab onTabChange={this.handleTabChange} panes={workPanes} />
         	</div>
         	<div className="bottomPane" style={{ flexBasis:bottomHeight }}>
-        		<AttributeEditor attributes={this.state.attributes} handleValueChange={this.handleValueChange} />
+        		<AttributeEditor
+        			height={bottomHeight}
+        			width={wsWidth}
+        			node={this.state.focusedNode}
+        			handleValueChange={this.handleValueChange}
+        		/>
         	</div>
         </div>
       </div>

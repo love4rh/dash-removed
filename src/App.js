@@ -6,7 +6,6 @@ import { MainFrame } from './view/MainFrame.js';
 import { S3Explorer } from './view/S3Explorer.js';
 
 
-
 class App extends Component {
 	constructor (props) {
 		super(props);
@@ -15,18 +14,21 @@ class App extends Component {
     const path = window.location.href;
 
 		this.state = {
-			page: path.endsWith('dash') ? 'dash' : 's3'
+			page: path.substring(path.lastIndexOf('/') + 1)
 		}
 	}
 
   render () {
+    let appMain;
+
+    if( this.state.page === 'dash' ) {
+      appMain = (<MainFrame />);
+    } else {
+      appMain = (<S3Explorer />);
+    }
+
     return (
-    	<div className="App">
-    		{ this.state.page === 's3' ?
-    			<S3Explorer /> :
-    			<MainFrame />
-      	}
-      </div>
+    	<div className="App">{appMain}</div>
     );
   }
 }
