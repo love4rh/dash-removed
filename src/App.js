@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { MainFrame } from './view/MainFrame.js';
 import { S3Explorer } from './view/S3Explorer.js';
+import { SampleFrame } from './view/SampleFrame.js';
 
 
 class App extends Component {
@@ -23,6 +24,8 @@ class App extends Component {
 
     if( this.state.page === 'dash' ) {
       appMain = (<MainFrame />);
+    } else if( this.state.page === 'monaco' ) {
+      appMain = (<SampleFrame />);
     } else {
       appMain = (<S3Explorer />);
     }

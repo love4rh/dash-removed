@@ -191,9 +191,9 @@ class AttributeEditor extends React.Component {
       roundedSelection: false,
       readOnly: false,
       cursorStyle: 'line',
-      automaticLayout: false,
-      suggestOnTriggerCharacters: true,
-      suggestSelection: 'recentlyUsedByPrefix'
+      automaticLayout: true,
+      // suggestOnTriggerCharacters: true,
+      // suggestSelection: 'recentlyUsedByPrefix'
     };
 
     return (
