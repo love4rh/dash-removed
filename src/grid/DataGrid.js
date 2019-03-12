@@ -190,7 +190,7 @@ class DataGrid extends Component {
   }
 
   componentDidMount () {
-    document.addEventListener('keydown', this.onKeyDown);
+    // document.addEventListener('keydown', this.onKeyDown);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -206,7 +206,7 @@ class DataGrid extends Component {
   }
 
   componentWillUnmount () {
-    document.removeEventListener('keydown', this.onKeyDown);
+    // document.removeEventListener('keydown', this.onKeyDown);
 
     if( isvalid(this.dataFetchJob) ) {
       clearTimeout(this.dataFetchJob);
@@ -613,6 +613,10 @@ class DataGrid extends Component {
     const { preStatus, status, statusParam } = this.state;
 
     if( 'mousedown' === ev.type ) {
+      if( isvalid(this.refs.wrapper) ) {
+        this.refs.wrapper.focus();
+      }
+      
       if( cell.col < 0 && cell.row < 0 ) { // Header click
         this.setState({ selectedRange:{col:0, row:0, col2:colCount - 1, row2:rowCount - 1} });
       } else if( shiftKey ) {
@@ -746,7 +750,12 @@ class DataGrid extends Component {
     const adjDataWidth = chWidth - (vScroll ? sbs : 0);
 
     return (
-      <div className="wrapGrid" style={{ width, height }}>
+      <div ref="wrapper"
+        tabIndex="1"
+        className="wrapGrid"
+        style={{ width, height }}
+        onKeyDown={this.onKeyDown}
+      >
         <div className="wrapContainer"
           style={{ height, flexBasis: (width - (vScroll ? sbs : 0)) }}
           onMouseMove={this.onMouseEvent}

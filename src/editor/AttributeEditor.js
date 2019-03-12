@@ -72,7 +72,7 @@ function getCode() {
 class AttributeEditor extends React.Component {
 	static propTypes = {
     handleValueChange: PropTypes.func.isRequired,
-    node: PropTypes.object.isRequired,
+    node: PropTypes.object,
     // height: PropTypes.number.isRequired,
     // width: PropTypes.number.isRequired,
   }
@@ -91,7 +91,6 @@ class AttributeEditor extends React.Component {
   }
 
   editorDidMount = (editor, monaco) => {
-    console.log('editorDidMount', editor);
     editor.focus();
   }
 
@@ -198,15 +197,14 @@ class AttributeEditor extends React.Component {
 
     return (
       <MonacoEditor
-        width={width}
+        width={'100%'}
         height={height}
-        language="mySpecialLanguage"
-        theme="myCoolTheme"
+        language="javascript"
+        theme="vs-dark"
         value={code}
         options={options}
         onChange={this.onChange}
         editorDidMount={this.editorDidMount}
-        editorWillMount={this.editorWillMount}
       />
     );
   }

@@ -91,7 +91,7 @@ class DiagramEditor extends React.Component {
   }
 
   componentDidMount () {
-    document.addEventListener('keydown', this.onKeyDown);
+    // document.addEventListener('keydown', this.onKeyDown);
 
     // disable context menu when right-button clicked.
     document.addEventListener('contextmenu', (ev) => {
@@ -104,7 +104,7 @@ class DiagramEditor extends React.Component {
   }
 
   componentWillUnmount () {
-    document.removeEventListener('keydown', this.onKeyDown);
+    // document.removeEventListener('keydown', this.onKeyDown);
   }
 
   drawLink = (index, n1, n2) => {
@@ -287,7 +287,7 @@ class DiagramEditor extends React.Component {
     let status = _stDragNode_;
     let statusParam = { type:type, id:id, ox:x, oy:y, x1:x, y1:y, x2:x, y2:y };
 
-    console.log(type, id, ev.type, x, y, ev.button, ev.buttons);
+    // console.log(type, id, ev.type, x, y, ev.button, ev.buttons);
 
     // Wrapping area
     if( type === _objCanvas_ ) {
@@ -305,6 +305,10 @@ class DiagramEditor extends React.Component {
     }
 
     this.setState({ status:status, statusParam:statusParam });
+
+    if( isvalid(this.refs.wrapper) ) {
+      this.refs.wrapper.focus();
+    }
 
     ev.preventDefault();
     ev.stopPropagation();
@@ -375,6 +379,8 @@ class DiagramEditor extends React.Component {
     			}
     		}
 
+        console.log('selected', selected);
+
     		this.setState({ selected:selected });
     	} else if( status === _stDragNode_ ) {
     		if( statusParam.type === _objNode_ && Math.abs(x - statusParam.x1) <= 1 && Math.abs(y - statusParam.y1) <= 1 ) {
@@ -436,7 +442,7 @@ class DiagramEditor extends React.Component {
     }
 
     return(
-      <div ref="wrapper" style={{ height, width, overflow:'auto' }}>
+      <div ref="wrapper" tabIndex="1" style={{ height, width, overflow:'auto' }} onKeyDown={this.onKeyDown}>
         <svg width={width} height={height * 2} onMouseDown={this.onMouseDown(_objCanvas_, _objCanvas_)}>
           { svgTags.map((elem) => (elem)) }
         </svg>
