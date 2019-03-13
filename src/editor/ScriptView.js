@@ -6,6 +6,7 @@ import './Editor.css';
 
 
 class ScriptView extends React.Component {
+  /*
 	static propTypes = {
     // height: PropTypes.number.isRequired,
     // width: PropTypes.number.isRequired,
@@ -14,7 +15,7 @@ class ScriptView extends React.Component {
   constructor (props) {
     super(props);
 
-  }
+  } // */
 
   render () {
   	return (

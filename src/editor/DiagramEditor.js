@@ -179,7 +179,7 @@ class DiagramEditor extends React.Component {
 
   drawNode = (n) => {
   	const m = 4;
-  	const { selected, status, statusParam } = this.state;
+  	// const { selected, status, statusParam } = this.state;
   	const tx = n.x + _iconSize_ / 2,
   		ty = n.y + _iconSize_ + 16;
 
@@ -232,13 +232,13 @@ class DiagramEditor extends React.Component {
   }
 
   deleteSelected = () => {
-  	const { nodes, links, selected } = this.state;
+  	// const { nodes, links, selected } = this.state;
   }
 
   onKeyDown = (ev) => {
     // console.log('keydown', ev.keyCode, ev.key, ev.ctrlKey, ev.altKey, ev.shiftKey);
     let processed = false;
-    let { keyCode, ctrlKey, shiftKey } = ev;
+    let { keyCode, ctrlKey } = ev;
 
     if( ctrlKey ) {
     	switch( keyCode ) {
@@ -293,8 +293,6 @@ class DiagramEditor extends React.Component {
     if( type === _objCanvas_ ) {
       status = _stSelect_;
     } else if( type === _objNode_ ) {
-      const n = this.state.nodes[id];
-
       if( !istrue(this.state.selected[id]) ) {
       	this.props.eventReciever(C.evtSelectNode, { id:id, x:x, y:y });
       	this.select(id);
@@ -334,7 +332,7 @@ class DiagramEditor extends React.Component {
       if( status === _stSelect_ ) {
       	//        
       } else if( status === _stDragNode_ ) {
-        const { ox, oy, x1, y1 } = statusParam;
+        const { ox, oy } = statusParam;
 
         statusParam.ox = x;
         statusParam.oy = y;
@@ -378,9 +376,6 @@ class DiagramEditor extends React.Component {
     				}
     			}
     		}
-
-        console.log('selected', selected);
-
     		this.setState({ selected:selected });
     	} else if( status === _stDragNode_ ) {
     		if( statusParam.type === _objNode_ && Math.abs(x - statusParam.x1) <= 1 && Math.abs(y - statusParam.y1) <= 1 ) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Icon, Menu, Tab } from 'semantic-ui-react'
+import { Tab } from 'semantic-ui-react'
 
 import C from '../common/Constants.js';
 

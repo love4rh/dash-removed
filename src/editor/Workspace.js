@@ -17,12 +17,6 @@ class Workspace extends React.Component {
     width: PropTypes.number.isRequired,
   }
 
-  constructor (props) {
-    super(props);
-
-    //
-  }
-
   onDiagramEvent = (type, param) => {
     if( type === C.evtSelectNode ) {
       this.props.eventRelay(type, param.id); // nodeId
