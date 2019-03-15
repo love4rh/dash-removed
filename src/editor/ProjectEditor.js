@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Tab } from 'semantic-ui-react'
+import { Button, Icon, Menu, Tab } from 'semantic-ui-react'
 
 import C from '../common/Constants.js';
 
-import {isundef} from '../common/tool.js';
+import {isundef, isvalid} from '../common/tool.js';
+
+import { LayoutDivider, DividerDirection} from './LayoutDivider.js';
 
 import GalleryView from './GalleryView.js';
 import ScriptView from './ScriptView.js';
@@ -17,59 +19,22 @@ import './Editor.css';
 
 import { appOpt } from '../common/appSetting.js';
 
-import sample from '../assets/svg/sample.svg';
 
 
-
-class Editor extends React.Component {
+class ProjectEditor extends React.Component {
 	static propTypes = {
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
+    projectList: PropTypes.array.isRequired,
   }
 
   constructor (props) {
     super(props);
 
-    const testProject = {
-    	title: 'Project1',
-    	description: 'project is blah~ blah~',
-    	author: 'mh9.kim@lge.com',
-
-      nodes: {
-        'n1': { id:'n1', name:'test1', image:sample, x:100, y:100 },
-        'n2': { id:'n2', name:'test2', image:sample, x:200, y:200 },
-        'n3': { id:'n3', name:'test3', image:sample, x:200, y:300 },
-        'n4': { id:'n4', name:'test4', image:sample, x:300, y:300 }
-      },
-
-      links: [
-        { begin:'n1', end:'n2' },
-        { begin:'n2', end:'n3' }
-      ]
-    };
-
-    const testProject2 = {
-    	title: 'Project2',
-    	description: 'project is blah~ blah~',
-    	author: 'mh9.kim@lge.com',
-
-      nodes: {
-        'n1': { id:'n1', name:'test1', image:sample, x:100, y:100 },
-        'n2': { id:'n2', name:'test2', image:sample, x:200, y:200 },
-        'n3': { id:'n3', name:'test3', image:sample, x:200, y:300 },
-        'n4': { id:'n4', name:'test4', image:sample, x:300, y:300 }
-      },
-
-      links: [
-        { begin:'n1', end:'n2' },
-        { begin:'n2', end:'n3' }
-      ]
-    };
-
     this.state = {
     	activeIndex: 0,
     	focusedNode: null,
-    	projectList: [testProject, testProject2],
+    	projectList: this.props.projectList,
     };
   }
 
@@ -95,6 +60,13 @@ class Editor extends React.Component {
   	});
   }
 
+  handleTabClose = (tabIndex) => (ev) => {
+    console.log('Tab Closed', tabIndex);
+
+    // ev.preventDefault();
+    // ev.stopPropagation();
+  }
+
   handleValueChange = (propIdx, value) => {
   	const { activeIndex, projectList, focusedNode } = this.state;
 
@@ -110,13 +82,17 @@ class Editor extends React.Component {
   	this.setState({ projectList: projectList });
   }
 
+  handleLayoutChange = (f, t) => {
+    console.log('Layout Change Event', f, t);
+  }
+
   render () {
   	const { width, height } = this.props;
   	const { projectList } = this.state;
   	const leftWidth = 300, bottomHeight = 250;
 
   	const
-  		wsHeight = height - bottomHeight + 1,
+  		wsHeight = height - bottomHeight - 16,
   		wsWidth = width - leftWidth - 3
   	;
 
@@ -124,10 +100,17 @@ class Editor extends React.Component {
   	for(let i = 0; i < projectList.length; ++i) {
   		const p = projectList[i];
   		workPanes.push({
-  			menuItem: p.title,
-  			render: () => (
- 					<Workspace key={'ws-' + i} width={wsWidth} height={wsHeight} eventRelay={this.handleEvent} projectData={p} />
-  			)
+  			menuItem: (
+          <Menu.Item key={`openprj-${i}`}>
+            {p.title}<span style={{width:'10px'}}>&nbsp;</span>
+            <Button icon basic onClick={this.handleTabClose(i)}><Icon fitted name='close' /></Button>
+          </Menu.Item>
+        ),
+  			render: () => {
+          return (
+   					<Workspace key={'ws-' + i} width={wsWidth} height={wsHeight} eventRelay={this.handleEvent} projectData={p} />
+    			);
+        }
   		});
   	}
 
@@ -136,10 +119,12 @@ class Editor extends React.Component {
         <div className="leftPane" style={{ flexBasis:leftWidth }}>
         	<GalleryView galleryList={appOpt.getGalleryList()} />
         </div>
+        <LayoutDivider direction={DividerDirection.vertical} size={5} onLayoutChange={this.handleLayoutChange} />
         <div className="rightPane" style={{ flexBasis:wsWidth }}>
         	<div className="mainPane" style={{ flexBasis:wsHeight }}>
         		<Tab onTabChange={this.handleTabChange} panes={workPanes} />
         	</div>
+          <LayoutDivider direction={DividerDirection.horizontal} size={5} onLayoutChange={this.handleLayoutChange} />
         	<div className="bottomPane" style={{ flexBasis:bottomHeight }}>
         		<AttributeEditor
         			height={bottomHeight}
@@ -154,5 +139,5 @@ class Editor extends React.Component {
   }
 }
 
-export default Editor;
-export { Editor };
+export default ProjectEditor;
+export { ProjectEditor };

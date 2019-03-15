@@ -1,20 +1,18 @@
 .editor {
-	display: flex;
+  display: flex;
   flex-direction: row;
   overflow: hidden;
-  padding: 5px;
 }
 
 .leftPane {
-	display: flex;
+  display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin-right: 10px;
   background-color: red;
 }
 
 .rightPane {
-	display: flex;
+  display: flex;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid #d4d4d5;
@@ -29,29 +27,29 @@
 }
 
 .paneTitle {
-	padding: 2px;
-	border: 1px solid #d4d4d5;
-	height: 24px;
-	width: 100%;
-	line-height: 20px;
-	font-size: 12px;
+  padding: 2px;
+  border: 1px solid #d4d4d5;
+  height: 24px;
+  width: 100%;
+  line-height: 20px;
+  font-size: 12px;
 }
 
 .gallery {
-	background-color: red;
+  background-color: red;
 }
 
 .workspace {
-	background-color: white;
-	border-left: 1px solid #d4d4d5;
+  background-color: white;
+  border-left: 1px solid #d4d4d5;
 }
 
 .scriptView {
-	background-color: yellow;
+  background-color: yellow;
 }
 
 .attributeEditor {
-	border: 1px solid #d4d4d5;
-	padding: 7px;
-	background-color: white;
+  border: 1px solid #d4d4d5;
+  padding: 7px;
+  background-color: white;
 }

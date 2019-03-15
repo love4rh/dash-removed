@@ -198,7 +198,7 @@ class AttributeEditor extends React.Component {
     return (
       <MonacoEditor
         width={'100%'}
-        height={'100%'}
+        height={height - 30}
         language="javascript"
         theme="vs-dark"
         value={code}

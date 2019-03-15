@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import C from '../common/Constants.js';
+import { getImage } from '../common/ImageBank.js';
 
 import './Editor.css';
 
@@ -34,6 +35,7 @@ class Workspace extends React.Component {
           eventReciever={this.onDiagramEvent}
           nodes={projectData.nodes}
           links={projectData.links}
+          getImage={getImage}
         />
       </div>
     );

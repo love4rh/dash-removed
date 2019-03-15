@@ -25,8 +25,8 @@ const _clrSelect_ = 'blue';
 const _clrLink_ = '#333';
 const _clrRectSelect_ = '#000';
 
-const _cssNodeText = { fill:'#000', font:'16px Verdana, Helvetica, Arial, sans-serif' };
-const _cssTextWrap = { stroke:'white', strokeWidth:'0.6em' };
+const _cssNodeText = { fill:'#000', font:'14px Verdana, Helvetica, Arial, sans-serif' };
+const _cssTextWrap = { stroke:'white', strokeWidth:'0.4em', font:'14px Verdana, Helvetica, Arial, sans-serif' };
 // -------------------------------
 
 
@@ -69,6 +69,7 @@ class DiagramEditor extends React.Component {
   static propTypes = {
   	eventReciever: PropTypes.func.isRequired,
     height: PropTypes.number.isRequired,
+    getImage: PropTypes.func,
     links: PropTypes.array.isRequired,
     nodes: PropTypes.object.isRequired,
     width: PropTypes.number.isRequired,
@@ -181,7 +182,7 @@ class DiagramEditor extends React.Component {
   	const m = 4;
   	// const { selected, status, statusParam } = this.state;
   	const tx = n.x + _iconSize_ / 2,
-  		ty = n.y + _iconSize_ + 16;
+  		ty = n.y + _iconSize_ + 20;
 
     return (
     	<g key={makeid(6)}
@@ -191,7 +192,7 @@ class DiagramEditor extends React.Component {
 	      <image key={n.id}
 	        x={n.x} y={n.y}
 	        width={_iconSize_} height={_iconSize_}
-	        href={n.image}
+	        href={this.props.getImage(n.type)}
 	      />
 
 	      <text textAnchor="middle" x={tx} y={ty} style={_cssTextWrap}>{n.name}</text>
@@ -419,8 +420,12 @@ class DiagramEditor extends React.Component {
       svgTags.push(this.drawLink(i, nodes[links[i].begin], nodes[links[i].end]));
     }
 
+    let mX = width, mY = height;
     for(let id in nodes) {
-      svgTags.push(this.drawNode(nodes[id]));
+      const n = nodes[id];
+      mX = Math.max(mX, n.x);
+      mY = Math.max(mY, n.y);
+      svgTags.push(this.drawNode(n));
     }
 
     if( _stSelect_ === status ) {
@@ -438,7 +443,7 @@ class DiagramEditor extends React.Component {
 
     return(
       <div ref="wrapper" tabIndex="1" style={{ height, width, overflow:'auto' }} onKeyDown={this.onKeyDown}>
-        <svg width={width} height={height * 2} onMouseDown={this.onMouseDown(_objCanvas_, _objCanvas_)}>
+        <svg width={mX + 200} height={mY + 200} onMouseDown={this.onMouseDown(_objCanvas_, _objCanvas_)}>
           { svgTags.map((elem) => (elem)) }
         </svg>
       </div>

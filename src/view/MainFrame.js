@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import logo from '../logo.svg';
 // import css from './MainFrame.less';
 
-import { Editor } from '../editor/Editor.js';
+import { ProjectEditor } from '../editor/ProjectEditor.js';
+
+import apiProxy from '../common/apiProxy.js';
+import {isvalid} from '../common/tool.js';
 
 import {
   Container,
@@ -19,15 +22,20 @@ class MainFrame extends Component {
     super(props);
 
     this.state = {
-      loading: false,
+      loading: true,
 
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
+
+      projectList: []
     };
   }
 
   componentDidMount () {
     window.addEventListener('resize', this.onResize);
+
+    this.loadScript('/', 'SegmentInfo.xml');
+    this.loadScript('/', 'scriptSample.xml');
   }
 
   componentWillUnmount () {
@@ -41,7 +49,29 @@ class MainFrame extends Component {
     });
   }
 
+  loadScript = (path, name) => {
+    this.setState({ loading: true });
+
+    apiProxy.getScript({ path, name },
+      (res) => {
+        const { projectList } = this.state;
+
+        if( res && res.data && isvalid(res.data.script) ) {
+          // console.log(JSON.stringify(res.data.script));
+          projectList.push(res.data.script);
+          this.setState({ projectList: projectList });
+        }
+      }, (err) => {
+        console.log('api getScript error', err);
+      }, () => {
+        this.setState({ loading: false });
+      }
+    );
+  }
+
   render() {
+    const { windowHeight, windowWidth, projectList } = this.state;
+
     return (
       <div>
         <Menu fixed='top' inverted>
@@ -55,9 +85,10 @@ class MainFrame extends Component {
 
         {this.state.loading ? (<Dimmer active inverted><Loader content='Loading' /></Dimmer>) : null}
 
-        <Editor
-          height={this.state.windowHeight - 60}
-          width={this.state.windowWidth}
+        <ProjectEditor
+          height={windowHeight - 60}
+          width={windowWidth}
+          projectList={this.state.projectList}
         />
       </div>
     );
