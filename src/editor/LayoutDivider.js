@@ -35,7 +35,7 @@ class LayoutDivider extends React.Component {
 
     this.setState({ p1: p, p2: p, dragging: true });
 
-    document.body.style.cursor = this.isVertical() ? 'e-resize' : 'n-resize';
+    document.body.style.cursor = this.isVertical() ? 'ew-resize' : 'ns-resize';
 
     ev.preventDefault();
     ev.stopPropagation();
@@ -73,11 +73,11 @@ class LayoutDivider extends React.Component {
       ? {
         flexBasis:size,
         width:`${size}px`,
-        cursor:'e-resize'
+        cursor:'ew-resize'
       } : {
         flexBasis:size,
         height:`${size}px`,
-        cursor:'n-resize'
+        cursor:'ns-resize'
       }
     ;
 

@@ -17,7 +17,7 @@ npm install monaco-editor
 npm install monaco-editor-webpack-plugin  --> (참조하는 라이브러리 일괄 설치를 위하여) yarn 권장
 npm install react-monaco-editor
 
-wepack.config.js 파일에 다음 추가
+wepack.config.js 파일에 다음 추가 (./node_modules/react-scripts/config/webpack.config.js)
 ```
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 

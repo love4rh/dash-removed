@@ -7,6 +7,9 @@ import { ProjectEditor } from '../editor/ProjectEditor.js';
 import apiProxy from '../common/apiProxy.js';
 import {isvalid} from '../common/tool.js';
 
+import { scriptSample } from '../mock/sampleProject.js';
+
+
 import {
   Container,
   Icon,
@@ -34,8 +37,12 @@ class MainFrame extends Component {
   componentDidMount () {
     window.addEventListener('resize', this.onResize);
 
-    this.loadScript('/', 'SegmentInfo.xml');
-    this.loadScript('/', 'scriptSample.xml');
+    // this.loadScript('/', 'SegmentInfo.xml');
+    // this.loadScript('/', 'scriptSample.xml');
+    const { projectList } = this.state;
+    projectList.push(scriptSample);
+    this.setState({ projectList: projectList, loading: false });
+
   }
 
   componentWillUnmount () {
