@@ -10,8 +10,10 @@ import './DiagramEditor.css';
 
 // Pre-defined values
 // -------------------------------
-const _iconSize_ = 48;
-const _arrowSize_ = 10;
+const _iconSize_ = 32;
+const _arrowSize_ = 8;
+const _sizeRadius_ = 30;
+const _sizeLink_ = 3; // link stroke width
 
 const _objCanvas_ = 'canvas';
 const _objNode_ = 'node';
@@ -25,8 +27,8 @@ const _clrSelect_ = 'blue';
 const _clrLink_ = '#333';
 const _clrRectSelect_ = '#000';
 
-const _cssNodeText = { fill:'#000', font:'14px Verdana, Helvetica, Arial, sans-serif' };
-const _cssTextWrap = { stroke:'white', strokeWidth:'0.4em', font:'14px Verdana, Helvetica, Arial, sans-serif' };
+const _cssNodeText = { fill:'#000', font:'12px Verdana, Helvetica, Arial, sans-serif' };
+const _cssTextWrap = { stroke:'white', strokeWidth:'0.3em', font:'12px Verdana, Helvetica, Arial, sans-serif' };
 // -------------------------------
 
 
@@ -121,12 +123,11 @@ class DiagramEditor extends React.Component {
     if( d < _iconSize_ )
       return null;
 
-    const radius = 30;
     const
-      sX = p1.x + radius * dx / d,
-      sY = p1.y + radius * dy / d,
-      eX = p2.x - (radius + _arrowSize_) * dx / d,
-      eY = p2.y - (radius + _arrowSize_) * dy / d;
+      sX = p1.x + _sizeRadius_ * dx / d,
+      sY = p1.y + _sizeRadius_ * dy / d,
+      eX = p2.x - (_sizeRadius_ + _arrowSize_) * dx / d,
+      eY = p2.y - (_sizeRadius_ + _arrowSize_) * dy / d;
 
     const th = calcTheta(p1.x, p1.y, p2.x, p2.y);
 
@@ -149,7 +150,7 @@ class DiagramEditor extends React.Component {
       <g key={makeid(6)} onMouseDown={this.onMouseDown(_objLink_, linkId)}>
         <line
           x1={sX} y1={sY} x2={eX} y2={eY}
-          style={{ strokeWidth:4, stroke:linkColor }}
+          style={{ strokeWidth:_sizeLink_, stroke:linkColor }}
         />
         <polygon points={path} style={{ fill:linkColor }} />
       </g>

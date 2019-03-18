@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import C from '../common/Constants.js';
-import { getImage } from '../common/ImageBank.js';
+import { IB } from '../common/ImageBank.js';
 
 import './Editor.css';
 
@@ -26,16 +26,17 @@ class Workspace extends React.Component {
 
   render () {
     const { height, width, projectData } = this.props;
+    const adjWidth = width - 5; // border-width
 
     return (
-      <div className="workspace" style={{ width:(width - 15), height }}>
+      <div className="workspace" style={{ width:adjWidth, height }}>
         <DiagramEditor
-          width={width - 15}
-          height={height - 2}
+          width={adjWidth}
+          height={height}
           eventReciever={this.onDiagramEvent}
           nodes={projectData.nodes}
           links={projectData.links}
-          getImage={getImage}
+          getImage={IB.getNodeImage}
         />
       </div>
     );

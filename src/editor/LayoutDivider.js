@@ -58,8 +58,12 @@ class LayoutDivider extends React.Component {
     document.removeEventListener('mousemove', this.handleMouseMove, {capture: true});
     document.removeEventListener('mouseup', this.handleMouseUp, {capture: true});
 
-    this.props.onLayoutChange(this.state.p1, p);
-    this.setState({ p1: 0, p2 : 0, dragging: true });
+    if( this.isVertical() ) {
+      this.props.onLayoutChange(this.state.p1, p);
+    } else {
+      this.props.onLayoutChange(p, this.state.p1);
+    }
+    this.setState({ p1: 0, p2 : 0, dragging: false });
   }
 
   isVertical = () => {
@@ -69,23 +73,48 @@ class LayoutDivider extends React.Component {
   render () {
     const size = this.props.size ? this.props.size : 7;
 
-    const shape = this.isVertical()
-      ? {
+    let mainCss, dragCss;
+
+    if( this.isVertical() ) {
+      mainCss = {
         flexBasis:size,
         width:`${size}px`,
         cursor:'ew-resize'
-      } : {
+      };
+
+      dragCss = {
+        zIndex:99999,
+        position:'fixed',
+        left:`${this.state.p2}px`,
+        backgroundColor:'darkGray',
+        width:`${size}px`,
+        height:'100%'
+      };
+    } else {
+      mainCss = {
         flexBasis:size,
         height:`${size}px`,
         cursor:'ns-resize'
-      }
-    ;
+      };
+
+      dragCss = {
+        zIndex:99999,
+        position:'fixed',
+        top:`${this.state.p2}px`,
+        backgroundColor:'darkGray',
+        height:`${size}px`,
+        width:'100%'
+      };
+    }
 
   	return (
-      <div ref="wrapper" style={shape}
+      <div ref="wrapper" style={mainCss}
         onMouseDown={this.handleMouseDown}
       >
-        &nbsp;
+        { this.state.dragging && (
+          <div style={dragCss}>
+          </div>
+        )}
       </div>
     );
   }

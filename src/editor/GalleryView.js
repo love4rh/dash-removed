@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Menu } from 'semantic-ui-react'
+import { Tab } from '../component/Tab.js';
 
 import './Editor.css';
 
@@ -22,7 +22,7 @@ class GalleryView extends React.Component {
     }
   }
 
-  handleTabClick = (tabIdx) => () => {
+  handleTabChange = (tabIdx) => () => {
     this.setState({ activeTab: tabIdx });
   }
 
@@ -33,17 +33,7 @@ class GalleryView extends React.Component {
     return (
       <div>
         <div className="paneTitle">Gallery</div>
-        <Menu>
-          { galleryList.map((o, i) => (
-              <Menu.Item key={'nodeTab-' + i} name={'nodeTab-' + i}
-                active={ activeTab === i}
-                onClick={this.handleTabClick(i)}
-              >
-                {o.name}
-              </Menu.Item>
-            ))
-          }
-        </Menu>
+        <Tab onTabChange={this.handleTabChange} panes={['A', 'B', 'C']} />
         <div style={{ height:'100vh', marginBottom:0, backgroundColor:'blue' }}>
           Node List
         </div>

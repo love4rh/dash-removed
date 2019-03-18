@@ -38,11 +38,12 @@ class MainFrame extends Component {
     window.addEventListener('resize', this.onResize);
 
     // this.loadScript('/', 'SegmentInfo.xml');
-    // this.loadScript('/', 'scriptSample.xml');
+
     const { projectList } = this.state;
     projectList.push(scriptSample);
     this.setState({ projectList: projectList, loading: false });
 
+    // this.loadScript('/', 'scriptSample.xml');
   }
 
   componentWillUnmount () {

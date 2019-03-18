@@ -35,6 +35,8 @@ class ProjectEditor extends React.Component {
     	activeIndex: 0,
     	focusedNode: null,
     	projectList: this.props.projectList,
+      leftWidth: 300,
+      bottomHeight: 250
     };
   }
 
@@ -82,17 +84,29 @@ class ProjectEditor extends React.Component {
   	this.setState({ projectList: projectList });
   }
 
-  handleLayoutChange = (f, t) => {
+  // type: gallery, info
+  handleLayoutChange = (type) => (f, t) => {
     console.log('Layout Change Event', f, t);
+
+    let { leftWidth, bottomHeight } = this.state;
+
+    if( 'gallery' === type ) {
+      leftWidth += t - f;
+    } else if( 'info' === type ) {
+      bottomHeight += t - f;
+    }
+
+    this.setState({ leftWidth:leftWidth, bottomHeight:bottomHeight });
   }
 
   render () {
   	const { width, height } = this.props;
-  	const { projectList } = this.state;
-  	const leftWidth = 300, bottomHeight = 250;
+  	const { projectList, leftWidth, bottomHeight } = this.state;
+
+    const dividerSize = 6;
 
   	const
-  		wsHeight = height - bottomHeight - 16,
+  		wsHeight = height - bottomHeight - 22 - dividerSize,
   		wsWidth = width - leftWidth - 3
   	;
 
@@ -119,12 +133,12 @@ class ProjectEditor extends React.Component {
         <div className="leftPane" style={{ flexBasis:leftWidth }}>
         	<GalleryView galleryList={appOpt.getGalleryList()} />
         </div>
-        <LayoutDivider direction={DividerDirection.vertical} size={5} onLayoutChange={this.handleLayoutChange} />
+        <LayoutDivider direction={DividerDirection.vertical} size={dividerSize} onLayoutChange={this.handleLayoutChange('gallery')} />
         <div className="rightPane" style={{ flexBasis:wsWidth }}>
         	<div className="mainPane" style={{ flexBasis:wsHeight }}>
         		<Tab onTabChange={this.handleTabChange} panes={workPanes} />
         	</div>
-          <LayoutDivider direction={DividerDirection.horizontal} size={5} onLayoutChange={this.handleLayoutChange} />
+          <LayoutDivider direction={DividerDirection.horizontal} size={dividerSize} onLayoutChange={this.handleLayoutChange('info')} />
         	<div className="bottomPane" style={{ flexBasis:bottomHeight }}>
         		<AttributeEditor
         			height={bottomHeight}
