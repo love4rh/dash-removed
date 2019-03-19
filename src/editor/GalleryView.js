@@ -19,22 +19,34 @@ class GalleryView extends React.Component {
 
     this.state = {
       activeTab: 0,
+      panes: [{
+        title:'A',
+      }, {
+        title:'BCDE',
+      }, {
+        title:'FGHIJK',
+      }]
     }
   }
 
-  handleTabChange = (tabIdx) => () => {
+  handleTabChange = (tabIdx) => {
+    console.log('tab changed', tabIdx);
     this.setState({ activeTab: tabIdx });
+  }
+
+  handleTabClose = (tabIdx) => {
+    console.log('tab closed', tabIdx);
   }
 
   render () {
     const { galleryList } = this.props;
-    const { activeTab } = this.state;
+    const { activeTab, panes } = this.state;
 
     return (
       <div>
         <div className="paneTitle">Gallery</div>
-        <Tab onTabChange={this.handleTabChange} panes={['A', 'B', 'C']} />
-        <div style={{ height:'100vh', marginBottom:0, backgroundColor:'blue' }}>
+        <Tab onTabChange={this.handleTabChange} onTabClose={this.handleTabClose} panes={panes} />
+        <div style={{ height:'100vh', marginBottom:0, backgroundColor:'white' }}>
           Node List
         </div>
       </div>

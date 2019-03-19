@@ -4,7 +4,7 @@
 }
 
 .dashTabList {
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #d4d4d5;
 	padding-left: 0;
 }
 
@@ -12,12 +12,27 @@
 	display: inline-block;
 	list-style: none;
 	margin-bottom: -1px;
-	padding: 0.5rem 0.75rem;
 	cursor: default;
+	border-radius: 0.2rem 0.2rem 0 0;
+}
+
+.dashTabPadding {
+	padding: 0.5rem 0.75rem 0.5rem 0.75rem;
+}
+
+.dashTabPaddingClose {
+	padding: 0.5rem 1.0rem 0.5rem 0.75rem;
 }
 
 .dashTabListActive {
 	background-color: white;
-	border: solid #ccc;
+	border: solid #d4d4d5;
 	border-width: 1px 1px 0 1px;
+}
+
+.tabCloseStyle {
+	position: relative;
+  left: 0.4rem;
+  top: 1px;
+  color: #777;
 }

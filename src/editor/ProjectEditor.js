@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Icon, Menu, Tab } from 'semantic-ui-react'
+import { Button, Icon, Menu } from 'semantic-ui-react'
 
 import C from '../common/Constants.js';
 
-import {isundef, isvalid} from '../common/tool.js';
+import { istrue, isundef, isvalid, makeid } from '../common/tool.js';
 
 import { LayoutDivider, DividerDirection} from './LayoutDivider.js';
+
+import { Tab } from '../component/Tab.js';
 
 import GalleryView from './GalleryView.js';
 import ScriptView from './ScriptView.js';
@@ -26,18 +28,37 @@ class ProjectEditor extends React.Component {
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
     projectList: PropTypes.array.isRequired,
+    onCloseProject: PropTypes.func.isRequired,
   }
 
   constructor (props) {
     super(props);
 
     this.state = {
-    	activeIndex: 0,
+    	activeIndex: -1,
     	focusedNode: null,
-    	projectList: this.props.projectList,
+    	projectList: [],
       leftWidth: 300,
       bottomHeight: 250
     };
+
+    this.handleTabClose = this.handleTabClose.bind(this);
+  }
+
+  componentWillReceiveProps (nextProps) {
+    let { activeIndex, projectList } = this.state;
+
+    const newState = {
+      projectList: nextProps.projectList
+    };
+
+    if( istrue(nextProps.addingNew) ) {
+      newState.activeIndex = nextProps.projectList.length - 1;
+    } else if( nextProps.projectList.length === 1 || (activeIndex === -1 && nextProps.projectList.length > 0) ) {
+      newState.activeIndex = 0;
+    }
+
+    this.setState(newState);
   }
 
   handleEvent = (type, param) => {
@@ -54,19 +75,20 @@ class ProjectEditor extends React.Component {
   	}
   }
 
-  handleTabChange = (ev, data) => {
+  handleTabChange = (tabIndex) => {
   	this.setState({
-  		activeIndex: data.activeIndex,
+  		activeIndex: tabIndex,
   		focusedNode: null,
   		attributes: []
   	});
   }
 
-  handleTabClose = (tabIndex) => (ev) => {
-    console.log('Tab Closed', tabIndex);
+  handleTabClose = (tabIndex) => {
+    const closed = this.props.onCloseProject(tabIndex);
 
-    // ev.preventDefault();
-    // ev.stopPropagation();
+    if( closed && tabIndex <= this.state.activeIndex ) {
+      this.handleTabChange(this.state.activeIndex - 1);
+    }
   }
 
   handleValueChange = (propIdx, value) => {
@@ -101,32 +123,24 @@ class ProjectEditor extends React.Component {
 
   render () {
   	const { width, height } = this.props;
-  	const { projectList, leftWidth, bottomHeight } = this.state;
+  	const { activeIndex, projectList, leftWidth, bottomHeight } = this.state;
 
     const dividerSize = 6;
 
   	const
-  		wsHeight = height - bottomHeight - 22 - dividerSize,
+  		wsHeight = height - bottomHeight - 5 - dividerSize, // 22
   		wsWidth = width - leftWidth - 3
   	;
 
   	const workPanes = [];
-  	for(let i = 0; i < projectList.length; ++i) {
-  		const p = projectList[i];
-  		workPanes.push({
-  			menuItem: (
-          <Menu.Item key={`openprj-${i}`}>
-            {p.title}<span style={{width:'10px'}}>&nbsp;</span>
-            <Button icon basic onClick={this.handleTabClose(i)}><Icon fitted name='close' /></Button>
-          </Menu.Item>
-        ),
-  			render: () => {
-          return (
-   					<Workspace key={'ws-' + i} width={wsWidth} height={wsHeight} eventRelay={this.handleEvent} projectData={p} />
-    			);
-        }
-  		});
-  	}
+    projectList.map((p, i) => {
+      workPanes.push({
+        title: p.title,
+        closeButton: true
+      });
+    });
+
+    const activeProject = activeIndex >= 0 ? projectList[activeIndex] : null;
 
   	return (
       <div className="editor" style={{ width, height }}>
@@ -136,7 +150,18 @@ class ProjectEditor extends React.Component {
         <LayoutDivider direction={DividerDirection.vertical} size={dividerSize} onLayoutChange={this.handleLayoutChange('gallery')} />
         <div className="rightPane" style={{ flexBasis:wsWidth }}>
         	<div className="mainPane" style={{ flexBasis:wsHeight }}>
-        		<Tab onTabChange={this.handleTabChange} panes={workPanes} />
+        		<Tab activeTab={activeIndex}
+              onTabChange={this.handleTabChange}
+              onTabClose={this.handleTabClose}
+              panes={workPanes}
+            />
+            { isvalid(activeProject) && (
+              <Workspace key={'ws-' + activeIndex}
+                width={wsWidth} height={wsHeight}
+                eventRelay={this.handleEvent}
+                projectData={activeProject}
+              />
+            )}
         	</div>
           <LayoutDivider direction={DividerDirection.horizontal} size={dividerSize} onLayoutChange={this.handleLayoutChange('info')} />
         	<div className="bottomPane" style={{ flexBasis:bottomHeight }}>

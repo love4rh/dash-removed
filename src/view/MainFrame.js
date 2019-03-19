@@ -26,6 +26,7 @@ class MainFrame extends Component {
 
     this.state = {
       loading: true,
+      addNew: false,
 
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
@@ -39,15 +40,47 @@ class MainFrame extends Component {
 
     // this.loadScript('/', 'SegmentInfo.xml');
 
-    const { projectList } = this.state;
-    projectList.push(scriptSample);
-    this.setState({ projectList: projectList, loading: false });
+    this.addProject(scriptSample);
+    this.setState({ loading: false });
 
-    // this.loadScript('/', 'scriptSample.xml');
+    this.loadScript('/', 'scriptSample.xml');
   }
 
   componentWillUnmount () {
     window.removeEventListener('resize', this.onResize);
+  }
+
+  test = (type) => () => {
+    if( 'add' === type ) {
+      this.loadScript('',
+        ['scriptSample.xml', 'SegmentInfo.xml'][Math.floor(Math.random() * 100) % 2]
+      );
+    }
+  }
+
+  // TODO already open check
+  addProject = (prj) => {
+    let { projectList } = this.state;
+    projectList.push(prj);
+    this.setState({ projectList: projectList, addNew: true });
+    setTimeout(() => {
+      this.setState({ addNew: false });
+    }, 500);
+  }
+
+  closeProject = (idx) => {
+    const { projectList } = this.state;
+
+    let newList = [];
+    projectList.map((prj, i) => {
+      if( i !== idx ) {
+        newList.push(prj);
+      }
+    });
+
+    this.setState({ projectList: newList });
+
+    return true;
   }
 
   onResize = (ev) => {
@@ -62,23 +95,21 @@ class MainFrame extends Component {
 
     apiProxy.getScript({ path, name },
       (res) => {
-        const { projectList } = this.state;
-
         if( res && res.data && isvalid(res.data.script) ) {
-          // console.log(JSON.stringify(res.data.script));
-          projectList.push(res.data.script);
-          this.setState({ projectList: projectList });
+          this.addProject(res.data.script)
         }
       }, (err) => {
         console.log('api getScript error', err);
       }, () => {
-        this.setState({ loading: false });
+        setTimeout(() => {
+          this.setState({ loading: false });
+        }, 200);
       }
     );
   }
 
   render() {
-    const { windowHeight, windowWidth, projectList } = this.state;
+    const { windowHeight, windowWidth, projectList, addNew } = this.state;
 
     return (
       <div>
@@ -87,6 +118,7 @@ class MainFrame extends Component {
             <Image size='mini' src={logo} style={{ marginRight: '1.5em' }} />
             S3 Explorer
           </Menu.Item>
+          <Menu.Item name='test1' onClick={this.test('add')}>Test#1</Menu.Item>
         </Menu>
 
         <Container text style={{ height: '55px' }}>&nbsp;</Container>
@@ -96,7 +128,9 @@ class MainFrame extends Component {
         <ProjectEditor
           height={windowHeight - 60}
           width={windowWidth}
-          projectList={this.state.projectList}
+          projectList={projectList}
+          addingNew={addNew}
+          onCloseProject={this.closeProject}
         />
       </div>
     );

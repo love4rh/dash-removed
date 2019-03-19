@@ -91,6 +91,8 @@ class DiagramEditor extends React.Component {
     };
 
     this.lastEvent = {};
+
+    this.onMouseEvent = this.onMouseEvent.bind(this);
   }
 
   componentDidMount () {
@@ -280,6 +282,10 @@ class DiagramEditor extends React.Component {
   onMouseDown = (type, id) => (ev) => {
     const wrapper = this.refs.wrapper;
 
+    if( !isvalid(wrapper) ) {
+      return;
+    }
+
     // const { shiftKey } = ev; // altKey, ctrlKey,
     const
       x = ev.clientX - wrapper.offsetLeft + wrapper.scrollLeft,
@@ -305,10 +311,7 @@ class DiagramEditor extends React.Component {
     }
 
     this.setState({ status:status, statusParam:statusParam });
-
-    if( isvalid(this.refs.wrapper) ) {
-      this.refs.wrapper.focus();
-    }
+    wrapper.focus();
 
     ev.preventDefault();
     ev.stopPropagation();
@@ -318,8 +321,15 @@ class DiagramEditor extends React.Component {
   }
 
   onMouseEvent = (ev) => {
-    const { nodes, links, status, statusParam } = this.state;
     const wrapper = this.refs.wrapper;
+
+    if( !isvalid(wrapper) ) {
+      document.removeEventListener('mouseup', this.onMouseEvent, {capture: true});
+      document.removeEventListener('mousemove', this.onMouseEvent, {capture: true});
+      return;
+    }
+
+    const { nodes, links, status, statusParam } = this.state;
 
     const
       x = ev.clientX - wrapper.offsetLeft + wrapper.scrollLeft,

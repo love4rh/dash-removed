@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { nvl } from '../common/tool.js';
+import { Icon } from 'semantic-ui-react'
+
+import { nvl, isvalid } from '../common/tool.js';
 
 import './Tab.css';
 
 
 
+/**
+ * Tab Component.
+ * Properties -----
+ * activeTab: initial activated tab index
+ * onTabChange: handler of the event when tab is changed. onTabChange(activeTabIndex)
+ * onTabClose: handler of the event when tab's close button is clicked. onTabClose(tabIndex)
+ * panes: {title, icon, closeButton}
+ */
 class Tab extends Component {
   static propTypes ={
     activeTab: PropTypes.number,
     onTabChange: PropTypes.func.isRequired,
+    onTabClose: PropTypes.func,
     panes: PropTypes.array.isRequired,
   }
 
@@ -18,7 +29,7 @@ class Tab extends Component {
     super(props);
 
     this.state = {
-      activeTab: nvl(this.props.activeTab, 0),
+      activeTab: 0,
     };
   }
 
@@ -26,13 +37,40 @@ class Tab extends Component {
     //
   }
 
+  componentWillReceiveProps (nextProps) {
+    if( nextProps.activeTab ) {
+      this.setState({ activeTab: nextProps.activeTab });
+    } else if( nextProps.panes.length === 1 ) {
+      this.setState({ activeTab: 0 });
+    }
+  }
+
   componentWillUnmount () {
     //
   }
 
-  onTabClick = (idx) => () => {
+  onTabClick = (idx) => (ev) => {
     this.setState({ activeTab: idx });
     this.props.onTabChange(idx);
+
+    ev.preventDefault();
+    ev.stopPropagation();
+  }
+
+  onTabClose = (idx) => (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    let close = true;
+
+    if( isvalid(this.props.onTabClose) ) {
+      close = this.props.onTabClose(idx);
+    }
+
+    if( idx <= this.state.activeTab ) {
+      const aIdx = this.state.activeTab - 1;
+      this.setState({ activeTab: aIdx, });
+    }
   }
 
   render () {
@@ -41,9 +79,9 @@ class Tab extends Component {
 
     return (
       <div className="dashTabs">
-        <ol className="dashTabList">
+        <div className="dashTabList">
           {panes.map((pane, idx) => {
-            let cssName = 'dashTabListItem';
+            let cssName = 'dashTabListItem ' + (pane.closeButton ? 'dashTabPaddingClose' : 'dashTabPadding');
 
             if( activeTab === idx ) {
               cssName += ' dashTabListActive'
@@ -54,11 +92,12 @@ class Tab extends Component {
                 className={cssName}
                 onClick={this.onTabClick(idx)}
               >
-                {pane}
+                {pane.title}
+                {pane.closeButton && <Icon className="tabCloseStyle" link name='close' onClick={this.onTabClose(idx)} />}
               </li>
             );
           })}
-        </ol>
+        </div>
       </div>
     );
   }
