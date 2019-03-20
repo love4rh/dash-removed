@@ -1,3 +1,6 @@
+DOM 상에서 상위 객체
+const p = elem.parentNode;
+
 align
 title
 lang

@@ -7,6 +7,10 @@ export const isvalid = (o) => {
 	return !isundef(o);
 };
 
+export const hasString = (o) => {
+	return o !== '' && isvalid(o);
+};
+
 export const makeMap = (list, keyName) => {
 	let map = {};
 

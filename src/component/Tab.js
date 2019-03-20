@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Icon } from 'semantic-ui-react'
+import { Icon } from '@blueprintjs/core';
 
-import { nvl, isvalid } from '../common/tool.js';
+import { isvalid, hasString } from '../common/tool.js';
 
 import './Tab.css';
 
@@ -30,6 +30,7 @@ class Tab extends Component {
 
     this.state = {
       activeTab: 0,
+      toolTip: { tabIndex: -1, text: '' }
     };
   }
 
@@ -49,12 +50,35 @@ class Tab extends Component {
     //
   }
 
-  onTabClick = (idx) => (ev) => {
-    this.setState({ activeTab: idx });
-    this.props.onTabChange(idx);
+  onTabOver = (idx) => (ev) => {
+    if( !hasString(this.props.panes[idx].tooltip) ) {
+      return;
+    }
 
+    const elem = ev.currentTarget;
+
+    this.setState({ toolTip: {
+      tabIndex: idx,
+      text: this.props.panes[idx].tooltip,
+      x: elem.offsetLeft + elem.clientWidth + 10,
+      y: elem.offsetTop
+    } });
+
+    setTimeout(() => {
+      this.hideToolTip();
+    }, 5000);
+  }
+
+  hideToolTip = () => {
+    this.setState({ toolTip: { tabIndex: -1, text: '' } });
+  }
+
+  onTabClick = (idx) => (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
+
+    this.setState({ activeTab: idx });
+    this.props.onTabChange(idx);
   }
 
   onTabClose = (idx) => (ev) => {
@@ -75,7 +99,8 @@ class Tab extends Component {
 
   render () {
     const { panes } = this.props;
-    const { activeTab } = this.state;
+    const { activeTab, toolTip } = this.state;
+    const { tabIndex, text } = toolTip;
 
     return (
       <div className="dashTabs">
@@ -90,13 +115,26 @@ class Tab extends Component {
             return (
               <li key={`dashtab-${idx}`}
                 className={cssName}
+                onMouseOver={this.onTabOver(idx)}
+                onMouseOut={this.hideToolTip}
                 onClick={this.onTabClick(idx)}
               >
-                {pane.title}
-                {pane.closeButton && <Icon className="tabCloseStyle" link name='close' onClick={this.onTabClose(idx)} />}
+                {isvalid(pane.icon) && (<img className="dashTabIcon" src={pane.icon} />)}
+                <span className="dashTabTitle">
+                  {hasString(pane.title) ? pane.title : ''}
+                </span>
+                {pane.closeButton && <div className="tabCloseStyle"><Icon icon="cross" iconSize={Icon.SIZE_STANDARD} onClick={this.onTabClose(idx)} /></div>}
               </li>
             );
           })}
+          {tabIndex !== -1 && text !== '' && (
+            <div className="toolTipDiv" style={{ left: toolTip.x, top: toolTip.y }}>
+              <div className="toolTipInner">
+                <div className="toolTipPointer"></div>
+                {text}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );

@@ -60,6 +60,18 @@ const apiProxy = {
     });
   },
 
+  getInitialSetting: (cbSuccess, cbError, cbComplete) => {
+    axios.get(_serverBaseUrl_ + '/initial')
+    .then(res => {
+      if (cbSuccess) cbSuccess(res);
+      if (cbComplete) cbComplete();
+    })
+    .catch(res => {
+      if (cbError) cbSuccess(res);
+      if (cbComplete) cbComplete();
+    });
+  },
+
   /**
    * request Crawlego Script.
    * param: path, name

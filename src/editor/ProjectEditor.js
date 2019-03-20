@@ -89,6 +89,8 @@ class ProjectEditor extends React.Component {
     if( closed && tabIndex <= this.state.activeIndex ) {
       this.handleTabChange(this.state.activeIndex - 1);
     }
+
+    return closed;
   }
 
   handleValueChange = (propIdx, value) => {
@@ -128,9 +130,11 @@ class ProjectEditor extends React.Component {
     const dividerSize = 6;
 
   	const
-  		wsHeight = height - bottomHeight - 5 - dividerSize, // 22
+  		wsHeight = height - bottomHeight - 4 - dividerSize, // 22, IE에서 120정도 부족함. 원인 파악요.
   		wsWidth = width - leftWidth - 3
   	;
+
+    // console.log('ProjectEditor render', window.outerHeight, window.innerHeight, height, wsHeight);
 
   	const workPanes = [];
     projectList.map((p, i) => {
@@ -144,12 +148,17 @@ class ProjectEditor extends React.Component {
 
   	return (
       <div className="editor" style={{ width, height }}>
-        <div className="leftPane" style={{ flexBasis:leftWidth }}>
+        <div className="leftPane" style={{ flexBasis:`${leftWidth}px` }}>
         	<GalleryView galleryList={appOpt.getGalleryList()} />
         </div>
-        <LayoutDivider direction={DividerDirection.vertical} size={dividerSize} onLayoutChange={this.handleLayoutChange('gallery')} />
-        <div className="rightPane" style={{ flexBasis:wsWidth }}>
-        	<div className="mainPane" style={{ flexBasis:wsHeight }}>
+        <div style={{ flexBasis:`${dividerSize}px` }}>
+          <LayoutDivider direction={DividerDirection.vertical}
+            size={dividerSize}
+            onLayoutChange={this.handleLayoutChange('gallery')}
+          />
+        </div>
+        <div className="rightPane" style={{ flexBasis:`${wsWidth}px` }}>
+        	<div className="mainPane" style={{ flexBasis:`${wsHeight}px` }}>
         		<Tab activeTab={activeIndex}
               onTabChange={this.handleTabChange}
               onTabClose={this.handleTabClose}
@@ -163,8 +172,13 @@ class ProjectEditor extends React.Component {
               />
             )}
         	</div>
-          <LayoutDivider direction={DividerDirection.horizontal} size={dividerSize} onLayoutChange={this.handleLayoutChange('info')} />
-        	<div className="bottomPane" style={{ flexBasis:bottomHeight }}>
+          <div style={{ flexBasis:`${dividerSize}px` }}>
+            <LayoutDivider direction={DividerDirection.horizontal}
+              size={dividerSize}
+              onLayoutChange={this.handleLayoutChange('info')}
+            />
+          </div>
+        	<div className="bottomPane" style={{ flexBasis:`${bottomHeight}px` }}>
         		<AttributeEditor
         			height={bottomHeight}
         			width={wsWidth}

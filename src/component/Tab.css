@@ -6,6 +6,7 @@
 .dashTabList {
 	border-bottom: 1px solid #d4d4d5;
 	padding-left: 0;
+	height: 38px;
 }
 
 .dashTabListItem {
@@ -13,26 +14,69 @@
 	list-style: none;
 	margin-bottom: -1px;
 	cursor: default;
-	border-radius: 0.2rem 0.2rem 0 0;
+	border-radius: 3px 3px 0 0;
+	border: solid #d4d4d5;
+	border-width: 1px 1px 0 1px;
+}
+
+.dashTabIcon {
+	height: 20px;
+	width: 20px;
+}
+
+.dashTabTitle {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 340px;
+	display: inline-block;
 }
 
 .dashTabPadding {
-	padding: 0.5rem 0.75rem 0.5rem 0.75rem;
+	padding: 7px 10px 7px 10px;
 }
 
 .dashTabPaddingClose {
-	padding: 0.5rem 1.0rem 0.5rem 0.75rem;
+	padding: 7px 14px 7px 10px;
 }
 
 .dashTabListActive {
 	background-color: white;
-	border: solid #d4d4d5;
 	border-width: 1px 1px 0 1px;
 }
 
 .tabCloseStyle {
 	position: relative;
-  left: 0.4rem;
-  top: 1px;
+	top: -4px;
+  left: 10px;
   color: #777;
+  display: inline-block;
+  cursor: pointer;
 }
+
+.toolTipDiv {
+	opacity: 0.8;
+	z-index: 999;
+	position: fixed;
+	margin-bottom: 12px;
+}
+
+.toolTipInner {
+	color: #fff;
+	background: #000;
+	border-radius: 0;
+	border: 1px solid #000;
+	padding: 10px;
+}
+
+.toolTipPointer {
+	position: absolute;
+	height: 12px;
+	width: 12px;
+	background: #000;
+	transform: translateX(-50%) translateY(-50%) rotateZ(45deg);
+	top: 50%;
+	left: 0;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+

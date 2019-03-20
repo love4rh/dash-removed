@@ -8,6 +8,18 @@ import { DataSource, DataSource2 } from '../grid/DataSource.js';
 import apiProxy from '../common/apiProxy.js';
 
 import {
+    Alignment,
+    Button,
+    Classes,
+    Navbar,
+    NavbarDivider,
+    NavbarGroup,
+    NavbarHeading,
+    Spinner,
+    Overlay
+} from '@blueprintjs/core';
+
+import {
   Container,
   Icon,
   Image,
@@ -98,11 +110,10 @@ class S3Explorer extends React.Component {
     });
   }
 
-  handleMenuClick = (ev, data) => {
-    // console.log(ev, data);
-    this.setState({ activeMenu: data.name });
+  handleMenuClick = (type) => (ev) => {
+    this.setState({ activeMenu: type });
 
-    if (data.name === 'refresh') {
+    if (type === 'refresh') {
       this.actionReloadList();
     }
   }
@@ -114,26 +125,30 @@ class S3Explorer extends React.Component {
   }
 
   render() {
+    const { windowHeight, windowWidth } = this.state;
+
     return (
       <div>
-        <Menu fixed='top' inverted>
-          <Menu.Item header name='Home' onClick={this.handleMenuClick}>
-            <Image size='mini' src={logo} style={{ marginRight: '1.5em' }} />
-            S3 Explorer
-          </Menu.Item>
-          <Menu.Item name='refresh' onClick={this.handleMenuClick}>Refresh</Menu.Item>
-          { this.state.pageType === 'grid'
-            ? <Menu.Item name='dataName'>{this.state.dataName}</Menu.Item>
-            : null
-          }
-          <Menu.Item name='setting' position='right' onClick={this.handleMenuClick}>
-            <Icon name='setting' size='large' />
-          </Menu.Item>
-        </Menu>
+        <Navbar className="bp3-dark" >
+          <NavbarGroup align={Alignment.LEFT}>
+            <NavbarHeading style={{ paddingTop:'5px' }}><img alt="logo" src={logo} style={{ width:'32px', height:'32px' }} /></NavbarHeading>
+            <NavbarHeading>S3 Explorer</NavbarHeading>
+            <NavbarDivider />
+            <Button className={Classes.MINIMAL} icon="refresh" text="Refresh" onClick={this.handleMenuClick('refresh')} />
+            {this.state.pageType === 'grid' && (
+              <Button className={Classes.MINIMAL} icon="document" text={this.state.dataName} />
+            )}
+          </NavbarGroup>
+          <NavbarGroup align={Alignment.RIGHT}>
+            <Button className={Classes.MINIMAL} icon="cog" text="Setting" onClick={this.handleMenuClick('setting')} />
+          </NavbarGroup>
+        </Navbar>
 
-        <Container text style={{ height: '55px' }}>&nbsp;</Container>
-
-        { this.state.loading ? (<Dimmer active inverted><Loader content='Loading' /></Dimmer>) : null }
+        {this.state.loading && (
+          <Overlay isOpen={this.state.loading}>
+            <div className="waitingPopup" style={{ left:`${windowWidth / 2 - 100}px`, top:`${windowHeight / 2 - 100}px` }}><Spinner /></div>
+          </Overlay>
+        )}
 
         { this.state.pageType === 'grid'
           ? <DataGrid

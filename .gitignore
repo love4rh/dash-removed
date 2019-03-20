@@ -4,6 +4,8 @@ dist/
 # Other files and folders
 .settings/
 node_modules/
+public/@blueprintjs
+public/normalize.css
 
 # Executables
 *.swf
@@ -20,3 +22,5 @@ yarn.lock
 
 doc/scriptSample.xml
 doc/*.xl*
+
+

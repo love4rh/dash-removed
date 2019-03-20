@@ -37,5 +37,8 @@ npm install --save @babel/polyfill
 
 
 ## blueprint
-https://blueprintjs.com/docs/#core/components/checkbox
+https://blueprintjs.com/docs/#blueprint/getting-started
+yarn add @blueprintjs/core react react-dom
+
+copy folders -- normalize.css, @blueprintjs to public
 

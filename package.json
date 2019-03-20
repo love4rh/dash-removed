@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
+    "@blueprintjs/core": "^3.14.1",
     "axios": "^0.18.0",
     "monaco-editor": "^0.16.1",
     "monaco-editor-webpack-plugin": "^1.7.0",

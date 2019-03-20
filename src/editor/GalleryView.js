@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { Tab } from '../component/Tab.js';
 
+import { IB } from '../common/ImageBank.js';
+
 import './Editor.css';
 
 
@@ -20,11 +22,20 @@ class GalleryView extends React.Component {
     this.state = {
       activeTab: 0,
       panes: [{
-        title:'A',
+        icon: IB.getCatagoryImage('favorite'),
+        tooltip: 'Favorite Nodes'
       }, {
-        title:'BCDE',
+        icon: IB.getCatagoryImage('input'),
+        tooltip: 'Input Nodes'
       }, {
-        title:'FGHIJK',
+        icon: IB.getCatagoryImage('processing'),
+        tooltip: 'Processing Nodes'
+      }, {
+        icon: IB.getCatagoryImage('chart'),
+        tooltip: 'Nodes for Chart'
+      }, {
+        icon: IB.getCatagoryImage('output'),
+        tooltip: 'Ouput Nodes'
       }]
     }
   }

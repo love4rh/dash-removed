@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import logo from '../logo.svg';
-// import css from './MainFrame.less';
 
 import { ProjectEditor } from '../editor/ProjectEditor.js';
 
@@ -9,15 +8,20 @@ import {isvalid} from '../common/tool.js';
 
 import { scriptSample } from '../mock/sampleProject.js';
 
-
 import {
-  Container,
-  Icon,
-  Image,
-  Menu,
-  Loader,
-  Dimmer,
-} from 'semantic-ui-react';
+    Alignment,
+    Button,
+    Classes,
+    Navbar,
+    NavbarDivider,
+    NavbarGroup,
+    NavbarHeading,
+    Spinner,
+    Overlay
+} from '@blueprintjs/core';
+
+import './MainFrame.css';
+
 
 
 class MainFrame extends Component {
@@ -38,12 +42,12 @@ class MainFrame extends Component {
   componentDidMount () {
     window.addEventListener('resize', this.onResize);
 
-    // this.loadScript('/', 'SegmentInfo.xml');
-
-    this.addProject(scriptSample);
-    this.setState({ loading: false });
-
-    this.loadScript('/', 'scriptSample.xml');
+    this.initialize(() => {
+      this.addNewProject();
+      // this.loadScript('/', 'SegmentInfo.xml');
+      this.addProject(scriptSample);
+      // this.loadScript('/', 'scriptSample.xml');
+    });
   }
 
   componentWillUnmount () {
@@ -51,11 +55,46 @@ class MainFrame extends Component {
   }
 
   test = (type) => () => {
-    if( 'add' === type ) {
+    if( 'open' === type ) {
       this.loadScript('',
         ['scriptSample.xml', 'SegmentInfo.xml'][Math.floor(Math.random() * 100) % 2]
       );
+    } else if( 'new' === type ) {
+      this.addNewProject();
     }
+  }
+
+  initialize = (cb) => {
+    if( cb ) cb();
+
+    this.setState({ loading: false });
+    /*
+    this.setState({ loading: true });
+
+    apiProxy.getInitialSetting(
+      (res) => {
+        if( res && res.data && isvalid(res.data.gallery) ) {
+          console.log(JSON.stringify(res.data.gallery));
+          this.setState({ gallery: res.data.gallery });
+        }
+      }, (err) => {
+        console.log('api getInitialSetting error', err);
+      }, () => {
+        this.setState({ loading: false });
+
+        if( cb ) cb();
+      }
+    ); // */
+  }
+
+  addNewProject = () => {
+    this.addProject({
+      'title':'New Project',
+      'description':'',
+      'author':'',
+      'nodes':{},
+      'links': []
+    });
   }
 
   // TODO already open check
@@ -76,6 +115,7 @@ class MainFrame extends Component {
       if( i !== idx ) {
         newList.push(prj);
       }
+      return prj;
     });
 
     this.setState({ projectList: newList });
@@ -86,7 +126,7 @@ class MainFrame extends Component {
   onResize = (ev) => {
     this.setState({
       windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight,
+      windowHeight: window.innerHeight
     });
   }
 
@@ -113,20 +153,24 @@ class MainFrame extends Component {
 
     return (
       <div>
-        <Menu fixed='top' inverted>
-          <Menu.Item header name='Home' onClick={this.handleMenuClick}>
-            <Image size='mini' src={logo} style={{ marginRight: '1.5em' }} />
-            S3 Explorer
-          </Menu.Item>
-          <Menu.Item name='test1' onClick={this.test('add')}>Test#1</Menu.Item>
-        </Menu>
+        <Navbar className="bp3-dark" >
+          <NavbarGroup align={Alignment.LEFT}>
+            <NavbarHeading style={{ paddingTop:'5px' }}><img alt="logo" src={logo} style={{ width:'32px', height:'32px' }} /></NavbarHeading>
+            <NavbarHeading>Dash</NavbarHeading>
+            <NavbarDivider />
+            <Button className={Classes.MINIMAL} icon="home" text="New" onClick={this.test('new')} />
+            <Button className={Classes.MINIMAL} icon="document" text="Open" onClick={this.test('open')} />
+          </NavbarGroup>
+        </Navbar>
 
-        <Container text style={{ height: '55px' }}>&nbsp;</Container>
-
-        {this.state.loading ? (<Dimmer active inverted><Loader content='Loading' /></Dimmer>) : null}
+        {this.state.loading && (
+          <Overlay isOpen={this.state.loading}>
+            <div className="waitingPopup" style={{ left:`${windowWidth / 2 - 100}px`, top:`${windowHeight / 2 - 100}px` }}><Spinner /></div>
+          </Overlay>
+        )}
 
         <ProjectEditor
-          height={windowHeight - 60}
+          height={windowHeight - 55}
           width={windowWidth}
           projectList={projectList}
           addingNew={addNew}
