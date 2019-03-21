@@ -158,8 +158,8 @@ class MainFrame extends Component {
             <NavbarHeading style={{ paddingTop:'5px' }}><img alt="logo" src={logo} style={{ width:'32px', height:'32px' }} /></NavbarHeading>
             <NavbarHeading>Dash</NavbarHeading>
             <NavbarDivider />
-            <Button className={Classes.MINIMAL} icon="home" text="New" onClick={this.test('new')} />
-            <Button className={Classes.MINIMAL} icon="document" text="Open" onClick={this.test('open')} />
+            <Button className={Classes.MINIMAL} icon="document" text="New" onClick={this.test('new')} />
+            <Button className={Classes.MINIMAL} icon="folder-open" text="Open" onClick={this.test('open')} />
           </NavbarGroup>
         </Navbar>
 

@@ -19,15 +19,6 @@ import {
     Overlay
 } from '@blueprintjs/core';
 
-import {
-  Container,
-  Icon,
-  Image,
-  Menu,
-  Loader,
-  Dimmer,
-} from 'semantic-ui-react';
-
 
 const _testDs = new DataSource({ title: 'TEST', columnCount: 15, rowCount: 1000, rowHeight: 32 });
 

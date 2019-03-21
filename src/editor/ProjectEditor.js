@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Icon, Menu } from 'semantic-ui-react'
-
 import C from '../common/Constants.js';
 
-import { istrue, isundef, isvalid, makeid } from '../common/tool.js';
+import { istrue, isundef, isvalid } from '../common/tool.js';
 
 import { LayoutDivider, DividerDirection} from './LayoutDivider.js';
 
@@ -46,7 +44,7 @@ class ProjectEditor extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    let { activeIndex, projectList } = this.state;
+    let { activeIndex } = this.state;
 
     const newState = {
       projectList: nextProps.projectList
@@ -130,7 +128,7 @@ class ProjectEditor extends React.Component {
     const dividerSize = 6;
 
   	const
-  		wsHeight = height - bottomHeight - 4 - dividerSize, // 22, IE에서 120정도 부족함. 원인 파악요.
+  		wsHeight = height - bottomHeight - 7 - dividerSize, // 22, IE에서 120정도 부족함. 원인 파악요.
   		wsWidth = width - leftWidth - 3
   	;
 
@@ -142,6 +140,7 @@ class ProjectEditor extends React.Component {
         title: p.title,
         closeButton: true
       });
+      return p;
     });
 
     const activeProject = activeIndex >= 0 ? projectList[activeIndex] : null;

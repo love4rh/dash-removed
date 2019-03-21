@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Tab } from '../component/Tab.js';
-
 import { IB } from '../common/ImageBank.js';
+
+import appOpt from '../common/appSetting.js';
 
 import './Editor.css';
 
@@ -20,22 +21,27 @@ class GalleryView extends React.Component {
     super(props);
 
     this.state = {
-      activeTab: 0,
+      activeTab: 1,
       panes: [{
         icon: IB.getCatagoryImage('favorite'),
-        tooltip: 'Favorite Nodes'
+        tooltip: 'Favorite Nodes',
+        gallery: appOpt.getGallery('favorite')
       }, {
         icon: IB.getCatagoryImage('input'),
-        tooltip: 'Input Nodes'
+        tooltip: 'Input Nodes',
+        gallery: appOpt.getGallery('input')
       }, {
         icon: IB.getCatagoryImage('processing'),
-        tooltip: 'Processing Nodes'
+        tooltip: 'Processing Nodes',
+        gallery: appOpt.getGallery('processing')
       }, {
         icon: IB.getCatagoryImage('chart'),
-        tooltip: 'Nodes for Chart'
+        tooltip: 'Nodes for Chart',
+        gallery: appOpt.getGallery('chart')
       }, {
         icon: IB.getCatagoryImage('output'),
-        tooltip: 'Ouput Nodes'
+        tooltip: 'Ouput Nodes',
+        gallery: appOpt.getGallery('output')
       }]
     }
   }
@@ -53,12 +59,22 @@ class GalleryView extends React.Component {
     const { galleryList } = this.props;
     const { activeTab, panes } = this.state;
 
+    const { gallery } = panes[activeTab];
+
     return (
       <div>
         <div className="paneTitle">Gallery</div>
-        <Tab onTabChange={this.handleTabChange} onTabClose={this.handleTabClose} panes={panes} />
+        <Tab activeTab={activeTab} onTabChange={this.handleTabChange} onTabClose={this.handleTabClose} panes={panes} />
         <div style={{ height:'100vh', marginBottom:0, backgroundColor:'white' }}>
-          Node List
+          <div key={`gp-${activeTab}`} className="galleryPanel">
+            {gallery.map((p, idx) => {
+              return (
+                <div key={`gpe-${idx}`} className="galleryItem">
+                  <img className="galleryIcon" alt={p.name} src={IB.getNodeImage(p.type, true)} /> {p.name}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );

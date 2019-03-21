@@ -16,8 +16,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'502',
         'name':'LiveWatch',
         'category':'chart',
@@ -42,8 +41,7 @@ const appMeta = {
         'beFrom':'na',
         'beTo':'na',
         'descripion':''
-      },
-      {
+      }, {
         'id':'201',
         'name':'DataGroup',
         'category':'input',
@@ -54,8 +52,7 @@ const appMeta = {
         'beFrom':'101',
         'beTo':'na',
         'descripion':''
-      },
-      {
+      }, {
         'id':'211',
         'name':'DBInput',
         'category':'input',
@@ -66,8 +63,7 @@ const appMeta = {
         'beFrom':'na',
         'beTo':'na',
         'descripion':''
-      },
-      {
+      }, {
         'id':'212',
         'name':'FileInput',
         'category':'input',
@@ -78,8 +74,7 @@ const appMeta = {
         'beFrom':'na',
         'beTo':'na',
         'descripion':''
-      },
-      {
+      }, {
         'id':'213',
         'name':'DataOnIn',
         'category':'input',
@@ -90,8 +85,7 @@ const appMeta = {
         'beFrom':'na',
         'beTo':'na',
         'descripion':''
-      },
-      {
+      }, {
         'id':'214',
         'name':'epgOnLog',
         'category':'input',
@@ -116,8 +110,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'402',
         'name':'DataOnLoading',
         'category':'output',
@@ -128,8 +121,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'403',
         'name':'DataOnInsert',
         'category':'output',
@@ -140,8 +132,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'404',
         'name':'FileOutput',
         'category':'output',
@@ -152,8 +143,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'405',
         'name':'DirectLoading',
         'category':'output',
@@ -164,8 +154,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'406',
         'name':'FileSepOutput',
         'category':'output',
@@ -176,8 +165,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'407',
         'name':'S3Output',
         'category':'output',
@@ -202,8 +190,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'302',
         'name':'CodeConverter',
         'category':'processing',
@@ -214,8 +201,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'303',
         'name':'ColumnOperator',
         'category':'processing',
@@ -226,8 +212,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'304',
         'name':'RenameColumn',
         'category':'processing',
@@ -238,8 +223,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'305',
         'name':'Derived',
         'category':'processing',
@@ -250,8 +234,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'306',
         'name':'DistinctData',
         'category':'processing',
@@ -262,8 +245,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'307',
         'name':'GroupCount',
         'category':'processing',
@@ -274,8 +256,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'308',
         'name':'SelectByGroup',
         'category':'processing',
@@ -286,8 +267,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'309',
         'name':'MergeData',
         'category':'processing',
@@ -298,8 +278,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'321',
         'name':'MergeInto',
         'category':'processing',
@@ -310,8 +289,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'310',
         'name':'SelectData',
         'category':'processing',
@@ -322,8 +300,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'311',
         'name':'SeparateValue',
         'category':'processing',
@@ -334,8 +311,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'322',
         'name':'PairedSeparate',
         'category':'processing',
@@ -346,8 +322,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'312',
         'name':'SortColumn',
         'category':'processing',
@@ -358,8 +333,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'313',
         'name':'GroupingValue',
         'category':'processing',
@@ -370,8 +344,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'314',
         'name':'ImageCrawler',
         'category':'processing',
@@ -382,8 +355,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'317',
         'name':'GnSchdFilter',
         'category':'processing',
@@ -394,8 +366,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'318',
         'name':'DBTransaction',
         'category':'processing',
@@ -406,8 +377,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'319',
         'name':'DBInputProcess',
         'category':'processing',
@@ -418,8 +388,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'320',
         'name':'GroupingCompare',
         'category':'processing',
@@ -430,8 +399,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'321',
         'name':'GoStop',
         'category':'processing',
@@ -442,8 +410,7 @@ const appMeta = {
         'beFrom':'all',
         'beTo':'101',
         'descripion':''
-      },
-      {
+      }, {
         'id':'322',
         'name':'Replace',
         'category':'processing',
@@ -486,6 +453,11 @@ export const appOpt = {
   },
 
   getGallery: (type) => {
+    if( 'favorite' === type ) {
+        // TODO favorite 목록 정리
+        return [];
+    }
+
     return appMeta.gallery[type];
   }
 };

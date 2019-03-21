@@ -35,8 +35,31 @@
   background-color: red;
 }
 
+
+
 .gallery {
   background-color: red;
+}
+
+.galleryPanel {
+  padding: 5px;
+}
+
+.galleryItem {
+  cursor: default;
+  line-height: 24px;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.galleryItem:hover {
+  font-style: bolder;
+  color: blue;
+}
+
+.galleryIcon{
+  position: relative;
+  top: 3px;
 }
 
 .workspace {

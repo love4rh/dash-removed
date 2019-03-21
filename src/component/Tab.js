@@ -85,13 +85,13 @@ class Tab extends Component {
     ev.preventDefault();
     ev.stopPropagation();
 
-    let close = true;
+    let closed = false;
 
     if( isvalid(this.props.onTabClose) ) {
-      close = this.props.onTabClose(idx);
+      closed = this.props.onTabClose(idx);
     }
 
-    if( idx <= this.state.activeTab ) {
+    if( closed && idx <= this.state.activeTab ) {
       const aIdx = this.state.activeTab - 1;
       this.setState({ activeTab: aIdx, });
     }
@@ -123,7 +123,11 @@ class Tab extends Component {
                 <span className="dashTabTitle">
                   {hasString(pane.title) ? pane.title : ''}
                 </span>
-                {pane.closeButton && <div className="tabCloseStyle"><Icon icon="cross" iconSize={Icon.SIZE_STANDARD} onClick={this.onTabClose(idx)} /></div>}
+                {pane.closeButton && (
+                  <div className="tabCloseStyle">
+                    <Icon icon="cross" iconSize={Icon.SIZE_STANDARD} onClick={this.onTabClose(idx)} />
+                  </div>
+                )}
               </li>
             );
           })}

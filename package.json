@@ -6,7 +6,7 @@
     "@babel/polyfill": "^7.2.5",
     "@blueprintjs/core": "^3.14.1",
     "axios": "^0.18.0",
-    "monaco-editor": "^0.16.1",
+    "monaco-editor": "^0.16.2",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "react": "^16.8.4",
     "react-bootstrap": "^0.32.4",
