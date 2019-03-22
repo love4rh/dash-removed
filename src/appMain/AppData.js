@@ -1,22 +1,16 @@
-import { decorate, observable, action } from 'mobx';
-import { observer } from 'mobx-react';
+import { observable, action } from 'mobx';
+
 
 
 export default class AppData {
-  number = 0;
+  @observable number = 0;
 
-  increase = () => {
+  @action increase = () => {
     this.number++;
   }
 
-  decrease = () => {
+  @action decrease = () => {
     this.number--;
   }
 }
 
-
-decorate(AppData, {
-  number: observable,
-  increase: action,
-  decrease: action
-});

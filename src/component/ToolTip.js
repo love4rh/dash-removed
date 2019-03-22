@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Icon } from '@blueprintjs/core';
-
-import { isvalid, nvl } from '../common/tool.js';
+import { nvl } from '../common/tool.js';
 
 import './ToolTip.css';
 

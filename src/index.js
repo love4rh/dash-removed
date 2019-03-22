@@ -10,8 +10,6 @@ import AppData from './appMain/AppData.js';
 
 import './index.css';
 
-import 'semantic-ui-css/semantic.min.css';
-
 import 'normalize.css/normalize.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';

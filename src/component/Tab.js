@@ -121,7 +121,7 @@ class Tab extends Component {
                 onMouseOut={this.hideToolTip}
                 onClick={this.onTabClick(idx)}
               >
-                {isvalid(pane.icon) && (<img className="dashTabIcon" src={pane.icon} />)}
+                {isvalid(pane.icon) && (<img alt="" className="dashTabIcon" src={pane.icon} />)}
                 <span className="dashTabTitle">
                   {hasString(pane.title) ? pane.title : ''}
                 </span>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Table } from 'semantic-ui-react'
+import { Icon } from '@blueprintjs/core';
 
 import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
@@ -47,40 +47,40 @@ class FileListView extends Component {
 
     return (
       <div style={{ marginLeft:margin, marginRight:margin, marginBottom:margin }}>
-        <Table celled singleLine style={{width:(compWidth - scrollbarSize() - 2 * margin), marginBottom:0}}>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell colSpan="4">File List (Count: {fileList.length})</Table.HeaderCell>
-            </Table.Row>
-            <Table.Row>
-              <Table.HeaderCell width="5">Name</Table.HeaderCell>
-              <Table.HeaderCell width="5">Path</Table.HeaderCell>
-              <Table.HeaderCell width="3" textAlign="right">Size</Table.HeaderCell>
-              <Table.HeaderCell width="3" textAlign="right">Time</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-        </Table>
+        <table celled singleLine style={{width:(compWidth - scrollbarSize() - 2 * margin), marginBottom:0}}>
+          <theader>
+            <tr>
+              <th colSpan="4">File List (Count: {fileList.length})</th>
+            </tr>
+            <tr>
+              <th width="5">Name</th>
+              <th width="5">Path</th>
+              <th width="3" textAlign="right">Size</th>
+              <th width="3" textAlign="right">Time</th>
+            </tr>
+          </theader>
+        </table>
         <div style={{ width:'100%', height:(compHeight - 110), overflow:'auto' }} onScroll={this.onScroll}>
-          <Table celled singleLine selectable style={{width:'100%', marginTop:0}}>
-            <Table.Body>
+          <table celled singleLine selectable style={{width:'100%', marginTop:0}}>
+            <tbody>
               {fileList.map((data, idx) => {
                 return (
-                  <Table.Row key={idx} onClick={this.onClickRow(data)}>
-                    <Table.Cell width="5">
-                      <Icon name="file outline" />{data.name}
-                    </Table.Cell>
-                    <Table.Cell width="5">{data.path}</Table.Cell>
-                    <Table.Cell width="3" textAlign="right">
+                  <tr key={idx} onClick={this.onClickRow(data)}>
+                    <td width="5">
+                      <Icon icon="document" iconSize={Icon.SIZE_STANDARD} />{data.name}
+                    </td>
+                    <td width="5">{data.path}</td>
+                    <td width="3" textAlign="right">
                       {data.size}
-                    </Table.Cell>
-                    <Table.Cell width="3" textAlign="right">
+                    </td>
+                    <td width="3" textAlign="right">
                       {data.mTime}
-                    </Table.Cell>
-                  </Table.Row>
+                    </td>
+                  </tr>
                 );
               })}
-            </Table.Body>
-          </Table>
+            </tbody>
+          </table>
         </div>
       </div>
     );

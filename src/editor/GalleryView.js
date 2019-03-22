@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 import appOpt from '../common/appSetting.js';
 
@@ -56,7 +56,7 @@ class GalleryView extends React.Component {
   }
 
   render () {
-    const { galleryList, height } = this.props;
+    const { height } = this.props;
     const { activeTab, panes } = this.state;
 
     const { gallery } = panes[activeTab];
