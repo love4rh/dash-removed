@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { inject } from 'mobx-react';
-
+import { observer, inject } from 'mobx-react';
 
 import logo from '../assets/logo.svg';
 
@@ -26,12 +25,11 @@ import {
 import './MainFrame.css';
 
 
-
+@inject('appData')
+@observer
 class MainFrame extends Component {
   constructor (props) {
     super(props);
-
-    inject('appData', this.props);
 
     this.state = {
       loading: true,
@@ -60,12 +58,18 @@ class MainFrame extends Component {
   }
 
   test = (type) => () => {
+    const { appData } = this.props;
+
     if( 'open' === type ) {
       this.loadScript('',
         ['scriptSample.xml', 'SegmentInfo.xml'][Math.floor(Math.random() * 100) % 2]
       );
     } else if( 'new' === type ) {
       this.addNewProject();
+    } else if( 'add' === type ) {
+      appData.increase();
+    } else if( 'sub' === type ) {
+      appData.decrease();
     }
   }
 
@@ -93,8 +97,6 @@ class MainFrame extends Component {
   }
 
   addNewProject = () => {
-    console.log(this.props);
-
     this.addProject({
       'title':'New Project',
       'description':'',
@@ -156,6 +158,7 @@ class MainFrame extends Component {
   }
 
   render() {
+    const { appData } = this.props;
     const { windowHeight, windowWidth, projectList, addNew } = this.state;
 
     return (
@@ -167,6 +170,9 @@ class MainFrame extends Component {
             <NavbarDivider />
             <Button className={Classes.MINIMAL} icon="document" text="New" onClick={this.test('new')} />
             <Button className={Classes.MINIMAL} icon="folder-open" text="Open" onClick={this.test('open')} />
+            <Button className={Classes.MINIMAL} icon="plus" text="Add" onClick={this.test('add')} />
+            <Button className={Classes.MINIMAL} icon="minus" text="Sub" onClick={this.test('sub')} />
+            {appData.number}
           </NavbarGroup>
         </Navbar>
 

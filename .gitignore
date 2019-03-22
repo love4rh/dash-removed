@@ -15,10 +15,7 @@ config/
 
 # 
 package-lock.json
-package.json
 *.log
-
-yarn.lock
 
 doc/scriptSample.xml
 doc/*.xl*
