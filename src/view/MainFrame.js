@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import logo from '../logo.svg';
+import { inject } from 'mobx-react';
+
+
+import logo from '../assets/logo.svg';
 
 import { ProjectEditor } from '../editor/ProjectEditor.js';
 
@@ -27,6 +30,8 @@ import './MainFrame.css';
 class MainFrame extends Component {
   constructor (props) {
     super(props);
+
+    inject('appData', this.props);
 
     this.state = {
       loading: true,
@@ -88,6 +93,8 @@ class MainFrame extends Component {
   }
 
   addNewProject = () => {
+    console.log(this.props);
+
     this.addProject({
       'title':'New Project',
       'description':'',

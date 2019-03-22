@@ -2,7 +2,7 @@
 
 ## react
 
-## sematic-ui-react
+## sematic-ui-react --> not used
 https://react.semantic-ui.com
 
 
@@ -45,9 +45,25 @@ npm install --save @babel/polyfill
 
 ## blueprint
 https://blueprintjs.com/docs/#blueprint/getting-started
-yarn add @blueprintjs/core react react-dom monaco-editor monaco-editor-webpack-plugin
+yarn add @blueprintjs/core react react-dom mobx mobx-react monaco-editor monaco-editor-webpack-plugin @babel/plugin-proposal-class-properties @babel/plugin-proposal-decorators
 
 copy folders -- normalize.css, @blueprintjs to public
 
 yarn upgrade
 
+
+## mobX
+https://velog.io/@velopert/MobX-2-%EB%A6%AC%EC%95%A1%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EC%97%90%EC%84%9C-MobX-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-oejltas52z
+
+
+# Annotaion-style 사용
+
+
+
+
+npm install --save @babel/polyfill
+
+yarn add @blueprintjs/core react react-dom mobx mobx-react monaco-editor monaco-editor-webpack-plugin @babel/plugin-proposal-class-properties @babel/plugin-proposal-decorators
+
+yarn add @babel/preset-react
+yarn add babel-preset-mobx

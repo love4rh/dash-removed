@@ -5,6 +5,8 @@ import { Icon } from '@blueprintjs/core';
 
 import { isvalid, hasString } from '../common/tool.js';
 
+import ToolTip from './ToolTip.js';
+
 import './Tab.css';
 
 
@@ -131,14 +133,7 @@ class Tab extends Component {
               </li>
             );
           })}
-          {tabIndex !== -1 && text !== '' && (
-            <div className="toolTipDiv" style={{ left: toolTip.x, top: toolTip.y }}>
-              <div className="toolTipInner">
-                <div className="toolTipPointer"></div>
-                {text}
-              </div>
-            </div>
-          )}
+          { tabIndex !== -1 && text !== '' && (<ToolTip x={toolTip.x} y={toolTip.y}>{text}</ToolTip>) }
         </div>
       </div>
     );

@@ -148,7 +148,7 @@ class ProjectEditor extends React.Component {
   	return (
       <div className="editor" style={{ width, height }}>
         <div className="leftPane" style={{ flexBasis:`${leftWidth}px` }}>
-        	<GalleryView galleryList={appOpt.getGalleryList()} />
+        	<GalleryView height={height} />
         </div>
         <div style={{ flexBasis:`${dividerSize}px` }}>
           <LayoutDivider direction={DividerDirection.vertical}

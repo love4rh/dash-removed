@@ -286,10 +286,12 @@ class DiagramEditor extends React.Component {
       return;
     }
 
+    const pNode = wrapper.parentNode;
+
     // const { shiftKey } = ev; // altKey, ctrlKey,
     const
-      x = ev.clientX - wrapper.offsetLeft + wrapper.scrollLeft,
-      y = ev.clientY - wrapper.offsetTop + wrapper.scrollTop
+      x = ev.clientX - pNode.offsetLeft + pNode.scrollLeft,
+      y = ev.clientY - pNode.offsetTop + pNode.scrollTop
     ; // */
 
     let status = _stDragNode_;
@@ -331,9 +333,11 @@ class DiagramEditor extends React.Component {
 
     const { nodes, links, status, statusParam } = this.state;
 
+    const pNode = wrapper.parentNode;
+
     const
-      x = ev.clientX - wrapper.offsetLeft + wrapper.scrollLeft,
-      y = ev.clientY - wrapper.offsetTop + wrapper.scrollTop
+      x = ev.clientX - pNode.offsetLeft + pNode.scrollLeft,
+      y = ev.clientY - pNode.offsetTop + pNode.scrollTop
     ;
 
     // console.log(ev.type, x, y, ev);
@@ -453,8 +457,13 @@ class DiagramEditor extends React.Component {
     }
 
     return(
-      <div ref="wrapper" tabIndex="1" style={{ height, width, overflow:'auto' }} onKeyDown={this.onKeyDown}>
-        <svg width={mX + 200} height={mY + 200} onMouseDown={this.onMouseDown(_objCanvas_, _objCanvas_)}>
+      <div ref="wrapper" tabIndex="1"
+        style={{ height:(mY + 200), width:(mX + 200), overflow:'hidden' }}
+        onKeyDown={this.onKeyDown}
+      >
+        <svg width={mX + 200} height={mY + 200}
+          onMouseDown={this.onMouseDown(_objCanvas_, _objCanvas_)}
+        >
           { svgTags.map((elem) => (elem)) }
         </svg>
       </div>

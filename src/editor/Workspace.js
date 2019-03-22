@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import C from '../common/Constants.js';
 import { IB } from '../common/ImageBank.js';
 
+import { isvalid, makeid } from '../common/tool.js';
+
 import './Editor.css';
 
 import { DiagramEditor } from './DiagramEditor.js';
@@ -18,10 +20,36 @@ class Workspace extends React.Component {
     width: PropTypes.number.isRequired,
   }
 
+  constructor (props) {
+    super(props);
+
+    this.wsKey = 'wsmain-' + makeid(8);
+  }
+
   onDiagramEvent = (type, param) => {
     if( type === C.evtSelectNode ) {
       this.props.eventRelay(type, param.id); // nodeId
     }
+  }
+
+  handlDragOver = (ev) => {
+    const nodeId = ev.dataTransfer.getData(C.evtDnDNode);
+
+    if( isvalid(nodeId) ) {
+      ev.preventDefault();
+    }
+  }
+
+  handleDrop = (ev) => {
+    ev.preventDefault();
+
+    const nodeId = ev.dataTransfer.getData(C.evtDnDNode);
+
+    console.log('Dragged ' + nodeId,
+      ev.clientX + this.refs[this.wsKey].scrollLeft,
+      ev.clientY + this.refs[this.wsKey].scrollTop,
+      this.refs[this.wsKey]
+    );
   }
 
   render () {
@@ -29,7 +57,12 @@ class Workspace extends React.Component {
     const adjWidth = width - 5; // border-width
 
     return (
-      <div className="workspace" style={{ width:adjWidth, height }}>
+      <div ref={this.wsKey}
+        className="workspace"
+        style={{ width:adjWidth, height }}
+        onDrop={this.handleDrop}
+        onDragOver={this.handlDragOver}
+      >
         <DiagramEditor
           width={adjWidth}
           height={height}

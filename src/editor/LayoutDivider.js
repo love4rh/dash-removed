@@ -79,6 +79,7 @@ class LayoutDivider extends React.Component {
       mainCss = {
         flexBasis:size,
         width:`${size}px`,
+        height:'100%',
         cursor:'ew-resize'
       };
 
@@ -94,6 +95,7 @@ class LayoutDivider extends React.Component {
       mainCss = {
         flexBasis:size,
         height:`${size}px`,
+        width:'100%',
         cursor:'ns-resize'
       };
 

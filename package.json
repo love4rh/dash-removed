@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-decorators": "^7.4.0",
     "@babel/polyfill": "^7.2.5",
     "@blueprintjs/core": "^3.14.1",
     "axios": "^0.18.0",
+    "babel-preset-mobx": "^2.0.0",
+    "mobx": "^5.9.0",
+    "mobx-react": "^5.4.3",
     "monaco-editor": "^0.16.2",
     "monaco-editor-webpack-plugin": "^1.7.0",
     "react": "^16.8.4",
@@ -37,6 +42,26 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/preset-react": "^7.0.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.5"
+  },
+  "babel": {
+    "presets": [
+      "react-app", "mobx"
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ],
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        }
+      ]
+    ]
   }
 }

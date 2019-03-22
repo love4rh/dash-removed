@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../logo.svg';
+import logo from '../assets/logo.svg';
 
 import FileListView from './FileListView.js';
 import DataGrid from '../grid/DataGrid.js';

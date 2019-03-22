@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Tab } from '../component/Tab.js';
-import { IB } from '../common/ImageBank.js';
-
 import appOpt from '../common/appSetting.js';
 
+import { IB } from '../common/ImageBank.js';
+import { Tab } from '../component/Tab.js';
+
 import './Editor.css';
+import GalleryItem from './GalleryItem.js';
 
 
 
 class GalleryView extends React.Component {
   static propTypes = {
-    galleryList: PropTypes.array.isRequired,
+    // galleryList: PropTypes.array.isRequired,
     // height: PropTypes.number.isRequired,
     // width: PropTypes.number.isRequired,
   }
@@ -47,16 +48,15 @@ class GalleryView extends React.Component {
   }
 
   handleTabChange = (tabIdx) => {
-    console.log('tab changed', tabIdx);
     this.setState({ activeTab: tabIdx });
   }
 
-  handleTabClose = (tabIdx) => {
-    console.log('tab closed', tabIdx);
+  handleDblClick = (p) => () => {
+    console.log('Gallery Item double clicked', p);
   }
 
   render () {
-    const { galleryList } = this.props;
+    const { galleryList, height } = this.props;
     const { activeTab, panes } = this.state;
 
     const { gallery } = panes[activeTab];
@@ -64,16 +64,10 @@ class GalleryView extends React.Component {
     return (
       <div>
         <div className="paneTitle">Gallery</div>
-        <Tab activeTab={activeTab} onTabChange={this.handleTabChange} onTabClose={this.handleTabClose} panes={panes} />
-        <div style={{ height:'100vh', marginBottom:0, backgroundColor:'white' }}>
+        <Tab activeTab={activeTab} onTabChange={this.handleTabChange} panes={panes} />
+        <div style={{ height:(height - 64), marginBottom:0, backgroundColor:'white' }}>
           <div key={`gp-${activeTab}`} className="galleryPanel">
-            {gallery.map((p, idx) => {
-              return (
-                <div key={`gpe-${idx}`} className="galleryItem">
-                  <img className="galleryIcon" alt={p.name} src={IB.getNodeImage(p.type, true)} /> {p.name}
-                </div>
-              );
-            })}
+            { gallery.map((p, idx) => (<GalleryItem key={`gpe-${idx}`} nodeMeta={p} onDoubleClick={this.handleDblClick(p)} />)) }
           </div>
         </div>
       </div>

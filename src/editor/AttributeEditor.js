@@ -8,8 +8,6 @@ import { isvalid, makeid } from '../common/tool.js';
 import './Editor.css';
 
 
-import { TextEditor } from './TextEditor.js';
-
 
 function getCode() {
   return [
@@ -131,12 +129,13 @@ class AttributeEditor extends React.Component {
       attributes.push({ type:'text', value:node.name });
     }
 
+    /*
     const tagList = [];
 
     for(let i = 0; i < attributes.length; ++i) {
       const a = attributes[i];
       tagList.push(<TextEditor key={makeid(6)} compId={'' + i} handleValueChange={this.onValueChange} value={a.value} />);
-    }
+    } // */
 
   	/* return (
       <div className="attributeEditor" style={{ width:'100%', height:'100%' }}>

@@ -3,8 +3,8 @@ import axios from 'axios';
 
 const appMeta = {
   galleryList: ['input', 'processing', 'chart', 'output'],
-  gallery: {
-    'chart':[
+  gallery:{
+    chart:[
       {
         'id':'501',
         'name':'RunChart',
@@ -15,7 +15,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Draw a RunChart'
       }, {
         'id':'502',
         'name':'LiveWatch',
@@ -26,7 +26,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'LiveWatch Graph'
       }
     ],
     'input':[
@@ -40,7 +40,7 @@ const appMeta = {
         'inputType':'none',
         'beFrom':'na',
         'beTo':'na',
-        'descripion':''
+        'description':'DataFetch'
       }, {
         'id':'201',
         'name':'DataGroup',
@@ -51,7 +51,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'101',
         'beTo':'na',
-        'descripion':''
+        'description':'DataGroup'
       }, {
         'id':'211',
         'name':'DBInput',
@@ -62,7 +62,7 @@ const appMeta = {
         'inputType':'none',
         'beFrom':'na',
         'beTo':'na',
-        'descripion':''
+        'description':'DBInput'
       }, {
         'id':'212',
         'name':'FileInput',
@@ -73,7 +73,7 @@ const appMeta = {
         'inputType':'none',
         'beFrom':'na',
         'beTo':'na',
-        'descripion':''
+        'description':'FileInput'
       }, {
         'id':'213',
         'name':'DataOnIn',
@@ -84,7 +84,7 @@ const appMeta = {
         'inputType':'none',
         'beFrom':'na',
         'beTo':'na',
-        'descripion':''
+        'description':'DataOnInput'
       }, {
         'id':'214',
         'name':'epgOnLog',
@@ -95,7 +95,7 @@ const appMeta = {
         'inputType':'none',
         'beFrom':'na',
         'beTo':'read',
-        'descripion':''
+        'description':'epgOn log'
       }
     ],
     'output':[
@@ -109,7 +109,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Loading data to DB'
       }, {
         'id':'402',
         'name':'DataOnLoading',
@@ -120,7 +120,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Loading data into dataOn'
       }, {
         'id':'403',
         'name':'DataOnInsert',
@@ -131,7 +131,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Insert data into a insertable DataGroup'
       }, {
         'id':'404',
         'name':'FileOutput',
@@ -142,7 +142,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Save data to a text file'
       }, {
         'id':'405',
         'name':'DirectLoading',
@@ -153,7 +153,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Direct loading data into the table'
       }, {
         'id':'406',
         'name':'FileSepOutput',
@@ -164,7 +164,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Save data to several files'
       }, {
         'id':'407',
         'name':'S3Output',
@@ -175,7 +175,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Upload a delimited text file to S3'
       }
     ],
     'processing':[
@@ -189,7 +189,7 @@ const appMeta = {
         'inputType':'multi',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Append two or more DataGroup'
       }, {
         'id':'302',
         'name':'CodeConverter',
@@ -200,7 +200,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Convert value to another'
       }, {
         'id':'303',
         'name':'ColumnOperator',
@@ -211,7 +211,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Filter and rename column(s)'
       }, {
         'id':'304',
         'name':'RenameColumn',
@@ -222,7 +222,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Rename column(s)'
       }, {
         'id':'305',
         'name':'Derived',
@@ -233,7 +233,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Generate derived column(s)'
       }, {
         'id':'306',
         'name':'DistinctData',
@@ -244,7 +244,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Generate DataGroup of distinct value'
       }, {
         'id':'307',
         'name':'GroupCount',
@@ -255,7 +255,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Attach counting column(s) by grouping'
       }, {
         'id':'308',
         'name':'SelectByGroup',
@@ -266,7 +266,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Select record(s) by grouping'
       }, {
         'id':'309',
         'name':'MergeData',
@@ -277,7 +277,7 @@ const appMeta = {
         'inputType':'multi',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Merge two or more DataGroups with key column(s)'
       }, {
         'id':'321',
         'name':'MergeInto',
@@ -288,7 +288,7 @@ const appMeta = {
         'inputType':'multi',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Merge into'
       }, {
         'id':'310',
         'name':'SelectData',
@@ -299,7 +299,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Select record(s) with condition'
       }, {
         'id':'311',
         'name':'SeparateValue',
@@ -310,7 +310,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Create a column by separating value with delimiter'
       }, {
         'id':'322',
         'name':'PairedSeparate',
@@ -321,7 +321,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Create a column by separating value with delimiter'
       }, {
         'id':'312',
         'name':'SortColumn',
@@ -332,7 +332,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Sort column(s)'
       }, {
         'id':'313',
         'name':'GroupingValue',
@@ -343,7 +343,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Generate basic statistical column(s)'
       }, {
         'id':'314',
         'name':'ImageCrawler',
@@ -354,7 +354,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Generate basic statistical column(s)'
       }, {
         'id':'317',
         'name':'GnSchdFilter',
@@ -365,7 +365,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Generate basic statistical column(s)'
       }, {
         'id':'318',
         'name':'DBTransaction',
@@ -376,7 +376,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Generate basic statistical column(s)'
       }, {
         'id':'319',
         'name':'DBInputProcess',
@@ -387,7 +387,7 @@ const appMeta = {
         'inputType':'multi',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Generate basic statistical column(s)'
       }, {
         'id':'320',
         'name':'GroupingCompare',
@@ -398,7 +398,7 @@ const appMeta = {
         'inputType':'two',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'GroupingCompare data to a text file'
       }, {
         'id':'321',
         'name':'GoStop',
@@ -409,7 +409,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Decide to go or stop'
       }, {
         'id':'322',
         'name':'Replace',
@@ -420,7 +420,7 @@ const appMeta = {
         'inputType':'single',
         'beFrom':'all',
         'beTo':'101',
-        'descripion':''
+        'description':'Decide to go or stop'
       }
     ]
   }
@@ -436,7 +436,8 @@ export const appOpt = {
   initialize: (cb) => {
     axios.get(appOpt.hostAddrs() + '/appOption')
     .then(res => {
-      // TODO set up options gotten from the server
+      console.log(JSON.stringify(res));
+
       if (cb) cb(true);
     })
     .catch(res => {

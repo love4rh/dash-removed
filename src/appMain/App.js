@@ -1,12 +1,18 @@
 import "@babel/polyfill";
 import React, { Component } from 'react';
 
+import { appOpt } from '../common/appSetting.js';
+
+import { MainFrame } from '../view/MainFrame.js';
+import { S3Explorer } from '../view/S3Explorer.js';
+import { SampleFrame } from '../view/SampleFrame.js';
+
 import './App.css';
-import { MainFrame } from './view/MainFrame.js';
-import { S3Explorer } from './view/S3Explorer.js';
-import { SampleFrame } from './view/SampleFrame.js';
 
 
+/**
+ * MobX storage: appData
+ */
 class App extends Component {
 	constructor (props) {
 		super(props);
@@ -18,6 +24,19 @@ class App extends Component {
 			page: path.substring(path.lastIndexOf('/') + 1)
 		}
 	}
+
+  componentDidMount () {
+    // TODO app option version check
+    // appOpt.initialize();
+  }
+
+  componentDidUpdate () {
+    //
+  }
+
+  componentWillUnmount () {
+    //
+  }
 
   render () {
     let appMain;
