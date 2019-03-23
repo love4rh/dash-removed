@@ -1,7 +1,7 @@
 import "@babel/polyfill";
 import React, { Component } from 'react';
 
-import { appOpt } from '../common/appSetting.js';
+import { appOpt } from '../appMain/appSetting.js';
 
 import { MainFrame } from '../view/MainFrame.js';
 import { S3Explorer } from '../view/S3Explorer.js';

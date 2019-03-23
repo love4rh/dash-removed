@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 
 import C from '../common/Constants.js';
 import { IB } from '../common/ImageBank.js';
@@ -12,11 +13,11 @@ import { DiagramEditor } from './DiagramEditor.js';
 
 
 
+@inject('appData')
+@observer
 class Workspace extends React.Component {
   static propTypes = {
-    eventRelay: PropTypes.func.isRequired,
     height: PropTypes.number.isRequired,
-    projectData: PropTypes.object.isRequired,
     width: PropTypes.number.isRequired,
   }
 
@@ -28,14 +29,14 @@ class Workspace extends React.Component {
 
   onDiagramEvent = (type, param) => {
     if( type === C.evtSelectNode ) {
-      this.props.eventRelay(type, param.id); // nodeId
+      // this.props.eventRelay(type, param.id); // nodeId
     }
   }
 
   handlDragOver = (ev) => {
-    const nodeId = ev.dataTransfer.getData(C.evtDnDNode);
+    const nodeMeta = ev.dataTransfer.getData(C.evtDnDNode);
 
-    if( isvalid(nodeId) ) {
+    if( isvalid(nodeMeta) ) {
       ev.preventDefault();
     }
   }
@@ -43,23 +44,26 @@ class Workspace extends React.Component {
   handleDrop = (ev) => {
     ev.preventDefault();
 
-    const nodeId = ev.dataTransfer.getData(C.evtDnDNode);
+    const nodeMeta = ev.dataTransfer.getData(C.evtDnDNode);
 
-    console.log('Dragged ' + nodeId,
-      ev.clientX + this.refs[this.wsKey].scrollLeft,
-      ev.clientY + this.refs[this.wsKey].scrollTop,
-      this.refs[this.wsKey]
+    const d = this.refs[this.wsKey];
+
+    this.props.appData.addNode(JSON.parse(nodeMeta),
+      ev.clientX + d.scrollLeft - d.offsetLeft,
+      ev.clientY + d.scrollTop - d.offsetTop
     );
   }
 
   render () {
-    const { height, width, projectData } = this.props;
+    const { height, width, appData } = this.props;
     const adjWidth = width - 5; // border-width
+
+    const prjData = appData.getActiveProject();
 
     return (
       <div ref={this.wsKey}
-        className="workspace"
-        style={{ width:adjWidth, height }}
+        key={this.wsKey + appData.redrawCount}
+        style={{ width:adjWidth, height, overflow:'auto' }}
         onDrop={this.handleDrop}
         onDragOver={this.handlDragOver}
       >
@@ -67,8 +71,8 @@ class Workspace extends React.Component {
           width={adjWidth}
           height={height}
           eventReciever={this.onDiagramEvent}
-          nodes={projectData.nodes}
-          links={projectData.links}
+          nodes={isvalid(prjData) ? prjData.nodes : {}}
+          links={isvalid(prjData) ? prjData.links : []}
           getImage={IB.getNodeImage}
         />
       </div>

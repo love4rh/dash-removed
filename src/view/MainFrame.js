@@ -37,18 +37,18 @@ class MainFrame extends Component {
 
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
-
-      projectList: []
     };
   }
 
   componentDidMount () {
+    const { appData } = this.props;
+
     window.addEventListener('resize', this.onResize);
 
     this.initialize(() => {
-      this.addNewProject();
+      appData.addNewProject();
       // this.loadScript('/', 'SegmentInfo.xml');
-      this.addProject(scriptSample);
+      appData.addProject(scriptSample);
       // this.loadScript('/', 'scriptSample.xml');
     });
   }
@@ -61,15 +61,14 @@ class MainFrame extends Component {
     const { appData } = this.props;
 
     if( 'open' === type ) {
+      appData.addProject(scriptSample);
+
+      /*
       this.loadScript('',
         ['scriptSample.xml', 'SegmentInfo.xml'][Math.floor(Math.random() * 100) % 2]
-      );
+      ); // */
     } else if( 'new' === type ) {
-      this.addNewProject();
-    } else if( 'add' === type ) {
-      appData.increase();
-    } else if( 'sub' === type ) {
-      appData.decrease();
+      appData.addNewProject();
     }
   }
 
@@ -96,42 +95,6 @@ class MainFrame extends Component {
     ); // */
   }
 
-  addNewProject = () => {
-    this.addProject({
-      'title':'New Project',
-      'description':'',
-      'author':'',
-      'nodes':{},
-      'links': []
-    });
-  }
-
-  // TODO already open check
-  addProject = (prj) => {
-    let { projectList } = this.state;
-    projectList.push(prj);
-    this.setState({ projectList: projectList, addNew: true });
-    setTimeout(() => {
-      this.setState({ addNew: false });
-    }, 500);
-  }
-
-  closeProject = (idx) => {
-    const { projectList } = this.state;
-
-    let newList = [];
-    projectList.map((prj, i) => {
-      if( i !== idx ) {
-        newList.push(prj);
-      }
-      return prj;
-    });
-
-    this.setState({ projectList: newList });
-
-    return true;
-  }
-
   onResize = (ev) => {
     this.setState({
       windowWidth: window.innerWidth,
@@ -140,12 +103,14 @@ class MainFrame extends Component {
   }
 
   loadScript = (path, name) => {
+    const { appData } = this.props;
+
     this.setState({ loading: true });
 
     apiProxy.getScript({ path, name },
       (res) => {
         if( res && res.data && isvalid(res.data.script) ) {
-          this.addProject(res.data.script)
+          appData.addProject(res.data.script)
         }
       }, (err) => {
         console.log('api getScript error', err);
@@ -159,7 +124,7 @@ class MainFrame extends Component {
 
   render() {
     const { appData } = this.props;
-    const { windowHeight, windowWidth, projectList, addNew } = this.state;
+    const { windowHeight, windowWidth } = this.state;
 
     return (
       <div>
@@ -170,9 +135,6 @@ class MainFrame extends Component {
             <NavbarDivider />
             <Button className={Classes.MINIMAL} icon="document" text="New" onClick={this.test('new')} />
             <Button className={Classes.MINIMAL} icon="folder-open" text="Open" onClick={this.test('open')} />
-            <Button className={Classes.MINIMAL} icon="plus" text="Add" onClick={this.test('add')} />
-            <Button className={Classes.MINIMAL} icon="minus" text="Sub" onClick={this.test('sub')} />
-            {appData.number}
           </NavbarGroup>
         </Navbar>
 
@@ -182,13 +144,7 @@ class MainFrame extends Component {
           </Overlay>
         )}
 
-        <ProjectEditor
-          height={windowHeight - 55}
-          width={windowWidth}
-          projectList={projectList}
-          addingNew={addNew}
-          onCloseProject={this.closeProject}
-        />
+        <ProjectEditor height={windowHeight - 55} width={windowWidth} />
       </div>
     );
   }

@@ -24,7 +24,7 @@ class GalleryItem extends React.Component {
   }
 
   handleDrag = (ev) => {
-    ev.dataTransfer.setData(C.evtDnDNode, this.props.nodeMeta.id);
+    ev.dataTransfer.setData(C.evtDnDNode, JSON.stringify(this.props.nodeMeta));
   }
 
   handleMouseOver = (ev) => {

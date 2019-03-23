@@ -1,7 +1,8 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 
-import appOpt from '../common/appSetting.js';
+import appOpt from '../appMain/appSetting.js';
 
 import { IB } from '../common/ImageBank.js';
 import { Tab } from '../component/Tab.js';
@@ -10,7 +11,10 @@ import './Editor.css';
 import GalleryItem from './GalleryItem.js';
 
 
-
+@inject(stores => ({
+  addNode: stores.appData.addNode,
+}))
+@observer
 class GalleryView extends React.Component {
   static propTypes = {
     // galleryList: PropTypes.array.isRequired,
@@ -52,7 +56,8 @@ class GalleryView extends React.Component {
   }
 
   handleDblClick = (p) => () => {
-    console.log('Gallery Item double clicked', p);
+    // console.log('Gallery Item double clicked', p);
+    this.props.addNode(p, 40, 40);
   }
 
   render () {

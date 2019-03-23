@@ -188,7 +188,7 @@ class DiagramEditor extends React.Component {
   		ty = n.y + _iconSize_ + 20;
 
     return (
-    	<g key={makeid(6)}
+    	<g key={'nid-' + n.id}
     		onMouseDown={this.onMouseDown(_objNode_, n.id)}
     		onMouseMove={this.onMouseMove(_objNode_, n.id)}
     	>

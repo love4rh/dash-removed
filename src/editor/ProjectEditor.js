@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 
-import C from '../common/Constants.js';
-
-import { istrue, isundef, isvalid } from '../common/tool.js';
+import { isvalid } from '../common/tool.js';
 
 import { LayoutDivider, DividerDirection} from './LayoutDivider.js';
 
@@ -17,25 +16,21 @@ import AttributeEditor from './AttributeEditor.js';
 
 import './Editor.css';
 
-import { appOpt } from '../common/appSetting.js';
 
 
-
+@inject('appData')
+@observer
 class ProjectEditor extends React.Component {
 	static propTypes = {
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
-    projectList: PropTypes.array.isRequired,
-    onCloseProject: PropTypes.func.isRequired,
   }
 
   constructor (props) {
     super(props);
 
     this.state = {
-    	activeIndex: -1,
     	focusedNode: null,
-    	projectList: [],
       leftWidth: 300,
       bottomHeight: 250
     };
@@ -44,6 +39,10 @@ class ProjectEditor extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    /*
+    const { appData } = nextProps;
+    console.log('ProjectEditor NextProps', appData.sizeOfProject(), JSON.stringify(appData.getProject(0)));
+    
     let { activeIndex } = this.state;
 
     const newState = {
@@ -56,11 +55,13 @@ class ProjectEditor extends React.Component {
       newState.activeIndex = 0;
     }
 
-    this.setState(newState);
+    this.setState(newState); // */
   }
 
   handleEvent = (type, param) => {
-  	const { activeIndex, projectList } = this.state;
+    /*
+    const { appData } = this.props;
+  	const { activeIndex } = this.state;
 
   	if( activeIndex < 0 ) {
   		console.log('ERROR: PROJECT NOT DEFINED.');
@@ -68,30 +69,28 @@ class ProjectEditor extends React.Component {
   	}
 
   	if( type === C.evtSelectNode ) {
-  		const prjData = projectList[activeIndex];
+  		const prjData = appData.getProject(activeIndex);
   		this.setState({ focusedNode:prjData.nodes[param] });
-  	}
+  	} // */
   }
 
   handleTabChange = (tabIndex) => {
+    // console.log('PE tabChange', tabIndex);
+
+    this.props.appData.setActiveProject(tabIndex);
+
   	this.setState({
-  		activeIndex: tabIndex,
   		focusedNode: null,
   		attributes: []
   	});
   }
 
   handleTabClose = (tabIndex) => {
-    const closed = this.props.onCloseProject(tabIndex);
-
-    if( closed && tabIndex <= this.state.activeIndex ) {
-      this.handleTabChange(this.state.activeIndex - 1);
-    }
-
-    return closed;
+    this.props.appData.removeProject(tabIndex);
   }
 
   handleValueChange = (propIdx, value) => {
+    /*
   	const { activeIndex, projectList, focusedNode } = this.state;
 
   	if( activeIndex < 0 || isundef(focusedNode) ) {
@@ -104,6 +103,7 @@ class ProjectEditor extends React.Component {
   	focusedNode.name = value;
 
   	this.setState({ projectList: projectList });
+    // */
   }
 
   // type: gallery, info
@@ -122,28 +122,30 @@ class ProjectEditor extends React.Component {
   }
 
   render () {
-  	const { width, height } = this.props;
-  	const { activeIndex, projectList, leftWidth, bottomHeight } = this.state;
+  	const { width, height, appData } = this.props;
+  	const { leftWidth, bottomHeight } = this.state;
 
     const dividerSize = 6;
+    const activeIndex = appData.getActiveProjectIndex();
 
   	const
   		wsHeight = height - bottomHeight - 7 - dividerSize, // 22, IE에서 120정도 부족함. 원인 파악요.
   		wsWidth = width - leftWidth - 3
   	;
 
-    // console.log('ProjectEditor render', window.outerHeight, window.innerHeight, height, wsHeight);
+    // console.log('ProjectEditor render', activeIndex, appData.sizeOfProject());
 
   	const workPanes = [];
-    projectList.map((p, i) => {
+
+    for(let i = 0; i < appData.sizeOfProject(); ++i) {
+      const p = appData.getProject(i);
       workPanes.push({
         title: p.title,
         closeButton: true
       });
-      return p;
-    });
+    }
 
-    const activeProject = activeIndex >= 0 ? projectList[activeIndex] : null;
+    const activeProject = activeIndex >= 0 ? appData.getProject(activeIndex) : null;
 
   	return (
       <div className="editor" style={{ width, height }}>
@@ -163,13 +165,14 @@ class ProjectEditor extends React.Component {
               onTabClose={this.handleTabClose}
               panes={workPanes}
             />
-            { isvalid(activeProject) && (
-              <Workspace key={'ws-' + activeIndex}
-                width={wsWidth} height={wsHeight}
-                eventRelay={this.handleEvent}
-                projectData={activeProject}
-              />
-            )}
+            <div className="workspace" style={{ width:wsWidth, height:wsHeight }}>
+              { isvalid(activeProject) && (
+                <Workspace key={'ws-' + activeIndex + '/' + activeProject.title}
+                  width={wsWidth} height={wsHeight}
+                  projectData={activeProject}
+                />
+              )}
+            </div>
         	</div>
           <div style={{ flexBasis:`${dividerSize}px` }}>
             <LayoutDivider direction={DividerDirection.horizontal}
