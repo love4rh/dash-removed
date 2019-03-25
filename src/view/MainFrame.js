@@ -123,7 +123,6 @@ class MainFrame extends Component {
   }
 
   render() {
-    const { appData } = this.props;
     const { windowHeight, windowWidth } = this.state;
 
     return (

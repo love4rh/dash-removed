@@ -1,22 +1,27 @@
 import { observable, action } from 'mobx';
 
-import appOpt from '../appMain/appSetting.js';
+// import { appOpt } from '../appMain/appSetting.js';
+
 import { makeid } from '../common/tool.js';
 
 
 /**
- * AppData
+ * MobX storage: appData
  */
 export default class AppData {
   // Project List
   @observable projectList = [];
+
+  // 현재 사용(편집) 중인 프로젝트 번호
   @observable activeIndex = -1;
 
   // 노드 추가/삭제 등 프로젝트에 변화가 있을 때 갱신을 위하여 사용함.
   @observable redrawCount = 0;
 
+  // 새 프로젝트 추가 시 이름 뒤에 붙일 인덱스
   guideNo = 0;
 
+  // 프로젝트 객체 반환
   getProject = (idx) => {
     return this.projectList[idx];
   }
@@ -70,6 +75,11 @@ export default class AppData {
     this.activeIndex = idx;
   }
 
+  @action
+  refresh = () => {
+    this.redrawCount = (this.redrawCount + 1) % 9999;
+  }
+
   /* {
     'id':'501',
     'name':'RunChart',
@@ -86,7 +96,7 @@ export default class AppData {
   addNode = (nodeMeta, x, y) => {
     const prjData = this.getActiveProject();
 
-    const nid = 'nidd-' + makeid(8);
+    const nid = 'nid-' + makeid(8);
 
     prjData.nodes[nid] = {
       id: nid,
@@ -96,7 +106,18 @@ export default class AppData {
       y: y - 20
     }
 
-    this.redrawCount = (this.redrawCount + 1) % 9999;
-    console.log('redrawCount', this.redrawCount);
+    this.refresh();
+  }
+
+  @action
+  connectNodes = (begin, end, type, text) => {
+    const prjData = this.getActiveProject();
+    // const linkId = 'lid-' + makeid(8);
+
+    prjData.links.push({
+      begin, end, type, text
+    });
+
+    this.refresh();
   }
 }

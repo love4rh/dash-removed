@@ -441,7 +441,7 @@ class DataGrid extends Component {
 
   onDataAreaWheel = (ev) => {
     // console.log('onDataAreaWheel', ev.deltaX, ev.deltaY, ev.deltaMode);
-    ev.preventDefault();
+    // ev.preventDefault();
     ev.stopPropagation();
 
     // down: +, up: -

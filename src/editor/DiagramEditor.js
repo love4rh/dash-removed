@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import C from '../common/Constants.js';
-import {isvalid, istrue, makeid, tickCount} from '../common/tool.js';
+import { isvalid, istrue, tickCount } from '../common/tool.js';
+
+import { calcCenter, isPtInRect, drawArrowLine } from './DrawingTool.js';
 
 import './DiagramEditor.css';
 
@@ -22,44 +24,19 @@ const _objLink_ = 'link';
 const _stNormal_ = 'normal';
 const _stSelect_ = 'selecting';
 const _stDragNode_ = 'dragNode';
+const _stConnecting_ = 'connecting';
 
 const _clrSelect_ = 'blue';
 const _clrLink_ = '#333';
+const _clrConnecting_ = '#aaa';
 const _clrRectSelect_ = '#000';
+const _clrPossible_ ='#00AA00';
+const _clrNoConnect_ = '#D32222';
 
 const _cssNodeText = { fill:'#000', font:'12px Verdana, Helvetica, Arial, sans-serif' };
 const _cssTextWrap = { stroke:'white', strokeWidth:'0.3em', font:'12px Verdana, Helvetica, Arial, sans-serif' };
 // -------------------------------
 
-
-const calcCenter = (x, y, size) => {
-  return { x: (x + size / 2), y: (y + size / 2) };
-}
-
-const calcTheta = (x1, y1, x2, y2) => {
-  let theta = 0;
-
-  if( x2 === x1 ) {
-    theta = (y2 >= y1 ? 90 : 270) * Math.PI / 180;
-  } else {
-    theta = x2 > x1
-      ? Math.atan((y2 - y1) / (x2 - x1))
-      : Math.atan((y1 - y2) / (x1 - x2)) + Math.PI;
-  }
-
-  return theta;
-}
-
-const isPtInRect = (x1, y1, x2, y2, px, py) => {
-	const
-		sx = Math.min(x1, x2),
-		sy = Math.min(y1, y2),
-		ex = Math.max(x1, x2),
-		ey = Math.max(y1, y2)
-	;
-
-	return sx <= px && sy <= py && px <= ex && py <= ey;
-}
 
 const makeLinkId = (index) => {
 	return index;
@@ -91,6 +68,7 @@ class DiagramEditor extends React.Component {
     };
 
     this.lastEvent = {};
+    this.lastMouseDown = {};
 
     this.onMouseEvent = this.onMouseEvent.bind(this);
   }
@@ -100,7 +78,7 @@ class DiagramEditor extends React.Component {
 
     // disable context menu when right-button clicked.
     document.addEventListener('contextmenu', (ev) => {
-        ev.preventDefault();
+      ev.preventDefault();
     }, false);
   }
 
@@ -125,38 +103,11 @@ class DiagramEditor extends React.Component {
     if( d < _iconSize_ )
       return null;
 
-    const
-      sX = p1.x + _sizeRadius_ * dx / d,
-      sY = p1.y + _sizeRadius_ * dy / d,
-      eX = p2.x - (_sizeRadius_ + _arrowSize_) * dx / d,
-      eY = p2.y - (_sizeRadius_ + _arrowSize_) * dy / d;
-
-    const th = calcTheta(p1.x, p1.y, p2.x, p2.y);
-
-    const arrowX = [ -_arrowSize_ + 3, -_arrowSize_, +_arrowSize_, -_arrowSize_ ];
-    const arrowY = [  0,  -_arrowSize_ + 2,   0,   +_arrowSize_ - 2];
-    
-    let path = '';
-    for(let i = 0; i < arrowX.length; ++i) {
-      if( i > 0 )
-        path += ',';
-
-      path += ((Math.cos(th) * arrowX[i] - Math.sin(th) * arrowY[i] + eX)
-        + ',' + (Math.sin(th) * arrowX[i] + Math.cos(th) * arrowY[i] + eY));
-    }
-
     const linkId = makeLinkId(index);
     const linkColor = this.isSelectedLink(linkId) ? _clrSelect_ : _clrLink_;
 
-    return (
-      <g key={makeid(6)} onMouseDown={this.onMouseDown(_objLink_, linkId)}>
-        <line
-          x1={sX} y1={sY} x2={eX} y2={eY}
-          style={{ strokeWidth:_sizeLink_, stroke:linkColor }}
-        />
-        <polygon points={path} style={{ fill:linkColor }} />
-      </g>
-    );
+    return drawArrowLine(p1, p2, _sizeRadius_, _sizeRadius_, _arrowSize_,
+      _sizeLink_, linkColor, this.onMouseDown(_objLink_, linkId));
   }
 
   isSelectedLink = (id) => {
@@ -182,15 +133,25 @@ class DiagramEditor extends React.Component {
   }
 
   drawNode = (n) => {
+    const { nodes, status, statusParam } = this.state;
+
   	const m = 4;
   	// const { selected, status, statusParam } = this.state;
   	const tx = n.x + _iconSize_ / 2,
   		ty = n.y + _iconSize_ + 20;
 
+    let statusRect = this.isSelected(n, false) ? _clrSelect_ : null;
+
+    if( status === _stConnecting_ && n.id !== statusParam.id ) {
+      // TODO 연결 가능 여부 검사
+      // ;
+      statusRect = n.id === 'gZcqmSnM' ? _clrPossible_ : _clrNoConnect_;
+    }
+
     return (
     	<g key={'nid-' + n.id}
     		onMouseDown={this.onMouseDown(_objNode_, n.id)}
-    		onMouseMove={this.onMouseMove(_objNode_, n.id)}
+    		onMouseMove={this.onNodeMouseMove(_objNode_, n.id)}
     	>
 	      <image key={n.id}
 	        x={n.x} y={n.y}
@@ -201,10 +162,10 @@ class DiagramEditor extends React.Component {
 	      <text textAnchor="middle" x={tx} y={ty} style={_cssTextWrap}>{n.name}</text>
 	      <text textAnchor="middle" x={tx} y={ty} style={_cssNodeText}>{n.name}</text>
 
-	      { !this.isSelected(n, false)
-    			? null
-    			: <rect rx={m} ry={m} x={n.x - m} y={n.y - m} width={_iconSize_ + m * 2} height={_iconSize_ + m * 2}
-  						style={{ fill:'none', stroke:_clrSelect_, strokeWidth:2 }} />
+	      { isvalid(statusRect) && (
+    			<rect rx={m} ry={m} x={n.x - m} y={n.y - m} width={_iconSize_ + m * 2} height={_iconSize_ + m * 2}
+  						style={{ fill:'none', stroke:statusRect, strokeWidth:2 }} />
+          )
     		}
 	    </g>
     );
@@ -268,7 +229,7 @@ class DiagramEditor extends React.Component {
   }
 
   // eslint-disable-next-line
-  onMouseMove = (type, id) => (ev) => {
+  onNodeMouseMove = (type, id) => (ev) => {
   	if( isvalid(this.props.getTooltip) ){
   		// TODO Tooltip Event?
   		this.props.getTooltip(type, id);
@@ -276,6 +237,11 @@ class DiagramEditor extends React.Component {
 
   	ev.preventDefault();
     ev.stopPropagation();
+  }
+
+  enterConnecting = (beginNid) => {
+    // _objNode_;
+    // _stConnecting_;
   }
 
   // eslint-disable-next-line
@@ -303,6 +269,14 @@ class DiagramEditor extends React.Component {
     if( type === _objCanvas_ ) {
       status = _stSelect_;
     } else if( type === _objNode_ ) {
+      if( ev.button === 1 || ev.button === 4 ) {
+        // middle button --> connecting
+        status = _stConnecting_;
+        this.select(id, false);
+      } else if( ev.button === 2 ) {
+        // right button --> context menu
+      }
+
       if( !istrue(this.state.selected[id]) ) {
       	this.props.eventReciever(C.evtSelectNode, { id:id, x:x, y:y });
       	this.select(id);
@@ -311,6 +285,8 @@ class DiagramEditor extends React.Component {
 	    status = _stNormal_;
 	    this.select(id);
     }
+
+    this.lastMouseDown = { tick: tickCount(), button: ev.button };
 
     this.setState({ status:status, statusParam:statusParam });
     wrapper.focus();
@@ -345,9 +321,8 @@ class DiagramEditor extends React.Component {
     if( 'mousemove' === ev.type ) {
     	statusParam.x2 = x;
       statusParam.y2 = y;
-      if( status === _stSelect_ ) {
-      	//        
-      } else if( status === _stDragNode_ ) {
+
+      if( status === _stDragNode_ ) {
         const { ox, oy } = statusParam;
 
         statusParam.ox = x;
@@ -361,6 +336,8 @@ class DiagramEditor extends React.Component {
         }
 
         this.setState({ nodes:nodes });
+      } else if( status === _stSelect_ ) {
+        //        
       }
 
       this.setState({ statusParam:statusParam });
@@ -398,22 +375,34 @@ class DiagramEditor extends React.Component {
     			// TODO Node select event
     			const tick = tickCount();
     			const eventParam = { id:statusParam.id, x:x, y:y };
+          let newEvent = C.evtNodeClick;
 
     			if( isvalid(this.lastEvent)
     				&& this.lastEvent.event === C.evtNodeClick
     				&& isvalid(this.lastEvent.param)
     				&& this.lastEvent.param.id === eventParam.id
-    				&& (tick - this.lastEvent.occurTime) < 200 ) {
+    				&& (tick - this.lastEvent.occurTime) < 300 )
+          {
     				// double click
-    				this.lastEvent = { event:C.evtNodeDblClick, param:eventParam, occurTime:tick };
-    			} else {
-    				this.lastEvent = { event:C.evtNodeClick, param:eventParam, occurTime:tick };
-    			}
+            newEvent = C.evtNodeDblClick;
+    			} else if( tick >= this.lastMouseDown.tick + 500 ) {
+            newEvent = C.evtNodeLongClick;
+          }
 
-    			this.props.eventReciever(this.lastEvent.event, eventParam);
+          this.lastEvent = { event:newEvent, param:eventParam, occurTime:tick };
+    			this.props.eventReciever(newEvent, eventParam);
     			this.select(statusParam.id);
     		}
-    	}
+    	} else if( status === _stConnecting_ ) {
+        for(let id in nodes) {
+          const n = nodes[id];
+
+          if( isPtInRect(n.x, n.y, n.x + _iconSize_, n.y + _iconSize_, x, y) ) {
+            this.props.eventReciever(C.evtConnectNodes, { begin: statusParam.id, end: id });
+            break;
+          }
+        }
+      }
 
       this.setState({ status:_stNormal_ });
 
@@ -453,6 +442,14 @@ class DiagramEditor extends React.Component {
           height={Math.abs(y1 - y2)}
           style={{ fill:'none', strokeWidth:1, stroke:_clrRectSelect_, strokeDasharray:'10,10' }}
         />
+      );
+    } else if( _stConnecting_ === status ) {
+      const n1 = nodes[statusParam.id];
+      const p1 = calcCenter(n1.x, n1.y, _iconSize_);
+
+      svgTags.push(
+        drawArrowLine(p1, { x: statusParam.x2, y: statusParam.y2},
+          _sizeRadius_, 0, _arrowSize_, _sizeLink_, _clrConnecting_)
       );
     }
 

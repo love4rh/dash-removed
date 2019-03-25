@@ -9,7 +9,6 @@ import { LayoutDivider, DividerDirection} from './LayoutDivider.js';
 import { Tab } from '../component/Tab.js';
 
 import GalleryView from './GalleryView.js';
-import ScriptView from './ScriptView.js';
 import Workspace from './Workspace.js';
 
 import AttributeEditor from './AttributeEditor.js';

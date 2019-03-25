@@ -166,3 +166,21 @@ export const calcDigitsWithCommas = (x) => {
 	const d = calcDigits(x)
 	return d + Math.floor((d - 1) / 3);
 }
+
+
+// o1, o2: object
+// compKeys: [key1, key2, ...]
+export const isSame = (o1, o2, compKeys) => {
+	if( isundef(o1) || isundef(o2) ) {
+		return false;
+	}
+
+	for(let i = 0; i < compKeys.length; ++i) {
+		if( o1[compKeys[i]] !== o2[compKeys[i]] ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+

@@ -28,8 +28,14 @@ class Workspace extends React.Component {
   }
 
   onDiagramEvent = (type, param) => {
+    const { appData } = this.props;
+
+    console.log('Workspace Event', type, param);
+
     if( type === C.evtSelectNode ) {
       // this.props.eventRelay(type, param.id); // nodeId
+    } else if( type === C.evtConnectNodes ) {
+      appData.connectNodes(param.begin, param.end, 'normal', '');
     }
   }
 
@@ -62,7 +68,6 @@ class Workspace extends React.Component {
 
     return (
       <div ref={this.wsKey}
-        key={this.wsKey + appData.redrawCount}
         style={{ width:adjWidth, height, overflow:'auto' }}
         onDrop={this.handleDrop}
         onDragOver={this.handlDragOver}
@@ -75,6 +80,9 @@ class Workspace extends React.Component {
           links={isvalid(prjData) ? prjData.links : []}
           getImage={IB.getNodeImage}
         />
+        <div key={this.wsKey + appData.redrawCount}>
+          {/* 노드나 링크가 추가되었을 때 Redrawing을 위하여 추가함. */}
+        </div>
       </div>
     );
   }

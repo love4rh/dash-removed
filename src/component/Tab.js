@@ -105,35 +105,38 @@ class Tab extends Component {
     const { tabIndex, text } = toolTip;
 
     return (
-      <div className="dashTabs">
-        <div className="dashTabList">
-          {panes.map((pane, idx) => {
-            let cssName = 'dashTabListItem ' + (pane.closeButton ? 'dashTabPaddingClose' : 'dashTabPadding');
+      <div>
+        <div className="dashTabs">
+          <div className="dashTabList" style={{ width:(panes.length * 400) }}>
+            {panes.map((pane, idx) => {
+              const {title, icon, closeButton} = pane;
+              let cssName = 'dashTabListItem ' + (closeButton ? 'dashTabPaddingClose' : 'dashTabPadding');
 
-            if( activeTab === idx ) {
-              cssName += ' dashTabListActive'
-            }
+              if( activeTab === idx ) {
+                cssName += ' dashTabListActive'
+              }
 
-            return (
-              <li key={`dashtab-${idx}`}
-                className={cssName}
-                onMouseOver={this.onTabOver(idx)}
-                onMouseOut={this.hideToolTip}
-                onClick={this.onTabClick(idx)}
-              >
-                {isvalid(pane.icon) && (<img alt="" className="dashTabIcon" src={pane.icon} />)}
-                <span className="dashTabTitle">
-                  {hasString(pane.title) ? pane.title : ''}
-                </span>
-                {pane.closeButton && (
-                  <div className="tabCloseStyle">
-                    <Icon icon="cross" iconSize={Icon.SIZE_STANDARD} onClick={this.onTabClose(idx)} />
-                  </div>
-                )}
-              </li>
-            );
-          })}
-          { tabIndex !== -1 && text !== '' && (<ToolTip x={toolTip.x} y={toolTip.y}>{text}</ToolTip>) }
+              return (
+                <div key={`dashtab-${idx}`}
+                  className={cssName}
+                  onMouseOver={this.onTabOver(idx)}
+                  onMouseOut={this.hideToolTip}
+                  onClick={this.onTabClick(idx)}
+                >
+                  {isvalid(icon) && (<img alt="" className="dashTabIcon" src={icon} />)}
+                  <span className="dashTabTitle">
+                    {hasString(title) ? title : ''}
+                  </span>
+                  {closeButton && (
+                    <div className="tabCloseStyle">
+                      <Icon icon="cross" iconSize={Icon.SIZE_STANDARD} onClick={this.onTabClose(idx)} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            { tabIndex !== -1 && text !== '' && (<ToolTip x={toolTip.x} y={toolTip.y}>{text}</ToolTip>) }
+          </div>
         </div>
       </div>
     );

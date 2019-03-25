@@ -26,7 +26,7 @@ class GalleryView extends React.Component {
     super(props);
 
     this.state = {
-      activeTab: 1,
+      activeTab: 0,
       panes: [{
         icon: IB.getCatagoryImage('favorite'),
         tooltip: 'Favorite Nodes',
