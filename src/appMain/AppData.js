@@ -2,7 +2,7 @@ import { observable, action } from 'mobx';
 
 // import { appOpt } from '../appMain/appSetting.js';
 
-import { makeid } from '../common/tool.js';
+import { isvalid, makeid2 } from '../common/tool.js';
 
 
 /**
@@ -12,8 +12,14 @@ export default class AppData {
   // Project List
   @observable projectList = [];
 
+  // id --> project object
+  projectMap = {};
+
   // 현재 사용(편집) 중인 프로젝트 번호
   @observable activeIndex = -1;
+
+  // 현재 선택된 노드 아이디
+  @observable activeNode = null;
 
   // 노드 추가/삭제 등 프로젝트에 변화가 있을 때 갱신을 위하여 사용함.
   @observable redrawCount = 0;
@@ -43,16 +49,24 @@ export default class AppData {
   }
 
   @action
-  addProject = (project) => {
-    const newList = [...this.projectList, project];
+  addProject = (project, cloned) => {
+    const pid = makeid2('pid', 8);
+    const prjData = cloned ? JSON.parse(JSON.stringify({ ...project, pid })) : { ...project, pid };
+    const newList = [...this.projectList, prjData];
+
     this.projectList = newList;
     this.activeIndex = newList.length - 1;
+
+    this.projectMap[pid] = prjData;
   }
 
   // 프로젝트를 닫고 닫힘 여부 반환
   @action
   removeProject = (idx) => {
+    const prjData = this.projectList[idx];
+
     this.projectList.splice(idx, 1);
+    delete this.projectMap[prjData.pid];
 
     if( idx <= this.activeIndex ) {
       this.activeIndex -= 1;
@@ -60,6 +74,8 @@ export default class AppData {
         this.activeIndex = 0;
       }
     }
+
+    return prjData;
   }
 
   getActiveProject = () => {
@@ -70,9 +86,22 @@ export default class AppData {
     return this.activeIndex;
   }
 
+  getActiveProjectID = () => {
+    return this.activeIndex >= 0 ? this.getProject(this.activeIndex).pid : '';
+  }
+
   @action
   setActiveProject = (idx) => {
     this.activeIndex = idx;
+    this.activeNode = null;
+  }
+
+  getProjectData = (idx) => {
+    return this.projectList[idx];
+  }
+
+  getProjectDataByID = (pid) => {
+    return this.projectMap[pid];
   }
 
   @action
@@ -93,10 +122,12 @@ export default class AppData {
     'description':'Draw a RunChart'
   } // */
   @action
-  addNode = (nodeMeta, x, y) => {
-    const prjData = this.getActiveProject();
+  addNode = (pid, nodeMeta, x, y) => {
+    const prjData = this.getProjectDataByID(pid);
 
-    const nid = 'nid-' + makeid(8);
+    console.log('appData addNode', prjData);
+
+    const nid = makeid2('nid', 8);
 
     prjData.nodes[nid] = {
       id: nid,
@@ -110,14 +141,68 @@ export default class AppData {
   }
 
   @action
-  connectNodes = (begin, end, type, text) => {
-    const prjData = this.getActiveProject();
-    // const linkId = 'lid-' + makeid(8);
+  connectNodes = (pid, begin, end, type, text) => {
+    const prjData = this.getProjectDataByID(pid);
+    // const linkId = makeid2('lid', 8);
 
     prjData.links.push({
       begin, end, type, text
     });
 
     this.refresh();
+  }
+
+  // pid: project id
+  // links: delete links map. {1: true, 2: true, ...}
+  @action
+  deleteLinks = (pid, links) => {
+    const prjData = this.getProjectDataByID(pid);
+
+    const newList = [];
+    for(let i = 0; i < prjData.links.length; ++i) {
+      if( !isvalid(links[i]) ) {
+        newList.push(prjData.links[i]);
+      }
+    }
+
+    prjData.links = newList;
+    this.refresh();
+  }
+
+  // pid: project id
+  // nodes: delete nodes map. {nid1: true, nid2: true, ...}
+  @action
+  deleteNodes = (pid, nodes) => {
+    const prjData = this.getProjectDataByID(pid);
+
+    const newList = [];
+    for(let i = 0; i < prjData.links.length; ++i) {
+      const lnk = prjData.links[i];
+
+      if( !isvalid(nodes[lnk.begin]) && !isvalid(nodes[lnk.end]) ) {
+        newList.push(lnk);
+      }
+    }
+
+    for(let key in nodes) {
+      if( isvalid(prjData.nodes[key]) ) {
+        delete prjData.nodes[key];
+      }
+    }
+
+    prjData.links = newList;
+    this.refresh();
+  }
+
+  // 현재 선택된 노드
+  @action
+  displayNode = (pid, nid) => {
+    const prjData = this.getProjectDataByID(pid);
+
+    this.activeNode = prjData.nodes[nid];
+  }
+
+  getActiveNode = () => {
+    return this.activeNode;
   }
 }

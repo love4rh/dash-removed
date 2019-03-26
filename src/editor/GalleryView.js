@@ -11,9 +11,11 @@ import './Editor.css';
 import GalleryItem from './GalleryItem.js';
 
 
+/*
 @inject(stores => ({
   addNode: stores.appData.addNode,
-}))
+}))// */
+@inject('appData')
 @observer
 class GalleryView extends React.Component {
   static propTypes = {
@@ -49,6 +51,8 @@ class GalleryView extends React.Component {
         gallery: appOpt.getGallery('output')
       }]
     }
+
+    this.handleDblClick = this.handleDblClick.bind(this);
   }
 
   handleTabChange = (tabIdx) => {
@@ -56,8 +60,10 @@ class GalleryView extends React.Component {
   }
 
   handleDblClick = (p) => () => {
-    // console.log('Gallery Item double clicked', p);
-    this.props.addNode(p, 40, 40);
+    const { appData } = this.props;
+    console.log('Gallery Item double clicked', p, this);
+
+    appData.addNode(appData.getActiveProjectID(), p, 40, 40);
   }
 
   render () {

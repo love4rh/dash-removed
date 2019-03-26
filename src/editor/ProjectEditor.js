@@ -11,7 +11,8 @@ import { Tab } from '../component/Tab.js';
 import GalleryView from './GalleryView.js';
 import Workspace from './Workspace.js';
 
-import AttributeEditor from './AttributeEditor.js';
+// import AttributeEditor from './AttributeEditor.js';
+import ScriptEditor from './ScriptEditor.js';
 
 import './Editor.css';
 
@@ -124,7 +125,7 @@ class ProjectEditor extends React.Component {
   	const { width, height, appData } = this.props;
   	const { leftWidth, bottomHeight } = this.state;
 
-    const dividerSize = 6;
+    const dividerSize = 4;
     const activeIndex = appData.getActiveProjectIndex();
 
   	const
@@ -166,9 +167,10 @@ class ProjectEditor extends React.Component {
             />
             <div className="workspace" style={{ width:wsWidth, height:wsHeight }}>
               { isvalid(activeProject) && (
-                <Workspace key={'ws-' + activeIndex + '/' + activeProject.title}
+                <Workspace
+                  key={'ws-' + activeIndex + '/' + activeProject.pid}
+                  pid={activeProject.pid}
                   width={wsWidth} height={wsHeight}
-                  projectData={activeProject}
                 />
               )}
             </div>
@@ -180,7 +182,7 @@ class ProjectEditor extends React.Component {
             />
           </div>
         	<div className="bottomPane" style={{ flexBasis:`${bottomHeight}px` }}>
-        		<AttributeEditor
+        		<ScriptEditor
         			height={bottomHeight}
         			width={wsWidth}
         			node={this.state.focusedNode}

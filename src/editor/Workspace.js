@@ -9,6 +9,7 @@ import { isvalid, makeid } from '../common/tool.js';
 
 import './Editor.css';
 
+import DiagramModel from './DiagramModel.js';
 import { DiagramEditor } from './DiagramEditor.js';
 
 
@@ -18,6 +19,7 @@ import { DiagramEditor } from './DiagramEditor.js';
 class Workspace extends React.Component {
   static propTypes = {
     height: PropTypes.number.isRequired,
+    pid: PropTypes.string.isRequired,
     width: PropTypes.number.isRequired,
   }
 
@@ -25,21 +27,27 @@ class Workspace extends React.Component {
     super(props);
 
     this.wsKey = 'wsmain-' + makeid(8);
+    this.prjData = this.props.appData.getProjectDataByID(this.props.pid);
+    this.diagramModel = new DiagramModel(this, this.prjData);
   }
 
   onDiagramEvent = (type, param) => {
-    const { appData } = this.props;
+    const { appData, pid } = this.props;
 
     console.log('Workspace Event', type, param);
 
     if( type === C.evtSelectNode ) {
-      // this.props.eventRelay(type, param.id); // nodeId
+      appData.displayNode(pid, param.id);
     } else if( type === C.evtConnectNodes ) {
-      appData.connectNodes(param.begin, param.end, 'normal', '');
+      appData.connectNodes(pid, param.begin, param.end, 'normal', '');
+    } else if( type === C.evtDeleteLinks ) {
+      appData.deleteLinks(pid, param);
+    } else if( type === C.evtDeleteNodes ) {
+      appData.deleteNodes(pid, param);
     }
   }
 
-  handlDragOver = (ev) => {
+  handleDragOver = (ev) => {
     const nodeMeta = ev.dataTransfer.getData(C.evtDnDNode);
 
     if( isvalid(nodeMeta) ) {
@@ -48,13 +56,15 @@ class Workspace extends React.Component {
   }
 
   handleDrop = (ev) => {
+    const { appData, pid } = this.props;
+
     ev.preventDefault();
 
     const nodeMeta = ev.dataTransfer.getData(C.evtDnDNode);
 
     const d = this.refs[this.wsKey];
 
-    this.props.appData.addNode(JSON.parse(nodeMeta),
+    appData.addNode(pid, JSON.parse(nodeMeta),
       ev.clientX + d.scrollLeft - d.offsetLeft,
       ev.clientY + d.scrollTop - d.offsetTop
     );
@@ -70,15 +80,12 @@ class Workspace extends React.Component {
       <div ref={this.wsKey}
         style={{ width:adjWidth, height, overflow:'auto' }}
         onDrop={this.handleDrop}
-        onDragOver={this.handlDragOver}
+        onDragOver={this.handleDragOver}
       >
         <DiagramEditor
           width={adjWidth}
           height={height}
-          eventReciever={this.onDiagramEvent}
-          nodes={isvalid(prjData) ? prjData.nodes : {}}
-          links={isvalid(prjData) ? prjData.links : []}
-          getImage={IB.getNodeImage}
+          model={this.diagramModel}
         />
         <div key={this.wsKey + appData.redrawCount}>
           {/* 노드나 링크가 추가되었을 때 Redrawing을 위하여 추가함. */}

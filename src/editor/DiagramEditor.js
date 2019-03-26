@@ -46,25 +46,26 @@ const makeLinkId = (index) => {
 
 class DiagramEditor extends React.Component {
   static propTypes = {
-  	eventReciever: PropTypes.func.isRequired,
     height: PropTypes.number.isRequired,
-    getImage: PropTypes.func,
-    links: PropTypes.array.isRequired,
-    nodes: PropTypes.object.isRequired,
     width: PropTypes.number.isRequired,
+    model: PropTypes.object.isRequired,
   }
 
   constructor (props) {
     super(props);
 
-    this.state = {
-      nodes: this.props.nodes,
-      links: this.props.links,
+    const { model } = this.props;
 
-      status: _stNormal_,  // normal, connecting, drag node, drag link, selecting
+    this.state = {
+      nodes: model.getNodes(),
+      links: model.getLinks(),
+
+      // normal, connecting, drag node, drag link, selecting
+      status: _stNormal_,
       statusParam: {},
 
       selected: {},
+      selectedLink: {},
     };
 
     this.lastEvent = {};
@@ -74,8 +75,6 @@ class DiagramEditor extends React.Component {
   }
 
   componentDidMount () {
-    // document.addEventListener('keydown', this.onKeyDown);
-
     // disable context menu when right-button clicked.
     document.addEventListener('contextmenu', (ev) => {
       ev.preventDefault();
@@ -83,11 +82,11 @@ class DiagramEditor extends React.Component {
   }
 
   componentDidUpdate () {
-    // this.drawAll();
+    //
   }
 
   componentWillUnmount () {
-    // document.removeEventListener('keydown', this.onKeyDown);
+    //
   }
 
   drawLink = (index, n1, n2) => {
@@ -111,7 +110,7 @@ class DiagramEditor extends React.Component {
   }
 
   isSelectedLink = (id) => {
-  	return istrue(this.state.selected[id]);
+  	return istrue(this.state.selectedLink[id]);
   }
 
   isSelected = (n, withSelecting) => {
@@ -133,19 +132,16 @@ class DiagramEditor extends React.Component {
   }
 
   drawNode = (n) => {
-    const { nodes, status, statusParam } = this.state;
+    const { status, statusParam } = this.state;
 
   	const m = 4;
-  	// const { selected, status, statusParam } = this.state;
   	const tx = n.x + _iconSize_ / 2,
   		ty = n.y + _iconSize_ + 20;
 
     let statusRect = this.isSelected(n, false) ? _clrSelect_ : null;
 
     if( status === _stConnecting_ && n.id !== statusParam.id ) {
-      // TODO 연결 가능 여부 검사
-      // ;
-      statusRect = n.id === 'gZcqmSnM' ? _clrPossible_ : _clrNoConnect_;
+      statusRect = this.props.model.isPossibleToConnect(statusParam.id, n.id) ? _clrPossible_ : _clrNoConnect_;
     }
 
     return (
@@ -156,7 +152,7 @@ class DiagramEditor extends React.Component {
 	      <image key={n.id}
 	        x={n.x} y={n.y}
 	        width={_iconSize_} height={_iconSize_}
-	        href={this.props.getImage(n.type)}
+	        href={this.props.model.getNodeImage(n.type)}
 	      />
 
 	      <text textAnchor="middle" x={tx} y={ty} style={_cssTextWrap}>{n.name}</text>
@@ -171,17 +167,24 @@ class DiagramEditor extends React.Component {
     );
   }
 
-  select = (id, add) => {
+  selectNode = (id, add) => {
   	let selected = istrue(add) ? this.state.selected : {};
 
   	selected[id] = true;
-    this.setState({ selected:selected });
+    this.setState({ selected:selected, selectedLink:{} });
+  }
+
+  selectLink = (id, add) => {
+    let selectedLink = istrue(add) ? this.state.selectedLink : {};
+
+    selectedLink[id] = true;
+    this.setState({ selectedLink:selectedLink, selected:{} });
   }
 
   selectAll = () => {
   	const { nodes, links } = this.state;
 
-  	const selected = {};
+  	const selected = {}, selectedLink = {};
 
 		// check whether node is selected or not
 		for(let id in nodes) {
@@ -190,18 +193,29 @@ class DiagramEditor extends React.Component {
 
 		// link
 		for(let i = 0; i < links.length; ++i) {
-			selected[makeLinkId(i)] = true;
+			selectedLink[makeLinkId(i)] = true;
 		}
 
-		this.setState({ selected:selected });
+		this.setState({ selected:selected, selectedLink:selectedLink });
   }
 
   deleteSelected = () => {
-  	// const { nodes, links, selected } = this.state;
+    const { model } = this.props;
+  	const { selected, selectedLink } = this.state;
+
+    model.deleteLinks(selectedLink);
+    model.deleteNodes(selected);
+
+    this.setState({
+      nodes: model.getNodes(),
+      links: model.getLinks(),
+      selected:{}, selectedLink:{}
+    });
   }
 
   onKeyDown = (ev) => {
-    // console.log('keydown', ev.keyCode, ev.key, ev.ctrlKey, ev.altKey, ev.shiftKey);
+    //console.log('keydown', ev.keyCode, ev.key, ev.ctrlKey, ev.altKey, ev.shiftKey);
+
     let processed = false;
     let { keyCode, ctrlKey } = ev;
 
@@ -212,13 +226,18 @@ class DiagramEditor extends React.Component {
     			processed = true;
     			break;
 
-      	case 46: // Delete -> delete
-	      	this.deleteSelected();
-	      	processed = true;
-	      	break;
-
       	default:
       		break;
+      }
+    } else {
+      switch( keyCode ) {
+        case 46: // Delete -> delete
+          this.deleteSelected();
+          processed = true;
+          break;
+
+        default:
+          break;
       }
     }
 
@@ -272,18 +291,18 @@ class DiagramEditor extends React.Component {
       if( ev.button === 1 || ev.button === 4 ) {
         // middle button --> connecting
         status = _stConnecting_;
-        this.select(id, false);
+        this.selectNode(id, false);
       } else if( ev.button === 2 ) {
         // right button --> context menu
       }
 
       if( !istrue(this.state.selected[id]) ) {
-      	this.props.eventReciever(C.evtSelectNode, { id:id, x:x, y:y });
-      	this.select(id);
+      	this.props.model.eventReciever(C.evtSelectNode, { id:id, x:x, y:y });
+      	this.selectNode(id);
       }
     } else if( type === _objLink_ ) {
 	    status = _stNormal_;
-	    this.select(id);
+	    this.selectLink(id);
     }
 
     this.lastMouseDown = { tick: tickCount(), button: ev.button };
@@ -343,7 +362,7 @@ class DiagramEditor extends React.Component {
       this.setState({ statusParam:statusParam });
     } else if( 'mouseup' === ev.type ) {
     	if( status === _stSelect_ ) {
-    		const selected = {};
+    		const selected = {}, selectedLink = {};
 
     		// check whether node is selected or not
     		for(let id in nodes) {
@@ -365,11 +384,11 @@ class DiagramEditor extends React.Component {
     				const p2 = calcCenter(n2.x, n2.y, _iconSize_);
 
     				if( isPtInRect(x1, y1, x2, y2, p1.x, p1.y) && isPtInRect(x1, y1, x2, y2, p2.x, p2.y) ) {
-    					selected[makeLinkId(i)] = true;
+    					selectedLink[makeLinkId(i)] = true;
     				}
     			}
     		}
-    		this.setState({ selected:selected });
+    		this.setState({ selected:selected, selectedLink:selectedLink });
     	} else if( status === _stDragNode_ ) {
     		if( statusParam.type === _objNode_ && Math.abs(x - statusParam.x1) <= 1 && Math.abs(y - statusParam.y1) <= 1 ) {
     			// TODO Node select event
@@ -390,15 +409,15 @@ class DiagramEditor extends React.Component {
           }
 
           this.lastEvent = { event:newEvent, param:eventParam, occurTime:tick };
-    			this.props.eventReciever(newEvent, eventParam);
-    			this.select(statusParam.id);
+    			this.props.model.eventReciever(newEvent, eventParam);
+    			this.selectNode(statusParam.id);
     		}
     	} else if( status === _stConnecting_ ) {
         for(let id in nodes) {
           const n = nodes[id];
 
           if( isPtInRect(n.x, n.y, n.x + _iconSize_, n.y + _iconSize_, x, y) ) {
-            this.props.eventReciever(C.evtConnectNodes, { begin: statusParam.id, end: id });
+            this.props.model.eventReciever(C.evtConnectNodes, { begin: statusParam.id, end: id });
             break;
           }
         }

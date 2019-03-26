@@ -48,7 +48,7 @@ class MainFrame extends Component {
     this.initialize(() => {
       appData.addNewProject();
       // this.loadScript('/', 'SegmentInfo.xml');
-      appData.addProject(scriptSample);
+      appData.addProject(scriptSample, true);
       // this.loadScript('/', 'scriptSample.xml');
     });
   }
@@ -61,7 +61,7 @@ class MainFrame extends Component {
     const { appData } = this.props;
 
     if( 'open' === type ) {
-      appData.addProject(scriptSample);
+      appData.addProject(scriptSample, true);
 
       /*
       this.loadScript('',

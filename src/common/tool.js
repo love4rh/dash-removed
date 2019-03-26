@@ -145,6 +145,11 @@ export const makeid = (digitNum) => {
 };
 
 
+export const makeid2 = (type, digitNum) => {
+	return type + '-' + makeid(digitNum);
+}
+
+
 // 출처: https://stove99.tistory.com/113 [스토브 훌로구]
 export const numberWithCommas = (x) => {
 	var reg = /(^[+-]?\d+)(\d{3})/;

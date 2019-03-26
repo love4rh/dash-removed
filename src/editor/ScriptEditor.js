@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 
 import MonacoEditor from 'react-monaco-editor';
 
 import { isvalid, makeid } from '../common/tool.js';
 
 import './Editor.css';
-
 
 
 function getCode() {
@@ -43,8 +43,10 @@ function getCode() {
 }
 
 
-class AttributeEditor extends React.Component {
-	static propTypes = {
+@inject('appData')
+@observer
+class ScriptEditor extends React.Component {
+  static propTypes = {
     handleValueChange: PropTypes.func.isRequired,
     node: PropTypes.object,
     // height: PropTypes.number.isRequired,
@@ -135,29 +137,7 @@ class AttributeEditor extends React.Component {
   }
 
   render () {
-    const { node, height, width } = this.props;
-    const attributes = [];
-
-    if( isvalid(node) ) {
-      attributes.push({ type:'text', value:node.name });
-    }
-
-    /*
-    const tagList = [];
-
-    for(let i = 0; i < attributes.length; ++i) {
-      const a = attributes[i];
-      tagList.push(<TextEditor key={makeid(6)} compId={'' + i} handleValueChange={this.onValueChange} value={a.value} />);
-    } // */
-
-  	/* return (
-      <div className="attributeEditor" style={{ width:'100%', height:'100%' }}>
-        <Form>
-          { tagList.map((elem) => (elem)) }
-        </Form>
-      </div>
-    ); // */
-
+    const { height, width, appData } = this.props;
     const { code } = this.state;
 
     const options = {
@@ -175,21 +155,26 @@ class AttributeEditor extends React.Component {
     // language="mySpecialLanguage"
     // theme="myCoolTheme"
 
+    const node = appData.getActiveNode();
+
     return (
-      <MonacoEditor
-        width={'100%'}
-        height={height - 30}
-        language="xml"
-        theme="vs-dark"
-        value={code}
-        options={options}
-        onChange={this.onChange}
-        editorDidMount={this.editorDidMount}
-        editorWillMount={this.editorWillMount}
-      />
+      <div key={'edit-' + (node === null ? 'null' : node.id)}>
+        <div className="paneTitle">Script</div>
+        <MonacoEditor
+          width={'100%'}
+          height={height - 45}
+          language="json"
+          theme="vs-dark"
+          value={node === null ? '' : JSON.stringify(node)}
+          options={options}
+          onChange={this.onChange}
+          editorDidMount={this.editorDidMount}
+          editorWillMount={this.editorWillMount}
+        />
+      </div>
     );
   }
 }
 
-export default AttributeEditor;
-export { AttributeEditor };
+export default ScriptEditor;
+export { ScriptEditor };
