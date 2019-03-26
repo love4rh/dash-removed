@@ -29,12 +29,13 @@ class GalleryItem extends React.Component {
 
   handleMouseOver = (ev) => {
     const elem = ev.currentTarget;
+    const pn = elem.parentNode;
 
     this.setState({
       showToolTip: true,
       text: this.props.nodeMeta.description,
-      tx: ev.clientX, // elem.offsetLeft + 24,
-      ty: elem.offsetTop + elem.clientHeight
+      tx: ev.clientX - pn.scrollLeft, // elem.offsetLeft + 24,
+      ty: elem.offsetTop + elem.clientHeight - pn.scrollTop
     });
   }
 

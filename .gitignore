@@ -4,8 +4,6 @@ dist/
 # Other files and folders
 .settings/
 node_modules/
-scripts/
-config/
 
 # Executables
 *.swf
