@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { appOpt } from '../appMain/appSetting.js';
+import { appOpt } from '../appMain/AppSetting.js';
 
 
 const _serverBaseUrl_ = appOpt.hostAddrs();

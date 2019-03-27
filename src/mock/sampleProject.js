@@ -1,79 +1,85 @@
 export const scriptSample = {
-  "title":"Sample Project",
+  "title":"SegmentInfo.xml",
   "description":"project is blah~ blah~",
   "author":"mh9.kim@lge.com",
   "nodes":{
-    "j6oV0Da3":{
-      "id":"j6oV0Da3",
+    "nid-NeRvfnX2i0bySAWX":{
+      "id":"nid-NeRvfnX2i0bySAWX",
       "name":"SCHEDULE",
       "type":"com.lge.crawlego.project.DataFetchMethod",
       "x":134,
-      "y":233
+      "y":233,
+      "script":"%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%0A%3CfetchMethod%20name%3D%22SCHEDULE%22%3E%0A%09%3Ctype%3EHTTP%3C%2Ftype%3E%0A%09%3Cpath%3E%3C%21%5BCDATA%5B%24%28segmentURL%29%5D%5D%3E%3C%2Fpath%3E%0A%09%3CparsingType%3EJSON%3C%2FparsingType%3E%0A%09%3CignoreError%3Efalse%3C%2FignoreError%3E%0A%09%3Ctransforms%3E%0A%09%09%3Ctransform%20method%3D%22unzip%22%3Eschedule.json%3C%2Ftransform%3E%0A%09%3C%2Ftransforms%3E%0A%09%3Cui%3E%0A%09%09%3Cposition%20x%3D%22134%22%20y%3D%22233%22%20%2F%3E%0A%09%09%3Cdescription%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fdescription%3E%0A%09%3C%2Fui%3E%0A%3C%2FfetchMethod%3E%0A"
     },
-    "Z7sgOqW5":{
-      "id":"Z7sgOqW5",
+    "nid-rn1A9Ah6QpdTsWDL":{
+      "id":"nid-rn1A9Ah6QpdTsWDL",
       "name":"SCHEDULELIST",
       "type":"com.lge.crawlego.project.DataGroup",
       "x":234,
-      "y":233
+      "y":233,
+      "script":"%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%0A%3CdataGroup%20name%3D%22SCHEDULELIST%22%3E%0A%09%3Cdescription%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fdescription%3E%0A%09%3Cpath%3E%2FscheduleList%3C%2Fpath%3E%0A%09%3Cparent%20%2F%3E%0A%09%3CpropValues%3E%0A%09%09%3Cvalue%20name%3D%22dbAction%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FdbAction%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22schdId%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FschdId%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22contentId%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FcontentId%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22seqNo%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FseqNo%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22chanCode%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FchanCode%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22strtTime%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FstrtTime%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22strtTimeLong%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FstrtTimeLong%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22endTime%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FendTime%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22endTimeLong%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FendTimeLong%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22schdSummary%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FschdSummary%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22timeType%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FtimeType%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22schdPgmTtl%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FschdPgmTtl%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22schdSubTtl%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FschdSubTtl%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22rebrdcstFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FrebrdcstFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22capFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FcapFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22liveFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FliveFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22dataBrdcstFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FdataBrdcstFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22scExplnBrdcstFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FscExplnBrdcstFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22scQualityGbn%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FscQualityGbn%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22signBrdcstFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FsignBrdcstFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22voiceMultiBrdcstCount%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FvoiceMultiBrdcstCount%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22threeDFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FthreeDFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22schdAdultClassCode%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FschdAdultClassCode%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22schdAgeGrdCode%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FschdAgeGrdCode%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22pgmGrId%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FpgmGrId%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22genreCode%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FgenreCode%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22realEpsdNo%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FrealEpsdNo%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%3C%2FpropValues%3E%0A%09%3Cui%3E%0A%09%09%3Cposition%20x%3D%22234%22%20y%3D%22233%22%20%2F%3E%0A%09%09%3Cdescription%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fdescription%3E%0A%09%3C%2Fui%3E%0A%3C%2FdataGroup%3E%0A"
     },
-    "vdYL7HA8":{
-      "id":"vdYL7HA8",
+    "nid-O4YtExwt3KHBbpnb":{
+      "id":"nid-O4YtExwt3KHBbpnb",
       "name":"PROGRAM",
       "type":"com.lge.crawlego.project.DataFetchMethod",
       "x":131,
-      "y":113
+      "y":113,
+      "script":"%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%0A%3CfetchMethod%20name%3D%22PROGRAM%22%3E%0A%09%3Ctype%3EHTTP%3C%2Ftype%3E%0A%09%3Cpath%3E%3C%21%5BCDATA%5B%24%28segmentURL%29%5D%5D%3E%3C%2Fpath%3E%0A%09%3CparsingType%3EJSON%3C%2FparsingType%3E%0A%09%3CignoreError%3Efalse%3C%2FignoreError%3E%0A%09%3Ctransforms%3E%0A%09%09%3Ctransform%20method%3D%22unzip%22%3Eprogram.json%3C%2Ftransform%3E%0A%09%3C%2Ftransforms%3E%0A%09%3Cui%3E%0A%09%09%3Cposition%20x%3D%22131%22%20y%3D%22113%22%20%2F%3E%0A%09%09%3Cdescription%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fdescription%3E%0A%09%3C%2Fui%3E%0A%3C%2FfetchMethod%3E%0A"
     },
-    "qhBHQqiX":{
-      "id":"qhBHQqiX",
+    "nid-f3xk9Z1mSeHW7v9A":{
+      "id":"nid-f3xk9Z1mSeHW7v9A",
       "name":"PROGRAMLIST",
       "type":"com.lge.crawlego.project.DataGroup",
       "x":231,
-      "y":113
+      "y":113,
+      "script":"%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%0A%3CdataGroup%20name%3D%22PROGRAMLIST%22%3E%0A%09%3Cdescription%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fdescription%3E%0A%09%3Cpath%3E%2FprogramList%3C%2Fpath%3E%0A%09%3Cparent%20%2F%3E%0A%09%3CpropValues%3E%0A%09%09%3Cvalue%20name%3D%22dbAction%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FdbAction%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22contentId%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FcontentId%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22seqNo%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FseqNo%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22pgmGrId%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FpgmGrId%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22connectorId%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FconnectorId%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22serId%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FserId%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22serNo%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FserNo%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22seasonId%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FseasonId%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22seasonNo%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FseasonNo%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22pgmType%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FpgmType%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22realEpsdNo%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FrealEpsdNo%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22summary%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2Fsummary%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22pgmImgUrlName%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FpgmImgUrlName%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22pgmImgUrl%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FpgmImgUrl%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22orgGenreType%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2ForgGenreType%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22orgGenreCode%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2ForgGenreCode%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22oGenreCode%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FoGenreCode%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22oGenreType%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FoGenreType%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22subGenreType%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FsubGenreType%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22subGenreCode%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FsubGenreCode%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22makeCom%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FmakeCom%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22makeCntry%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FmakeCntry%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22makeYear%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FmakeYear%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22usrPplrSt%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FusrPplrSt%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22pplrSt%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FpplrSt%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22audLang%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FaudLang%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22dataLang%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FdataLang%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22audQlty%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FaudQlty%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22genreImgUrl%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FgenreImgUrl%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22vodFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FvodFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22pgmImgSize%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FpgmImgSize%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22genreImgSize%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FgenreImgSize%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22lgGenreCode2%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FlgGenreCode2%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22lgGenreName2%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FlgGenreName2%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22programLock%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FprogramLock%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%09%3Cvalue%20name%3D%22castingFlag%22%20type%3D%22string%22%3E%0A%09%09%09%3Cpath%3E%7E%2FcastingFlag%3C%2Fpath%3E%0A%09%09%3C%2Fvalue%3E%0A%09%3C%2FpropValues%3E%0A%09%3Cui%3E%0A%09%09%3Cposition%20x%3D%22231%22%20y%3D%22113%22%20%2F%3E%0A%09%09%3Cdescription%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fdescription%3E%0A%09%3C%2Fui%3E%0A%3C%2FdataGroup%3E%0A"
     },
-    "gZcqmSnM":{
-      "id":"gZcqmSnM",
+    "nid-S9J2qE83G72cAXep":{
+      "id":"nid-S9J2qE83G72cAXep",
       "name":"CHANNEL",
       "type":"com.lge.crawlego.project.DistinctDataInfo",
       "x":413,
-      "y":234
+      "y":234,
+      "script":"%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%0A%3CprocessingElem%20type%3D%22distinct%22%3E%0A%09%3CdataSource%20alias%3D%22A1%22%3E%3C%21%5BCDATA%5BSCHEDULELIST%5D%5D%3E%3C%2FdataSource%3E%0A%09%3CdataGroupName%3E%3C%21%5BCDATA%5BCHANNEL%5D%5D%3E%3C%2FdataGroupName%3E%0A%09%3Cui%3E%0A%09%09%3Cposition%20x%3D%22413%22%20y%3D%22234%22%20%2F%3E%0A%09%09%3Cdescription%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fdescription%3E%0A%09%3C%2Fui%3E%0A%09%3Ccolumns%3E%3C%21%5BCDATA%5BchanCode%5D%5D%3E%3C%2Fcolumns%3E%0A%3C%2FprocessingElem%3E%0A"
     },
-    "Xopizti8":{
-      "id":"Xopizti8",
+    "nid-w7kj4HenRAWoPjXp":{
+      "id":"nid-w7kj4HenRAWoPjXp",
       "name":"PGM_SCH_CHECK",
       "type":"com.lge.crawlego.project.MergeDataInfo",
       "x":371,
-      "y":97
+      "y":97,
+      "script":"%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%0A%0A%3CprocessingElem%20type%3D%22merge%22%3E%0A%09%3CdataSources%3E%0A%09%09%3CdataSource%20alias%3D%22A1%22%3E%3C%21%5BCDATA%5BSCHEDULELIST%5D%5D%3E%3C%2FdataSource%3E%0A%09%09%3CdataSource%20alias%3D%22A2%22%3E%3C%21%5BCDATA%5BPROGRAMLIST%5D%5D%3E%3C%2FdataSource%3E%0A%09%3C%2FdataSources%3E%0A%09%3CdataGroupName%3E%3C%21%5BCDATA%5BPGM_SCH_CHECK%5D%5D%3E%3C%2FdataGroupName%3E%0A%09%3Cui%3E%0A%09%09%3Cposition%20x%3D%22371%22%20y%3D%2297%22%20%2F%3E%0A%09%09%3Cdescription%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fdescription%3E%0A%09%3C%2Fui%3E%0A%09%3CjoinMethod%3Eanti%3C%2FjoinMethod%3E%0A%09%3CaddKeyColumn%3Efalse%3C%2FaddKeyColumn%3E%0A%09%3CequalKeys%3E%0A%09%09%3CequalKey%20source%3D%22PROGRAMLIST%22%3E%3C%21%5BCDATA%5BcontentId%5D%5D%3E%3C%2FequalKey%3E%0A%09%09%3CequalKey%20source%3D%22SCHEDULELIST%22%3E%3C%21%5BCDATA%5BcontentId%5D%5D%3E%3C%2FequalKey%3E%0A%09%3C%2FequalKeys%3E%0A%09%3CselectColumns%3E%0A%09%09%3Ccolumns%20source%3D%22PROGRAMLIST%22%3E%3C%21%5BCDATA%5B%5D%5D%3E%3C%2Fcolumns%3E%0A%09%09%3Ccolumns%20source%3D%22SCHEDULELIST%22%3E%3C%21%5BCDATA%5B*%5D%5D%3E%3C%2Fcolumns%3E%0A%09%3C%2FselectColumns%3E%0A%3C%2FprocessingElem%3E%0A"
     }
   },
   "links":[
     {
-      "begin":"j6oV0Da3",
-      "end":"Z7sgOqW5",
+      "begin":"nid-NeRvfnX2i0bySAWX",
+      "end":"nid-rn1A9Ah6QpdTsWDL",
       "type":"normal",
       "text":""
     },
     {
-      "begin":"vdYL7HA8",
-      "end":"qhBHQqiX",
+      "begin":"nid-O4YtExwt3KHBbpnb",
+      "end":"nid-f3xk9Z1mSeHW7v9A",
       "type":"normal",
       "text":""
     },
     {
-      "begin":"Z7sgOqW5",
-      "end":"gZcqmSnM",
+      "begin":"nid-rn1A9Ah6QpdTsWDL",
+      "end":"nid-S9J2qE83G72cAXep",
       "type":"normal",
       "text":""
     },
     {
-      "begin":"Z7sgOqW5",
-      "end":"Xopizti8",
+      "begin":"nid-rn1A9Ah6QpdTsWDL",
+      "end":"nid-w7kj4HenRAWoPjXp",
       "type":"normal",
       "text":""
     },
     {
-      "begin":"qhBHQqiX",
-      "end":"Xopizti8",
+      "begin":"nid-f3xk9Z1mSeHW7v9A",
+      "end":"nid-w7kj4HenRAWoPjXp",
       "type":"normal",
       "text":""
     }

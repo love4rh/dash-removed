@@ -9,40 +9,6 @@ import { isvalid, makeid } from '../common/tool.js';
 import './Editor.css';
 
 
-function getCode() {
-  return [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '',
-    '<fetchMethod name="GranceNote_DGS">',
-    '  <type>HTTP</type>',
-    '  <path><![CDATA[https://c9609216.ipg.web.cddbp.net/webapi/xml/1.0/]]></path>',
-    '  <parsingType>XML</parsingType>',
-    '  <ignoreError>false</ignoreError>',
-    '  <params>',
-    '    <param name="backupAndRead"><![CDATA[true]]></param>',
-    '    <param name="message"><![CDATA[<QUERIES>',
-    '        <AUTH>',
-    '          <CLIENT>7060480-83FA5ADA4D9439C4244D45BEC4FBC48B</CLIENT>',
-    '          <USER>266924749544357922-55EE46C3E237FB4FF849158289A3E72A</USER>',
-    '        </AUTH>',
-    '        <QUERY CMD="TVGRIDBATCH_UPDATE">',
-    '          <STATE_INFO>',
-    '            <STATE_TYPE>TVPROVIDER_REGION-EU</STATE_TYPE>     ',
-    '            <STAMP>0</STAMP>        ',
-    '          </STATE_INFO>',
-    '        </QUERY>',
-    '      </QUERIES>]]></param>',
-    '    <param name="requestMethod"><![CDATA[POST]]></param>',
-    '  </params>',
-    '  <ui>',
-    '    <position x="398" y="13" />',
-    '    <description><![CDATA[]]></description>',
-    '  </ui>',
-    '</fetchMethod>'
-  ].join('\n');;
-}
-
-
 @inject('appData')
 @observer
 class ScriptEditor extends React.Component {
@@ -56,9 +22,7 @@ class ScriptEditor extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = {
-      code: getCode()
-    }
+    this.state = { code: '', editOn: false };
   }
 
   onValueChange = (id, data) => {
@@ -138,13 +102,13 @@ class ScriptEditor extends React.Component {
 
   render () {
     const { height, width, appData } = this.props;
-    const { code } = this.state;
+    const { code, editOn } = this.state;
 
     const options = {
       selectOnLineNumbers: true,
       minimap: {enabled: false},
       roundedSelection: false,
-      readOnly: false,
+      readOnly: !editOn,
       cursorStyle: 'line',
       automaticLayout: true,
       // suggestOnTriggerCharacters: true,
@@ -163,9 +127,9 @@ class ScriptEditor extends React.Component {
         <MonacoEditor
           width={'100%'}
           height={height - 45}
-          language="json"
+          language="xml"
           theme="vs-dark"
-          value={node === null ? '' : JSON.stringify(node)}
+          value={node === null ? '' : decodeURIComponent(node.script)}
           options={options}
           onChange={this.onChange}
           editorDidMount={this.editorDidMount}

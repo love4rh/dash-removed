@@ -2,7 +2,7 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 
-import appOpt from '../appMain/appSetting.js';
+import appOpt from '../appMain/AppSetting.js';
 
 import { IB } from '../common/ImageBank.js';
 import { Tab } from '../component/Tab.js';

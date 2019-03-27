@@ -3,7 +3,13 @@ import C from '../common/Constants.js';
 import { IB } from '../common/ImageBank.js';
 import { isvalid } from '../common/tool.js';
 
+import appOpt from '../appMain/AppSetting.js';
 
+
+
+/**
+ * DiagramEditor를 그리기 위하여 필요한 데이터 및 기능 인터페이스 제공.
+ */
 export default class DiagramModel {
 	constructor(receiver, prjData) {
 		this.receiver = receiver;

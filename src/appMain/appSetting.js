@@ -421,6 +421,7 @@ const appMeta = {
 
 export const appOpt = {
   favoriteList: null,
+  nodeTemplateMap: null,
 
   hostAddrs: () => {
     // return 'http://hdtest.tool4.us';
@@ -438,6 +439,30 @@ export const appOpt = {
     });
   },
 
+  initializeNodeTemplate: () => {
+    // set up favorite node list
+    const fl = [];
+    for(let i = 0; i < appMeta.galleryList.length; ++i) {
+      const nl = appMeta.gallery[appMeta.galleryList[i]];
+      for(let j = 0; j < nl.length; ++j) {
+        if( nl[j].favorite ) {
+          fl.push(nl[j]);
+        }
+      }
+    }
+    appOpt.favoriteList = fl;
+
+    // set up node template map
+    const nodeMap = {};
+    for(let i = 0; i < appMeta.galleryList.length; ++i) {
+      const nl = appMeta.gallery[appMeta.galleryList[i]];
+      for(let j = 0; j < nl.length; ++j) {
+        nodeMap[nl[j].id] = nl[j];
+      }
+    }
+    appOpt.nodeTemplateMap = nodeMap;
+  },
+
   isReady: () => {
     return true;
   },
@@ -449,22 +474,35 @@ export const appOpt = {
   getGallery: (type) => {
     if( 'favorite' === type ) {
       if( appOpt.favoriteList === null ) {
-        const fl = [];
-
-        for(let i = 0; i < appMeta.galleryList.length; ++i) {
-          const nl = appMeta.gallery[appMeta.galleryList[i]];
-          for(let j = 0; j < nl.length; ++j) {
-            if( nl[j].favorite ) {
-              fl.push(nl[j]);
-            }
-          }
-        }
-        appOpt.favoriteList = fl;
+        appOpt.initializeNodeTemplate();
       }
       return appOpt.favoriteList;
     }
 
     return appMeta.gallery[type];
+  },
+
+  /*
+  return node template matched to typeId.
+  {
+    'id':'322',
+    'name':'Replace',
+    'category':'processing',
+    'type':'com.lge.crawlego.project.ReplaceValueInfo',
+    'favorite':true,
+    'hasData':true,
+    'inputType':'single',
+    'beFrom':'all',
+    'beTo':'101',
+    'description':'Decide to go or stop'
+  }
+  */
+  getNodeTemplate: (typeId) => {
+    if( appOpt.nodeTemplateMap === null ) {
+      appOpt.initializeNodeTemplate();
+    }
+
+    return appOpt.nodeTemplateMap[typeId];
   }
 };
 

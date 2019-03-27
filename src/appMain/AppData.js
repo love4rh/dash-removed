@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx';
 
-// import { appOpt } from '../appMain/appSetting.js';
+// import { appOpt } from '../appMain/AppSetting.js';
 
 import { isvalid, makeid2 } from '../common/tool.js';
 
@@ -50,12 +50,13 @@ export default class AppData {
 
   @action
   addProject = (project, cloned) => {
-    const pid = makeid2('pid', 8);
+    const pid = makeid2('pid', 16);
     const prjData = cloned ? JSON.parse(JSON.stringify({ ...project, pid })) : { ...project, pid };
     const newList = [...this.projectList, prjData];
 
     this.projectList = newList;
     this.activeIndex = newList.length - 1;
+    this.activeNode = null;
 
     this.projectMap[pid] = prjData;
   }
@@ -127,7 +128,7 @@ export default class AppData {
 
     console.log('appData addNode', prjData);
 
-    const nid = makeid2('nid', 8);
+    const nid = makeid2('nid', 16);
 
     prjData.nodes[nid] = {
       id: nid,
@@ -143,7 +144,7 @@ export default class AppData {
   @action
   connectNodes = (pid, begin, end, type, text) => {
     const prjData = this.getProjectDataByID(pid);
-    // const linkId = makeid2('lid', 8);
+    // const linkId = makeid2('lid', 16);
 
     prjData.links.push({
       begin, end, type, text

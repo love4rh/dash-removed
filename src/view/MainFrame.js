@@ -47,9 +47,6 @@ class MainFrame extends Component {
 
     this.initialize(() => {
       appData.addNewProject();
-      // this.loadScript('/', 'SegmentInfo.xml');
-      appData.addProject(scriptSample, true);
-      // this.loadScript('/', 'scriptSample.xml');
     });
   }
 
@@ -61,10 +58,8 @@ class MainFrame extends Component {
     const { appData } = this.props;
 
     if( 'open' === type ) {
-      appData.addProject(scriptSample, true);
-
-      /*
-      this.loadScript('',
+      // appData.addProject(scriptSample, true);
+      this.openProject('',
         ['scriptSample.xml', 'SegmentInfo.xml'][Math.floor(Math.random() * 100) % 2]
       ); // */
     } else if( 'new' === type ) {
@@ -102,15 +97,21 @@ class MainFrame extends Component {
     });
   }
 
-  loadScript = (path, name) => {
+  openProject = (path, name) => {
     const { appData } = this.props;
+
+    if( appData ) {
+      appData.addProject(scriptSample, true);
+      return;
+    } // */
 
     this.setState({ loading: true });
 
     apiProxy.getScript({ path, name },
       (res) => {
-        if( res && res.data && isvalid(res.data.script) ) {
-          appData.addProject(res.data.script)
+        if( res && res.data && isvalid(res.data.project) ) {
+          // console.log('openProject', JSON.stringify(res.data.project));
+          appData.addProject(res.data.project)
         }
       }, (err) => {
         console.log('api getScript error', err);
