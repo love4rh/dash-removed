@@ -276,179 +276,179 @@ const nodeMeta = {
   'group':{
     'httpParam':[
       {
-        'id':'server',
-        'mandatory':true
+        'compKey':'server',
+        'mandatory':'true'
       },
       {
-        'id':'requestMethod',
-        'mandatory':true,
+        'compKey':'requestMethod',
+        'mandatory':'true',
         'default':'GET'
       },
       {
-        'id':'connectionTimeout',
+        'compKey':'connectionTimeout',
         'default':'60'
       },
       {
-        'id':'readTimeout',
+        'compKey':'readTimeout',
         'default':'60'
       },
       {
-        'id':'ignoreError',
+        'compKey':'ignoreError',
         'default':'false'
       }
     ],
     'ftpParam':[
       {
-        'id':'server'
+        'compKey':'server'
       },
       {
-        'id':'user'
+        'compKey':'user'
       },
       {
-        'id':'password'
+        'compKey':'password'
       },
       {
-        'id':'port',
+        'compKey':'port',
         'default':'21'
       }
     ],
     'scpParam':[
       {
-        'id':'server'
+        'compKey':'server'
       },
       {
-        'id':'user'
+        'compKey':'user'
       },
       {
-        'id':'port',
+        'compKey':'port',
         'default':'22'
       },
       {
-        'id':'privateKey'
+        'compKey':'privateKey'
       }
     ],
     'textParse':[
       {
-        'id':'delimiter'
+        'compKey':'delimiter'
       },
       {
-        'id':'encoding',
+        'compKey':'encoding',
         'default':'UTF-8'
       },
       {
-        'id':'nameAtHead'
+        'compKey':'nameAtHead'
       },
       {
-        'id':'quote'
+        'compKey':'quote'
       }
     ],
     'dbWithSQL':[
       {
-        'id':'driver'
+        'compKey':'driver'
       },
       {
-        'id':'connectionString'
+        'compKey':'connectionString'
       },
       {
-        'id':'user'
+        'compKey':'user'
       },
       {
-        'id':'password'
+        'compKey':'password'
       },
       {
-        'id':'query'
+        'compKey':'query'
       }
     ],
     'dbConn':[
       {
-        'id':'driver'
+        'compKey':'driver'
       },
       {
-        'id':'connectionString'
+        'compKey':'connectionString'
       },
       {
-        'id':'user'
+        'compKey':'user'
       },
       {
-        'id':'password'
+        'compKey':'password'
       }
     ],
     'sqlLoader':[
       {
-        'id':'tnsName'
+        'compKey':'tnsName'
       },
       {
-        'id':'loaderPath'
+        'compKey':'loaderPath'
       },
       {
-        'id':'targetTable'
+        'compKey':'targetTable'
       }
     ],
     'mysqlLoader':[
       {
-        'id':'targetTable'
+        'compKey':'targetTable'
       }
     ],
     'dataOnConn':[
       {
-        'id':'server'
+        'compKey':'server'
       },
       {
-        'id':'port'
+        'compKey':'port'
       },
       {
-        'id':'user'
+        'compKey':'user'
       },
       {
-        'id':'password'
+        'compKey':'password'
       },
       {
-        'id':'collection'
+        'compKey':'collection'
       }
     ],
     'transfer':[
       {
-        'id':'connectionType'
+        'compKey':'connectionType'
       },
       {
-        'id':'server'
+        'compKey':'server'
       },
       {
-        'id':'user'
+        'compKey':'user'
       },
       {
-        'id':'port'
+        'compKey':'port'
       },
       {
-        'id':'privateKey'
+        'compKey':'privateKey'
       }
     ],
     'S3Conn':[
       {
-        'id':'accessKey'
+        'compKey':'accessKey'
       },
       {
-        'id':'secretKey'
+        'compKey':'secretKey'
       },
       {
-        'id':'endPoint'
+        'compKey':'endPoint'
       },
       {
-        'id':'bucketName'
+        'compKey':'bucketName'
       }
     ],
     'transform':[
       {
-        'id':'gzUnzip'
+        'compKey':'gzUnzip'
       },
       {
-        'id':'unzipFile'
+        'compKey':'unzipFile'
       },
       {
-        'id':'virtualRootTag'
+        'compKey':'virtualRootTag'
       },
       {
-        'id':'backupAndGo'
+        'compKey':'backupAndGo'
       }
     ]
   },
@@ -527,7 +527,7 @@ export const nm = {
     } else if( isvalid(nodeMeta.group[propId]) ) {
       const gl = nodeMeta.group[propId];
       for(let i = 0; i < gl.length; ++i) {
-        pl.push(nodeMeta.single[gl[i].id]);
+        pl.push(nodeMeta.single[gl[i].compKey]);
       }
     }
 
