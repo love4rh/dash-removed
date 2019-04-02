@@ -28,7 +28,9 @@ const _stConnecting_ = 'connecting';
 
 const _clrSelect_ = 'blue';
 const _clrLink_ = '#333';
-const _clrConnecting_ = '#aaa';
+const _clrEventLink_ = '#C04040';
+const _clrParentLink_ = '#40C040';
+const _clrConnecting_ = '#AAA';
 const _clrRectSelect_ = '#000';
 const _clrPossible_ ='#00AA00';
 const _clrNoConnect_ = '#D32222';
@@ -38,8 +40,8 @@ const _cssTextWrap = { stroke:'white', strokeWidth:'0.3em', font:'12px Verdana, 
 // -------------------------------
 
 
-const makeLinkId = (index) => {
-	return index;
+const makeLinkId = (lnk) => {
+	return lnk.begin + '/' + lnk.end;
 }
 
 
@@ -89,7 +91,7 @@ class DiagramEditor extends React.Component {
     //
   }
 
-  drawLink = (index, n1, n2) => {
+  drawLink = (lnk, n1, n2) => {
     if( !isvalid(n1) || !isvalid(n2) )
       return null;
 
@@ -102,11 +104,24 @@ class DiagramEditor extends React.Component {
     if( d < _iconSize_ )
       return null;
 
-    const linkId = makeLinkId(index);
-    const linkColor = this.isSelectedLink(linkId) ? _clrSelect_ : _clrLink_;
+    const linkId = makeLinkId(lnk);
+    let linkColor, dashed = false, clickHandle;
+
+    if( lnk.type === 'event' ) {
+      clickHandle = this.onMouseDown(_objLink_, linkId);
+      linkColor = this.isSelectedLink(linkId) ? _clrSelect_ : _clrEventLink_;  
+      dashed = true;
+    } else if( lnk.type === 'parent' ) {
+      clickHandle = null;
+      linkColor = _clrParentLink_;
+      dashed = true;
+    } else {
+      clickHandle = this.onMouseDown(_objLink_, linkId);
+      linkColor = this.isSelectedLink(linkId) ? _clrSelect_ : _clrLink_;  
+    }
 
     return drawArrowLine(p1, p2, _sizeRadius_, _sizeRadius_, _arrowSize_,
-      _sizeLink_, linkColor, this.onMouseDown(_objLink_, linkId));
+      _sizeLink_, linkColor, dashed, lnk.text, clickHandle);
   }
 
   isSelectedLink = (id) => {
@@ -193,7 +208,7 @@ class DiagramEditor extends React.Component {
 
 		// link
 		for(let i = 0; i < links.length; ++i) {
-			selectedLink[makeLinkId(i)] = true;
+			selectedLink[makeLinkId(links[i])] = true;
 		}
 
 		this.setState({ selected:selected, selectedLink:selectedLink });
@@ -375,16 +390,16 @@ class DiagramEditor extends React.Component {
     		const { x1, y1, x2, y2 } = statusParam;
 
     		for(let i = 0; i < links.length; ++i) {
-    			const L = links[i];
-    			const n1 = nodes[L.begin];
-    			const n2 = nodes[L.end];
+    			const lnk = links[i];
+    			const n1 = nodes[lnk.begin];
+    			const n2 = nodes[lnk.end];
 
     			if( isvalid(n1) && isvalid(n2) ) {
     				const p1 = calcCenter(n1.x, n1.y, _iconSize_);
     				const p2 = calcCenter(n2.x, n2.y, _iconSize_);
 
-    				if( isPtInRect(x1, y1, x2, y2, p1.x, p1.y) && isPtInRect(x1, y1, x2, y2, p2.x, p2.y) ) {
-    					selectedLink[makeLinkId(i)] = true;
+    				if( lnk.type !== 'parent' && isPtInRect(x1, y1, x2, y2, p1.x, p1.y) && isPtInRect(x1, y1, x2, y2, p2.x, p2.y) ) {
+    					selectedLink[makeLinkId(lnk)] = true;
     				}
     			}
     		}
@@ -440,7 +455,8 @@ class DiagramEditor extends React.Component {
     const svgTags = [];
 
     for(let i = 0; i < links.length; ++i) {
-      svgTags.push(this.drawLink(i, nodes[links[i].begin], nodes[links[i].end]));
+      const lnk = links[i];
+      svgTags.push(this.drawLink(lnk, nodes[lnk.begin], nodes[lnk.end]));
     }
 
     let mX = width, mY = height;
@@ -468,7 +484,7 @@ class DiagramEditor extends React.Component {
 
       svgTags.push(
         drawArrowLine(p1, { x: statusParam.x2, y: statusParam.y2},
-          _sizeRadius_, 0, _arrowSize_, _sizeLink_, _clrConnecting_)
+          _sizeRadius_, 0, _arrowSize_, _sizeLink_, _clrConnecting_, true)
       );
     }
 

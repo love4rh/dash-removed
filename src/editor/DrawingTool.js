@@ -1,6 +1,6 @@
 // DrawingTool.js
 import React from 'react';
-import { makeid } from '../common/tool.js';
+import { hasString, makeid } from '../common/tool.js';
 
 
 export const calcCenter = (x, y, size) => {
@@ -37,7 +37,7 @@ export const isPtInRect = (x1, y1, x2, y2, px, py) => {
 }
 
 // p1, p2: {x, y}
-export const drawArrowLine = (p1, p2, beginRadius, endRadius, arrowSize, strokWidth, color, clickHandler) => {
+export const drawArrowLine = (p1, p2, beginRadius, endRadius, arrowSize,strokWidth, color, dashed, subText, clickHandler) => {
   const dx = p2.x - p1.x, dy = p2.y - p1.y;
   const d = Math.sqrt(dx * dx + dy * dy);
 
@@ -64,13 +64,30 @@ export const drawArrowLine = (p1, p2, beginRadius, endRadius, arrowSize, strokWi
       + ',' + (Math.sin(th) * arrowX[i] + Math.cos(th) * arrowY[i] + eY));
   }
 
+  const lineStyle = { strokeWidth:strokWidth, stroke:color };
+
+  if( dashed ) {
+    lineStyle.strokeDasharray ='10,10';
+  }
+
+  let textTag = null;
+
+  if( hasString(subText) ) {
+    let r = th * 180 / Math.PI;
+    const tx = (sX + eX) / 2, ty = (sY + eY - 10) / 2;
+    const textStyle = { fill:color, font:'10px Verdana, Helvetica, Arial, sans-serif' };
+
+    /* while( r > 90 ) r -= 90;
+    transform={`rotate(${r} ${tx},${ty})`} */
+
+    textTag = (<text textAnchor="middle" x={tx} y={ty} style={textStyle}>{subText}</text>);
+  }
+
   return (
     <g key={makeid(6)} onMouseDown={clickHandler}>
-      <line
-        x1={sX} y1={sY} x2={eX} y2={eY}
-        style={{ strokeWidth:strokWidth, stroke:color }}
-      />
+      <line x1={sX} y1={sY} x2={eX} y2={eY} style={lineStyle} />
       <polygon points={path} style={{ fill:color }} />
+      {textTag}
     </g>
   );
 }

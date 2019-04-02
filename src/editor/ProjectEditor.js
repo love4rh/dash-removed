@@ -11,8 +11,8 @@ import { Tab } from '../component/Tab.js';
 import GalleryView from './GalleryView.js';
 import Workspace from './Workspace.js';
 
-// import AttributeEditor from './AttributeEditor.js';
-import ScriptEditor from './ScriptEditor.js';
+import AttributeEditor from './AttributeEditor.js';
+// import ScriptEditor from './ScriptEditor.js';
 
 import './Editor.css';
 
@@ -30,7 +30,6 @@ class ProjectEditor extends React.Component {
     super(props);
 
     this.state = {
-    	focusedNode: null,
       leftWidth: 300,
       bottomHeight: 250
     };
@@ -70,7 +69,6 @@ class ProjectEditor extends React.Component {
 
   	if( type === C.evtSelectNode ) {
   		const prjData = appData.getProject(activeIndex);
-  		this.setState({ focusedNode:prjData.nodes[param] });
   	} // */
   }
 
@@ -80,7 +78,6 @@ class ProjectEditor extends React.Component {
     this.props.appData.setActiveProject(tabIndex);
 
   	this.setState({
-  		focusedNode: null,
   		attributes: []
   	});
   }
@@ -91,7 +88,7 @@ class ProjectEditor extends React.Component {
 
   handleValueChange = (propIdx, value) => {
     /*
-  	const { activeIndex, projectList, focusedNode } = this.state;
+  	const { activeIndex, projectList } = this.state;
 
   	if( activeIndex < 0 || isundef(focusedNode) ) {
   		console.log('ERROR: PROJECT NOT DEFINED.');
@@ -182,10 +179,9 @@ class ProjectEditor extends React.Component {
             />
           </div>
         	<div className="bottomPane" style={{ flexBasis:`${bottomHeight}px` }}>
-        		<ScriptEditor
+        		<AttributeEditor
         			height={bottomHeight}
         			width={wsWidth}
-        			node={this.state.focusedNode}
         			handleValueChange={this.handleValueChange}
         		/>
         	</div>

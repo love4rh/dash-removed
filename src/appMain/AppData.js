@@ -125,9 +125,6 @@ export default class AppData {
   @action
   addNode = (pid, nodeMeta, x, y) => {
     const prjData = this.getProjectDataByID(pid);
-
-    console.log('appData addNode', prjData);
-
     const nid = makeid2('nid', 16);
 
     prjData.nodes[nid] = {
@@ -135,7 +132,8 @@ export default class AppData {
       name: nodeMeta.name,
       type: nodeMeta.type,
       x: x - 20,
-      y: y - 20
+      y: y - 20,
+      script: ''
     }
 
     this.refresh();

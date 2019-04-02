@@ -29,7 +29,7 @@ class LayoutDivider extends React.Component {
   handleMouseDown = (ev) => {
     const p = this.isVertical() ? ev.clientX : ev.clientY;
 
-    console.log('LayoutDivider', ev.clientX, ev.clientY, p);
+    // console.log('LayoutDivider', ev.clientX, ev.clientY, p);
 
     this.refs.wrapper.focus();
 
@@ -51,7 +51,7 @@ class LayoutDivider extends React.Component {
   handleMouseUp = (ev) => {
     const p = this.isVertical() ? ev.clientX : ev.clientY;
 
-    console.log('LayoutDivider Up', ev.clientX, ev.clientY, p);
+    // console.log('LayoutDivider Up', ev.clientX, ev.clientY, p);
 
     document.body.style.cursor = 'auto';
 

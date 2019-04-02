@@ -6,20 +6,20 @@ import logo from '../assets/logo.svg';
 import { ProjectEditor } from '../editor/ProjectEditor.js';
 
 import apiProxy from '../common/apiProxy.js';
-import {isvalid} from '../common/tool.js';
+import { isvalid } from '../common/tool.js';
 
-import { scriptSample } from '../mock/sampleProject.js';
+import { getMockProject } from '../mock/MockProject.js';
 
 import {
-    Alignment,
-    Button,
-    Classes,
-    Navbar,
-    NavbarDivider,
-    NavbarGroup,
-    NavbarHeading,
-    Spinner,
-    Overlay
+  Alignment,
+  Button,
+  Classes,
+  Navbar,
+  NavbarDivider,
+  NavbarGroup,
+  NavbarHeading,
+  Spinner,
+  Overlay
 } from '@blueprintjs/core';
 
 import './MainFrame.css';
@@ -58,7 +58,7 @@ class MainFrame extends Component {
     const { appData } = this.props;
 
     if( 'open' === type ) {
-      // appData.addProject(scriptSample, true);
+      // appData.addProject(getMockProject(), true);
       this.openProject('',
         ['scriptSample.xml', 'SegmentInfo.xml'][Math.floor(Math.random() * 100) % 2]
       ); // */
@@ -101,7 +101,7 @@ class MainFrame extends Component {
     const { appData } = this.props;
 
     if( appData ) {
-      appData.addProject(scriptSample, true);
+      appData.addProject(getMockProject(), true);
       return;
     } // */
 

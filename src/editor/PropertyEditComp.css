@@ -1,0 +1,32 @@
+.attrElement {
+  padding: 5px 0;
+}
+
+.attrTitle {
+  display: inline-block;
+  line-height: 30px;
+  width: 150px;
+  padding: 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  text-align: right;
+}
+
+.attrValue {
+  display: inline-block;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.dashSelect {
+  line-height: 30px;
+  height: 30px;
+  border-radius: 3px;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  letter-spacing: normal;
+  border: 1px solid #b4b4b4;
+}
+
