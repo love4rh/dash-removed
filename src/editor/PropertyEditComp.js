@@ -19,7 +19,8 @@ import './PropertyEditComp.css';
 export class GroupedPropEditor extends React.Component {
 	static propTypes = {
     handleValueChange: PropTypes.func,
-    propId: PropTypes.string.isRequired
+    propId: PropTypes.string.isRequired,
+    subGroup: PropTypes.bool,
     // height: PropTypes.number.isRequired,
     // width: PropTypes.number.isRequired,
   }
@@ -38,17 +39,16 @@ export class GroupedPropEditor extends React.Component {
   }
 
   render () {
-    const { propId, width } = this.props;
-    const valueWidth = width - 195;
-
+    const { propId, width, subGroup } = this.props;
+    const valueWidth = width - 195 - (subGroup ? 24 : 0);
     const pmList = nm.getPropMetaList(propId)
 
-    console.log(propId, pmList);
+    // console.log(propId, pmList);
 
     return (
       <div>
         {pmList.map((p, idx) => (
-          <div key={`${propId}-${idx}`} className="attrElement">
+          <div key={`${propId}-${idx}`} className={'attrElement' + (subGroup ? ' attrSubGroup' : '')}>
             <div className="attrTitle">{p.title}</div>
             { p.vt === 'string' &&
               (<div className="attrValue" style={{ width:valueWidth }}>

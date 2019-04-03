@@ -1,5 +1,10 @@
 .attrElement {
-  padding: 5px 0;
+  padding: 10px 0 0 0;
+}
+
+.attrSubGroup {
+  border-left: 3px solid #777;
+  margin-left: 24px;
 }
 
 .attrTitle {
@@ -10,7 +15,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
-  text-align: right;
+  text-align: left;
 }
 
 .attrValue {

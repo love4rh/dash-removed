@@ -455,56 +455,68 @@ const nodeMeta = {
   'node':{
     'All':[
       {
-        'prop':'compName'
+        'key':'name',
+        'propKey':'compName'
       },
       {
-        'prop':'compDesc'
+        'key':'desc',
+        'propKey':'compDesc'
       }
     ],
     'appendNode':[
       {
-        'prop':'compAppend'
+        'key':'compAppend',
+        'propKey':'compAppend'
       }
     ],
     'fetchMethod':[
       {
-        'prop':'fetchMethod'
+        'key':'fm',
+        'propKey':'fetchMethod'
       },
       {
-        'prop':'httpParam',
-        'enableKey':'fetchMethod',
+        'key':'hp',
+        'propKey':'httpParam',
+        'enableKey':'fm',
         'enableValue':'HTTP'
       },
       {
-        'prop':'ftpParam',
-        'enableKey':'fetchMethod',
+        'key':'ftp',
+        'propKey':'ftpParam',
+        'enableKey':'fm',
         'enableValue':'FTP'
       },
       {
-        'prop':'filePath',
-        'enableKey':'fetchMethod',
+        'key':'local',
+        'propKey':'filePath',
+        'enableKey':'fm',
         'enableValue':'LOCAL'
       },
       {
-        'prop':'dbWithSQL',
-        'enableKey':'fetchMethod',
+        'key':'db',
+        'propKey':'dbWithSQL',
+        'enableKey':'fm',
         'enableValue':'DB'
       },
       {
-        'prop':'scpParam',
-        'enableKey':'fetchMethod',
+        'key':'scp',
+        'propKey':'scpParam',
+        'enableKey':'fm',
         'enableValue':'SCP'
       },
       {
-        'prop':'structureType'
+        'key':'dtype',
+        'propKey':'structureType'
       },
       {
-        'prop':'textParse',
-        'enableKey':'structureType',
+        'key':'tp',
+        'propKey':'textParse',
+        'enableKey':'dtype',
         'enableValue':'PLAIN'
       },
       {
-        'prop':'ignoreError'
+        'key':'ie',
+        'propKey':'ignoreError'
       }
     ]
   }
