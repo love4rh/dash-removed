@@ -57,11 +57,10 @@ class MainFrame extends Component {
   test = (type) => () => {
     const { appData } = this.props;
 
-    if( 'open' === type ) {
-      // appData.addProject(getMockProject(), true);
-      this.openProject('',
-        ['scriptSample.xml', 'SegmentInfo.xml'][Math.floor(Math.random() * 100) % 2]
-      ); // */
+    if( 'open1' === type ) {
+      this.openProject('', 'scriptSample.xml');
+    } else if( 'open2' === type ) {
+      this.openProject('', 'SegmentInfo.xml');
     } else if( 'new' === type ) {
       appData.addNewProject();
     }
@@ -100,6 +99,7 @@ class MainFrame extends Component {
   openProject = (path, name) => {
     const { appData } = this.props;
 
+    //*
     if( appData ) {
       appData.addProject(getMockProject(), true);
       return;
@@ -109,6 +109,7 @@ class MainFrame extends Component {
 
     apiProxy.getScript({ path, name },
       (res) => {
+        // console.log('openProject', res);
         if( res && res.data && isvalid(res.data.project) ) {
           // console.log('openProject', JSON.stringify(res.data.project));
           appData.addProject(res.data.project)
@@ -134,7 +135,8 @@ class MainFrame extends Component {
             <NavbarHeading>Dash</NavbarHeading>
             <NavbarDivider />
             <Button className={Classes.MINIMAL} icon="document" text="New" onClick={this.test('new')} />
-            <Button className={Classes.MINIMAL} icon="folder-open" text="Open" onClick={this.test('open')} />
+            <Button className={Classes.MINIMAL} icon="folder-open" text="Open1" onClick={this.test('open1')} />
+            <Button className={Classes.MINIMAL} icon="folder-open" text="Open2" onClick={this.test('open2')} />
           </NavbarGroup>
         </Navbar>
 

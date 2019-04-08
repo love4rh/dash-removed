@@ -41,9 +41,15 @@ https://react.semantic-ui.com
 
 
 ## monaco editor
+https://github.com/Microsoft/monaco-editor
+
 https://www.npmjs.com/package/react-monaco-editor
 https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html
 https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-custom-languages
+
+언어 정의할 때 참고
+https://github.com/Microsoft/monaco-languages
+
 
 ### Interface for Theme Definition
 https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonethemedata.html

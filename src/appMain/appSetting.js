@@ -425,7 +425,8 @@ export const appOpt = {
 
   hostAddrs: () => {
     // return 'http://hdtest.tool4.us';
-    return 'http://10.186.119.121:7777';
+    // return 'http://10.186.119.121:7777';
+    return 'http://localhost:7777';
   },
 
   initialize: (cb) => {

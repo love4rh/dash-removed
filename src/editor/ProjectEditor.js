@@ -122,7 +122,7 @@ class ProjectEditor extends React.Component {
   	const { width, height, appData } = this.props;
   	const { leftWidth, bottomHeight } = this.state;
 
-    const dividerSize = 4;
+    const dividerSize = 2;
     const activeIndex = appData.getActiveProjectIndex();
 
   	const
@@ -174,7 +174,7 @@ class ProjectEditor extends React.Component {
         	</div>
           <div style={{ flexBasis:`${dividerSize}px` }}>
             <LayoutDivider direction={DividerDirection.horizontal}
-              size={dividerSize}
+              size={dividerSize + 1}
               onLayoutChange={this.handleLayoutChange('info')}
             />
           </div>

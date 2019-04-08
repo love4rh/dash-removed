@@ -5,7 +5,7 @@ import { observer, inject } from 'mobx-react';
 import C from '../common/Constants.js';
 import { IB } from '../common/ImageBank.js';
 
-import { isvalid, makeid } from '../common/tool.js';
+import { hasString, isvalid, makeid } from '../common/tool.js';
 
 import './Editor.css';
 
@@ -57,10 +57,13 @@ class Workspace extends React.Component {
 
   handleDrop = (ev) => {
     const { appData, pid } = this.props;
+    const nodeMeta = ev.dataTransfer.getData(C.evtDnDNode);
+
+    if( !hasString(nodeMeta) ) {
+      return;
+    }
 
     ev.preventDefault();
-
-    const nodeMeta = ev.dataTransfer.getData(C.evtDnDNode);
 
     const d = this.refs[this.wsKey];
 
