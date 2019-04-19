@@ -196,12 +196,19 @@ export default class AppData {
   // 현재 선택된 노드
   @action
   displayNode = (pid, nid) => {
-    const prjData = this.getProjectDataByID(pid);
-
-    this.activeNode = prjData.nodes[nid];
+    this.activeNode = nid;
+    this.refresh();
   }
 
   getActiveNode = () => {
-    return this.activeNode;
+    const prjData = this.getActiveProject();
+
+    return isvalid(prjData) ? prjData.nodes[this.activeNode] : null;
+  }
+
+  @action
+  setActiveNodePropList = (propList) => {
+    const prjData = this.getActiveProject();
+    prjData.nodes[this.activeNode].property = { ...propList };
   }
 }

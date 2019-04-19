@@ -12,7 +12,7 @@ import GalleryView from './GalleryView.js';
 import Workspace from './Workspace.js';
 
 import AttributeEditor from './AttributeEditor.js';
-// import ScriptEditor from './ScriptEditor.js';
+import ScriptEditor from './ScriptEditor.js';
 
 import './Editor.css';
 
@@ -30,7 +30,8 @@ class ProjectEditor extends React.Component {
     super(props);
 
     this.state = {
-      leftWidth: 300,
+      leftWidth: 250,
+      rightWidth: 300,
       bottomHeight: 250
     };
 
@@ -86,48 +87,38 @@ class ProjectEditor extends React.Component {
     this.props.appData.removeProject(tabIndex);
   }
 
-  handleValueChange = (propIdx, value) => {
-    /*
-  	const { activeIndex, projectList } = this.state;
-
-  	if( activeIndex < 0 || isundef(focusedNode) ) {
-  		console.log('ERROR: PROJECT NOT DEFINED.');
-  		return;
-  	}
-
-  	console.log('valueChanged', propIdx, value);
-
-  	focusedNode.name = value;
-
-  	this.setState({ projectList: projectList });
-    // */
+  handleValueChange = (propList) => {
+    const { appData } = this.props;
+    appData.setActiveNodePropList(propList);
   }
 
   // type: gallery, info
   handleLayoutChange = (type) => (f, t) => {
     console.log('Layout Change Event', f, t);
 
-    let { leftWidth, bottomHeight } = this.state;
+    let { leftWidth, rightWidth, bottomHeight } = this.state;
 
     if( 'gallery' === type ) {
       leftWidth += t - f;
+    } else if( 'property' === type ) {
+      rightWidth -= t - f;
     } else if( 'info' === type ) {
       bottomHeight += t - f;
     }
 
-    this.setState({ leftWidth:leftWidth, bottomHeight:bottomHeight });
+    this.setState({ leftWidth:leftWidth, bottomHeight:bottomHeight, rightWidth:rightWidth });
   }
 
   render () {
   	const { width, height, appData } = this.props;
-  	const { leftWidth, bottomHeight } = this.state;
+  	const { leftWidth, rightWidth, bottomHeight } = this.state;
 
-    const dividerSize = 2;
+    const dividerSize = 3;
     const activeIndex = appData.getActiveProjectIndex();
 
   	const
   		wsHeight = height - bottomHeight - 7 - dividerSize, // 22, IE에서 120정도 부족함. 원인 파악요.
-  		wsWidth = width - leftWidth - 3
+  		wsWidth = width - leftWidth - rightWidth - dividerSize
   	;
 
     // console.log('ProjectEditor render', activeIndex, appData.sizeOfProject());
@@ -143,6 +134,7 @@ class ProjectEditor extends React.Component {
     }
 
     const activeProject = activeIndex >= 0 ? appData.getProject(activeIndex) : null;
+    const activeNode = appData.getActiveNode();
 
   	return (
       <div className="editor" style={{ width, height }}>
@@ -155,7 +147,7 @@ class ProjectEditor extends React.Component {
             onLayoutChange={this.handleLayoutChange('gallery')}
           />
         </div>
-        <div className="rightPane" style={{ flexBasis:`${wsWidth}px` }}>
+        <div className="middlePane" style={{ flexBasis:`${wsWidth}px` }}>
         	<div className="mainPane" style={{ flexBasis:`${wsHeight}px` }}>
         		<Tab activeTab={activeIndex}
               onTabChange={this.handleTabChange}
@@ -163,13 +155,13 @@ class ProjectEditor extends React.Component {
               panes={workPanes}
             />
             <div className="workspace" style={{ width:wsWidth, height:wsHeight }}>
-              { isvalid(activeProject) && (
-                <Workspace
+              { isvalid(activeProject) &&
+                (<Workspace
                   key={'ws-' + activeIndex + '/' + activeProject.pid}
                   pid={activeProject.pid}
                   width={wsWidth} height={wsHeight}
-                />
-              )}
+                />)
+              }
             </div>
         	</div>
           <div style={{ flexBasis:`${dividerSize}px` }}>
@@ -178,13 +170,27 @@ class ProjectEditor extends React.Component {
               onLayoutChange={this.handleLayoutChange('info')}
             />
           </div>
+
         	<div className="bottomPane" style={{ flexBasis:`${bottomHeight}px` }}>
-        		<AttributeEditor
-        			height={bottomHeight}
-        			width={wsWidth}
-        			handleValueChange={this.handleValueChange}
-        		/>
+            <ScriptEditor
+              height={bottomHeight}
+              handleValueChange={this.handleValueChange}
+            />
         	</div>
+        </div>
+        <div style={{ flexBasis:`${dividerSize}px` }}>
+          <LayoutDivider direction={DividerDirection.vertical}
+            size={dividerSize}
+            onLayoutChange={this.handleLayoutChange('property')}
+          />
+        </div>
+        <div className="rightPane" style={{ flexBasis:`${rightWidth}px` }}>
+          <AttributeEditor
+            height={height}
+            width={rightWidth}
+            node={activeNode}
+            handleValueChange={this.handleValueChange}
+          />
         </div>
       </div>
     );

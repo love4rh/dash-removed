@@ -3,21 +3,21 @@ import PropTypes from 'prop-types';
 
 import MonacoEditor from 'react-monaco-editor';
 
-import { isvalid, makeid } from '../common/tool.js';
+import { isvalid, makeid, istrue } from '../common/tool.js';
 
 
 
 class SQLEditor extends React.Component {
   static propTypes = {
+    disabled: PropTypes.bool,
     onValueChange: PropTypes.func.isRequired,
-    propId: PropTypes.string.isRequired,
     sql: PropTypes.string,
   }
 
   constructor (props) {
     super(props);
 
-    this.state = { code: '', editOn: true };
+    this.state = { code: '', editOn: !istrue(props.disabled) };
   }
 
   editorDidMount = (editor, monaco) => {
@@ -213,7 +213,7 @@ class SQLEditor extends React.Component {
         numbers: [
           [/0[xX][0-9a-fA-F]*/, 'number'],
           [/[$][+-]*\d*(\.\d*)?/, 'number'],
-          [/((\d+(\.\d*)?)|(\.\d+))([eE][\-+]?\d+)?/, 'number']
+          [/((\d+(\.\d*)?)|(\.\d+))([eE][-+]?\d+)?/, 'number']
         ],
         strings: [
           [/'/, { token: 'string', next: '@string' }],
@@ -246,8 +246,7 @@ class SQLEditor extends React.Component {
     // Register a completion item provider for the new language
     monaco.languages.registerCompletionItemProvider('mysql', {
       provideCompletionItems: (model, position) => {
-        console.log('provideCompletionItems', model, position);
-
+        // console.log('provideCompletionItems', model, position);
         let suggestions = [{
           label: 'simpleText',
           kind: monaco.languages.CompletionItemKind.Text,
@@ -277,12 +276,12 @@ class SQLEditor extends React.Component {
   }
 
   onChange = (newValue, e) => {
-    const { onValueChange, propId } = this.props;
+    const { onValueChange } = this.props;
 
     this.setState({ code: newValue });
 
     if( isvalid(onValueChange) ) {
-      onValueChange(propId, newValue);
+      onValueChange(newValue);
     }
   }
 
@@ -297,6 +296,7 @@ class SQLEditor extends React.Component {
       cursorStyle: 'line',
       automaticLayout: true,
       suggestOnTriggerCharacters: true,
+      lineNumbers: 'off'
       // suggestSelection: 'recentlyUsedByPrefix'
     };
 

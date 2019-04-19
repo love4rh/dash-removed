@@ -5,7 +5,7 @@ const nodeMeta = {
     'fetchType':[
       'HTTP',
       'FTP',
-      'LOCAL',
+      'FILE',
       'DB',
       'SCP'
     ],
@@ -512,13 +512,13 @@ const nodeMeta = {
         'propKey':'compDesc'
       }
     ],
-    'appendNode':[
+    'com.lge.crawlego.project.AppendDataInfo':[
       {
         'valueKey':'compAppend',
         'propKey':'compAppend'
       }
     ],
-    'fetchMethod':[
+    'com.lge.crawlego.project.DataFetchMethod':[
       {
         'valueKey':'fm',
         'propKey':'fetchMethod'
@@ -539,7 +539,7 @@ const nodeMeta = {
         'valueKey':'local',
         'propKey':'filePath',
         'enableKey':'fm',
-        'enableValue':'LOCAL'
+        'enableValue':'FILE'
       },
       {
         'valueKey':'db',

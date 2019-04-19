@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 
 import C from '../common/Constants.js';
-import { IB } from '../common/ImageBank.js';
 
 import { hasString, isvalid, makeid } from '../common/tool.js';
 
@@ -38,6 +37,8 @@ class Workspace extends React.Component {
 
     if( type === C.evtSelectNode ) {
       appData.displayNode(pid, param.id);
+    } else if( type === C.evtSelectCanvas ) {
+      appData.displayNode(pid, null);
     } else if( type === C.evtConnectNodes ) {
       appData.connectNodes(pid, param.begin, param.end, 'normal', '');
     } else if( type === C.evtDeleteLinks ) {
@@ -75,9 +76,7 @@ class Workspace extends React.Component {
 
   render () {
     const { height, width, appData } = this.props;
-    const adjWidth = width - 5; // border-width
-
-    const prjData = appData.getActiveProject();
+    const adjWidth = width; // border-width
 
     return (
       <div ref={this.wsKey}

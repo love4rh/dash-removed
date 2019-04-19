@@ -108,7 +108,7 @@ class ScriptEditor extends React.Component {
       selectOnLineNumbers: true,
       minimap: {enabled: false},
       roundedSelection: false,
-      readOnly: !editOn,
+      readOnly: false, // !editOn,
       cursorStyle: 'line',
       automaticLayout: true,
       // suggestOnTriggerCharacters: true,
@@ -122,14 +122,14 @@ class ScriptEditor extends React.Component {
     const node = appData.getActiveNode();
 
     return (
-      <div key={'edit-' + (node === null ? 'null' : node.id)}>
+      <div key={'scEdit-' + (isvalid(node) ? node.id : 'null')}>
         <div className="paneTitle">Script</div>
         <MonacoEditor
           width={'100%'}
           height={height - 45}
           language="xml"
           theme="vs-dark"
-          value={node === null ? '' : decodeURIComponent(node.script)}
+          value={isvalid(node) ?decodeURIComponent(node.script) : ''}
           options={options}
           onChange={this.onChange}
           editorDidMount={this.editorDidMount}

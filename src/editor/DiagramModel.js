@@ -3,7 +3,7 @@ import C from '../common/Constants.js';
 import { IB } from '../common/ImageBank.js';
 import { isvalid } from '../common/tool.js';
 
-import appOpt from '../appMain/AppSetting.js';
+// import appOpt from '../appMain/AppSetting.js';
 
 
 

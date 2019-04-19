@@ -39,7 +39,7 @@ export const tickCount = () => {
 
 
 export const istrue = (v) => {
-	return isvalid(v) && v;
+	return isvalid(v) && (v || (typeof v === 'string' && 'true' === v));
 };
 
 

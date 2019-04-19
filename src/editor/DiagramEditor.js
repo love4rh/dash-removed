@@ -280,6 +280,7 @@ class DiagramEditor extends React.Component {
 
   // eslint-disable-next-line
   onMouseDown = (type, id) => (ev) => {
+    const { model } = this.props;
     const wrapper = this.refs.wrapper;
 
     if( !isvalid(wrapper) ) {
@@ -302,6 +303,8 @@ class DiagramEditor extends React.Component {
     // Wrapping area
     if( type === _objCanvas_ ) {
       status = _stSelect_;
+      model.eventReciever(C.evtSelectCanvas, { id:id, x:x, y:y });
+      this.setState({ selected:{}, selectedLink:{} });
     } else if( type === _objNode_ ) {
       if( ev.button === 1 || ev.button === 4 ) {
         // middle button --> connecting
@@ -312,11 +315,12 @@ class DiagramEditor extends React.Component {
       }
 
       if( !istrue(this.state.selected[id]) ) {
-      	this.props.model.eventReciever(C.evtSelectNode, { id:id, x:x, y:y });
+      	model.eventReciever(C.evtSelectNode, { id:id, x:x, y:y });
       	this.selectNode(id);
       }
     } else if( type === _objLink_ ) {
 	    status = _stNormal_;
+      model.eventReciever(C.evtSelectLink, { id:id, x:x, y:y });
 	    this.selectLink(id);
     }
 
@@ -378,11 +382,14 @@ class DiagramEditor extends React.Component {
     } else if( 'mouseup' === ev.type ) {
     	if( status === _stSelect_ ) {
     		const selected = {}, selectedLink = {};
+        let onlyOne = null, nc = 0;
 
     		// check whether node is selected or not
     		for(let id in nodes) {
     			if( this.isSelected(nodes[id], true) ) {
     				selected[id] = true;
+            onlyOne = id;
+            nc += 1;
     			}
     		}
 
@@ -404,6 +411,12 @@ class DiagramEditor extends React.Component {
     			}
     		}
     		this.setState({ selected:selected, selectedLink:selectedLink });
+
+        if( nc === 1 ) {
+          this.props.model.eventReciever(C.evtSelectNode, { id:onlyOne, x:x, y:y });
+        } else {
+          this.props.model.eventReciever(C.evtSelectCanvas, { x:x, y:y });
+        }
     	} else if( status === _stDragNode_ ) {
     		if( statusParam.type === _objNode_ && Math.abs(x - statusParam.x1) <= 1 && Math.abs(y - statusParam.y1) <= 1 ) {
     			// TODO Node select event

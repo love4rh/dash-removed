@@ -8,7 +8,7 @@ import { ProjectEditor } from '../editor/ProjectEditor.js';
 import apiProxy from '../common/apiProxy.js';
 import { isvalid } from '../common/tool.js';
 
-import { getMockProject } from '../mock/MockProject.js';
+import { getMockProjectByName } from '../mock/MockProject.js';
 
 import {
   Alignment,
@@ -101,7 +101,7 @@ class MainFrame extends Component {
 
     //*
     if( appData ) {
-      appData.addProject(getMockProject(), true);
+      appData.addProject(getMockProjectByName(name), true);
       return;
     } // */
 

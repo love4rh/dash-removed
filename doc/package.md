@@ -50,6 +50,8 @@ https://microsoft.github.io/monaco-editor/playground.html#extending-language-ser
 언어 정의할 때 참고
 https://github.com/Microsoft/monaco-languages
 
+### Monaco Editor 생성 옵션
+https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html
 
 ### Interface for Theme Definition
 https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonethemedata.html
@@ -94,3 +96,14 @@ yarn add @babel/polyfill @blueprintjs/core react react-dom mobx mobx-react \
 monaco-editor monaco-editor-webpack-plugin react-monaco-editor \
 @babel/plugin-proposal-class-properties @babel/plugin-proposal-decorators \
 axios
+
+
+
+
+
+https://github.com/securingsincity/react-ace
+
+https://jquense.github.io/react-widgets/api/Multiselect/
+
+Carot Style
+height: 19px; top: 0px; left: 41px; font-family: Consolas, "Courier New", monospace; font-weight: normal; font-size: 14px; line-height: 19px; letter-spacing: 0px; display: block; visibility: hidden; width: 1.81818px;

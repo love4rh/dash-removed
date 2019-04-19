@@ -8,6 +8,8 @@ const C = {
 	evtSelectNode: 'nodeSelected',
 	evtSelectLink: 'linkSelected',
 
+	evtSelectCanvas: 'canvasSelected',
+
 	evtConnectNodes: 'connectNodes',
 	evtDeleteNodes: 'deleteNodes',
 	evtDeleteLinks: 'deleteLinks',

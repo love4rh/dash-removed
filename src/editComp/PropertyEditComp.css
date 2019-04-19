@@ -1,27 +1,37 @@
 .attrElement {
-  padding: 10px 0 0 0;
+  padding: 0 0 10px 0;
 }
 
 .attrSubGroup {
-  border-left: 2px solid #888;
+  border-left: 2px solid #000;
   margin-left: 24px;
 }
 
 .attrTitle {
-  display: inline-block;
+  display: block;
   line-height: 30px;
-  width: 150px;
   padding: 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  font-weight: bold;
+}
+
+.attrTitleToogle {
+  display: inline-block;
+  padding: 0 5px 0 10px;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
   text-align: left;
+  font-weight: bold;
 }
 
 .attrValue {
   display: inline-block;
   line-height: 20px;
   vertical-align: middle;
+  padding: 0 10px;
 }
 
 .dashSelect {
@@ -32,6 +42,13 @@
   position: relative;
   vertical-align: middle;
   letter-spacing: normal;
-  border: 1px solid #b4b4b4;
+  border: 1px solid #000000;
+  background-color: rgba(16, 22, 26, 0.3);
+  color: #f5f8fa;
+}
+
+.dashOption {
+  background-color: rgb(20, 27, 31);
+  color: #f5f8fa;
 }
 

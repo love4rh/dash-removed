@@ -73,7 +73,7 @@ export const drawArrowLine = (p1, p2, beginRadius, endRadius, arrowSize,strokWid
   let textTag = null;
 
   if( hasString(subText) ) {
-    let r = th * 180 / Math.PI;
+    // let r = th * 180 / Math.PI;
     const tx = (sX + eX) / 2, ty = (sY + eY - 10) / 2;
     const textStyle = { fill:color, font:'10px Verdana, Helvetica, Arial, sans-serif' };
 

@@ -8,14 +8,27 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #d4d4d5;
+  border-style: solid;
+  border-color: #d4d4d5;
+  border-width: 1px 0;
+}
+
+.middlePane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-style: solid;
+  border-color: #d4d4d5;
+  border-width: 1px 0 1px 0;
 }
 
 .rightPane {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #d4d4d5;
+  border-style: solid;
+  border-color: #d4d4d5;
+  border-width: 1px 0;
 }
 
 .mainPane {
@@ -27,17 +40,28 @@
 }
 
 .paneTitle {
-  margin: 1px 0;
-  padding: 1px 2px;
-  height: 20px;
-  line-height: 15px;
-  font-size: 12px;
+  padding: 1px 5px;
+  height: 25px;
+  line-height: 20px;
+  font-size: 14px;
   font-weight: bold;
-  background-color: #C4C1BC;
-  border: 1px solid #808080;
+  background-color: #272822;
+  color: #ccc;
 }
 
+.paneButton {
+  margin: 1px 2px;
+  float: right;
+  line-height: 18px;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
 
+.paneButton:hover {
+  border: 1px solid #ccc;
+}
 
 .gallery {
   background-color: red;
@@ -77,9 +101,8 @@
 }
 
 .attributeEditor {
-  border: 1px solid #d4d4d5;
   padding: 7px;
-  background-color: white;
+  background-color: #293742;
   overflow-y: auto;
 }
 

@@ -985,3 +985,14 @@ export const getMockProject = (idx) => {
 
   return scriptSample[idx];
 }
+
+
+export const getMockProjectByName = (name) => {
+  for(let i = 0; i < scriptSample.length; ++i) {
+    if( scriptSample[i].title === name ) {
+      return scriptSample[i];
+    }
+  }
+
+  return getMockProject(-1);
+}

@@ -1,24 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { observer, inject } from 'mobx-react';
 
 import { nm } from '../appMain/NodeMeta.js';
-import { nvl, isvalid, makeid, hasString } from '../common/tool.js';
+import { isvalid, nvl, hasString, istrue } from '../common/tool.js';
+
+import { Icon } from '@blueprintjs/core';
 
 import { GroupedPropEditor } from '../editComp/PropertyEditComp.js';
-
-import { Text, TextArea, InputGroup } from '@blueprintjs/core';
 
 import './Editor.css';
 
 
-const testNodeId = 'nodeid';
-
 /**
  * Node 속성 편집 UI.
  */
-@inject('appData')
-@observer
 class AttributeEditor extends React.Component {
 	static propTypes = {
     handleValueChange: PropTypes.func,
@@ -30,56 +25,75 @@ class AttributeEditor extends React.Component {
   constructor (props) {
     super(props);
 
-    const values = {};
-
-    values[testNodeId + '/name'] = '테스트 노드';
-    values[testNodeId + '/desc'] = '이제 좀 끝내자';
-    values[testNodeId + '/fm'] = 'DB';
-    values[testNodeId + '/dtype'] = 'PLAIN';
-    values[testNodeId + '/tp/nameAtHead'] = true;
+    const node = props.node;
+    const nodeType = isvalid(node) ? node.type : '';
+    const propList = isvalid(node) ? { ...node.property } : {};
 
     this.state = {
-      nodeValues: values
+      nodeType: nodeType,
+      propList: propList,
+      editable: true,
+      editOn: false,
+      redraw: 0
     };
   }
 
-  handleValueChange = (id, value) => {
-    const { nodeValues } = this.state;
+  componentWillReceiveProps (nextProps) {
+    const node = nextProps.node;
+    const nodeType = isvalid(node) ? node.type : '';
+    const propList = isvalid(node) ? { ...node.property } : {};
 
-    const chValue = {};
-    chValue[id] = value;
+    this.setState({ nodeType: nodeType, propList: propList, editOn: false });
+  }
 
-    this.setState({nodeValues: { ...nodeValues, ...chValue}})
+  handleValueChange = (vid, value, redraw) => {
+    this.state.propList[vid] = value;
 
-    // console.log('onInputChange', idx, ev, data);
-    this.props.handleValueChange(id, value);
+    if( istrue(redraw) ) {
+      this.setState({ redraw: this.state.redraw + 1 });
+    }
   }
 
   getNodeValue = (id) => {
-    const { appData } = this.props;
+    const { propList } = this.state;
+    const value = propList[id];
+    return typeof value === 'string' ? decodeURIComponent(value) : nvl(value, '');
+  }
 
-    const node = appData.getActiveNode();
-
-    if( isvalid(node) ) {
-      return node.property[id];
+  /**
+   * type - 1: 편집 시작, 2: 편집 취소, 3: 편집 완료
+   */
+  onTitleButton = (type) => () => {
+    if( type === 1 ) {
+      this.setState({ editOn: true });
+    } else {
+      if( type === 2 ) {
+        const node = this.props.node;
+        const propList = isvalid(node) ? { ...node.property } : {};
+        this.setState({ propList: propList, editOn: false });
+      } else if( type === 3) {
+        this.props.handleValueChange(this.state.propList);
+        this.setState({ editOn: false });
+      }
     }
-
-    return '';
   }
 
   render () {
-    const { appData, height, width } = this.props;
-    const { nodeValues } = this.state;
-
-    const node = appData.getActiveNode();
-    const nodeType = 'fetchMethod';
+    const { node, height, width } = this.props;
+    const { nodeType, editable, editOn } = this.state;
     const groupList = nm.getNodeProperty(nodeType);
 
     return (
-      <div key={'attr-' + (node === null ? 'null' : node.id)}>
-        <div className="paneTitle">Attributes</div>
-        <div className="attributeEditor"
-          style={{ width:'100%', height:(height - 55) }}
+      <div key={'attr-' + (isvalid(node) ? node.id : 'null')}>
+        <div className="paneTitle"><span>Attributes</span>
+          { editable &&
+            <span className="paneButton"><Icon tabIndex="1" icon={editOn ? 'tick' : 'edit'} onClick={this.onTitleButton(editOn ? 3 : 1 )} /></span>
+          } { editable && editOn &&
+            <span className="paneButton"><Icon tabIndex="1" icon={'cross'} onClick={this.onTitleButton(2)} /></span>
+          }
+        </div>
+        <div className="attributeEditor bp3-dark"
+          style={{ width:'100%', height:(height - 25) }}
         >
           { groupList.map((p, idx) => {
               const subGroup = hasString(p.enableKey);
@@ -92,6 +106,7 @@ class AttributeEditor extends React.Component {
                   subGroup={subGroup}
                   getNodeValue={this.getNodeValue}
                   onValueChange={this.handleValueChange}
+                  disabled={!editOn}
                 /> : null;
             })
           }
