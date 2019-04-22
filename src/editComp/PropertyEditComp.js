@@ -213,7 +213,7 @@ export class InputButtonComponent extends React.Component {
   }
 
   render () {
-    const { disabled, optionList, vid } = this.props;
+    const { disabled } = this.props;
     const { value } = this.state;
 
     return (
@@ -317,8 +317,6 @@ export class GroupedPropEditor extends React.Component {
     propId: PropTypes.string.isRequired,
     subGroup: PropTypes.bool,
     valueId: PropTypes.string.isRequired,
-    // height: PropTypes.number.isRequired,
-    // width: PropTypes.number.isRequired,
   }
 
   constructor (props) {
@@ -341,8 +339,7 @@ export class GroupedPropEditor extends React.Component {
   }
 
   render () {
-    const { propId, width, subGroup, valueId, getNodeValue, disabled } = this.props;
-    const valueWidth = width - 32 - (subGroup ? 28 : 0);
+    const { propId, subGroup, valueId, getNodeValue, disabled } = this.props;
     const pmList = nm.getPropMetaList(propId);
 
     const single = pmList.length === 1;

@@ -47,10 +47,14 @@ class AttributeEditor extends React.Component {
   }
 
   handleValueChange = (vid, value, redraw) => {
-    this.state.propList[vid] = value;
+    const { propList } = this.state;
+
+    propList[vid] = value;
 
     if( istrue(redraw) ) {
-      this.setState({ redraw: this.state.redraw + 1 });
+      this.setState({ propList: propList, redraw: this.state.redraw + 1 });
+    } else {
+      this.setState({ propList: propList });
     }
   }
 
