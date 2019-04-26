@@ -25,6 +25,7 @@ const _stNormal_ = 'normal';
 const _stSelect_ = 'selecting';
 const _stDragNode_ = 'dragNode';
 const _stConnecting_ = 'connecting';
+const _stScroll_ = 'scroll';
 
 const _clrSelect_ = 'blue';
 const _clrLink_ = '#333';
@@ -302,9 +303,13 @@ class DiagramEditor extends React.Component {
 
     // Wrapping area
     if( type === _objCanvas_ ) {
-      status = _stSelect_;
-      model.eventReciever(C.evtSelectCanvas, { id:id, x:x, y:y });
-      this.setState({ selected:{}, selectedLink:{} });
+      if( ev.button === 2 ) {
+        status = _stScroll_;
+      } else {
+        status = _stSelect_;
+        model.eventReciever(C.evtSelectCanvas, { id:id, x:x, y:y });
+        this.setState({ selected:{}, selectedLink:{} });
+      }
     } else if( type === _objNode_ ) {
       if( ev.button === 1 || ev.button === 4 ) {
         // middle button --> connecting
@@ -376,6 +381,8 @@ class DiagramEditor extends React.Component {
         this.setState({ nodes:nodes });
       } else if( status === _stSelect_ ) {
         //        
+      } else if( status === _stScroll_ ) {
+        // TODO scroll
       }
 
       this.setState({ statusParam:statusParam });
