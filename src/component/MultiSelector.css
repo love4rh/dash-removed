@@ -1,4 +1,60 @@
+.multiSelector {
+  
+}
+
+.msTags {
+  display: flex;
+  background-color: #fff;
+  align-items: flex-start;
+  cursor: text;
+  height: auto;
+  min-height: 30px;
+  padding: 4px 0 0 5px;
+  line-height: inherit;
+  text-align: center;
+}
 
 .msTag {
-    
+  background-color: #bfccd6;
+  color: black;
+  display: flex;
+  margin: 2px 3px 0 3px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.msTagTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+
+.msTagButton {
+
+}
+
+.msInput {
+  margin: 1px 3px 0 3px;
+  padding: 1px 0;
+  border-radius: 4px;
+  font-size: 12px;
+  flex: 1 1 auto;
+  line-height: 20px;
+}
+
+.msOptions {
+  padding: 4px 0 0 5px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 7rem;
+  background-color: #fff;
+  position: absolute;
+}
+
+.msOption {
+  font-size: 12px;
 }

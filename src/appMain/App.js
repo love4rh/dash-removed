@@ -41,7 +41,7 @@ class App extends Component {
 
     if( this.state.page === 'dash' ) {
       appMain = (<MainFrame />);
-    } else if( this.state.page === 'monaco' ) {
+    } else if( this.state.page === 'working' ) {
       appMain = (<SampleFrame />);
     } else {
       appMain = (<S3Explorer />);

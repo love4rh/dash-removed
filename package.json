@@ -55,6 +55,7 @@
     "react-dev-utils": "^8.0.0",
     "react-dom": "^16.8.4",
     "react-monaco-editor": "^0.25.1",
+    "react-widgets": "^4.4.10",
     "resolve": "1.10.0",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.1",
