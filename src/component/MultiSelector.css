@@ -9,21 +9,30 @@
   cursor: text;
   height: auto;
   min-height: 30px;
-  padding: 4px 0 0 5px;
+  padding: 4px 0 0 4px;
   line-height: inherit;
   text-align: center;
+  border-radius: 4px;
+}
+
+.msTagDiv {
+  display: inline-flex;
+  flex: 0 0 auto;
 }
 
 .msTag {
   background-color: #bfccd6;
   color: black;
-  display: flex;
-  margin: 2px 3px 0 3px;
+  display: inline-flex;
+  margin-top: 2px;
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 12px;
-  flex-grow: 0;
-  flex-shrink: 0;
+}
+
+.msGap {
+  display: inline-block;
+  flex-basis: 6px;
 }
 
 .msTagTitle {
@@ -38,8 +47,7 @@
 }
 
 .msInput {
-  margin: 1px 3px 0 3px;
-  padding: 1px 0;
+  margin: 1px 5px 0 0;  
   border-radius: 4px;
   font-size: 12px;
   flex: 1 1 auto;
@@ -57,4 +65,9 @@
 
 .msOption {
   font-size: 12px;
+}
+
+.msOption:hover {
+  background-color: #77F;
+  cursor: pointer;
 }

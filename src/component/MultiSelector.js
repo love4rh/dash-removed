@@ -32,10 +32,13 @@ class TagSpan extends Component {
     const { title } = this.props;
 
     return (
-      <span className="msTag">
-        <span className="msTagTitle">{title}</span>
-        <button type="button" className="msTagButton bp3-tag-remove" onClick={this.onRemove}><Icon icon="small-cross" /></button>
-      </span>
+      <div className="msTagDiv">
+        <span className="msTag">
+          <span className="msTagTitle">{title}</span>
+          <button type="button" className="msTagButton bp3-tag-remove" onClick={this.onRemove}><Icon icon="small-cross" /></button>
+        </span>
+        <span className="msGap">&nbsp;</span>
+      </div>
     )
   }
 }
@@ -151,7 +154,7 @@ class MultiSelector extends Component {
             onChange={this.onInputChange}
           />
         </div>
-        <div className="msOptions" style={{ 'display': (openOption ? 'block' : 'none') }}>
+        <div className="msOptions" style={{ 'width':'580px', 'display': (openOption ? 'block' : 'none') }}>
           { unselected.map((d, i) => (<TagOption key={`opt-${i}`} title={d} />)) }
         </div>
       </div>

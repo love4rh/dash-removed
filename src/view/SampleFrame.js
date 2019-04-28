@@ -20,7 +20,7 @@ class SampleFrame extends React.Component {
 
     return (
       <div>
-        <div style={{ 'width':'550px' }} >
+        <div style={{ 'width':'580px' }} >
           <div>DUMMY</div>
           <MultiSelector selectedList={selectedList} optionList={optionList} />
           <div>DUMMY</div>
