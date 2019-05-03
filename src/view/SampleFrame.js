@@ -16,13 +16,14 @@ class SampleFrame extends React.Component {
   }
 
   render () {
+    const width = 580;
     const {selectedList, optionList} = this.state;
 
     return (
       <div>
-        <div style={{ 'width':'580px' }} >
+        <div style={{ 'width':`${width}px` }} >
           <div>DUMMY</div>
-          <MultiSelector selectedList={selectedList} optionList={optionList} />
+          <MultiSelector selectedList={selectedList} optionList={optionList} width={width} />
           <div>DUMMY</div>
         </div>
       </div>

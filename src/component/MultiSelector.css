@@ -3,15 +3,13 @@
 }
 
 .msTags {
-  display: flex;
   background-color: #fff;
   align-items: flex-start;
-  cursor: text;
+  cursor: pointer;
   height: auto;
   min-height: 30px;
-  padding: 4px 0 0 4px;
+  padding: 4px 4px 6px 4px;
   line-height: inherit;
-  text-align: center;
   border-radius: 4px;
 }
 
@@ -54,13 +52,17 @@
   line-height: 20px;
 }
 
-.msOptions {
-  padding: 4px 0 0 5px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  max-height: 7rem;
+.msOptionWrap {
   background-color: #fff;
   position: absolute;
+}
+
+.msOptions {
+  padding: 0 0 4px 5px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 12rem;
+  background-color: #fff;
 }
 
 .msOption {

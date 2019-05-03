@@ -11,6 +11,7 @@ import './MultiSelector.css';
 
 class TagSpan extends Component {
   static propTypes ={
+    onRemove: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
   }
 
@@ -24,8 +25,10 @@ class TagSpan extends Component {
     //
   }
 
-  onRemove = () => {
-    //
+  onRemoveItem = (ev) => {
+    this.props.onRemove();
+    ev.preventDefault();
+    ev.stopPropagation();
   }
 
   render () {
@@ -35,7 +38,7 @@ class TagSpan extends Component {
       <div className="msTagDiv">
         <span className="msTag">
           <span className="msTagTitle">{title}</span>
-          <button type="button" className="msTagButton bp3-tag-remove" onClick={this.onRemove}><Icon icon="small-cross" /></button>
+          <button type="button" className="msTagButton bp3-tag-remove" onClick={this.onRemoveItem}><Icon icon="small-cross" /></button>
         </span>
         <span className="msGap">&nbsp;</span>
       </div>
@@ -45,6 +48,7 @@ class TagSpan extends Component {
 
 class TagOption extends Component {
   static propTypes ={
+    onAdd: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
   }
 
@@ -58,15 +62,17 @@ class TagOption extends Component {
     //
   }
 
-  onRemove = () => {
-    //
+  onAddItem = (ev) => {
+    this.props.onAdd();
+    ev.preventDefault();
+    ev.stopPropagation();
   }
 
   render () {
     const { title } = this.props;
 
     return (
-      <div className="msOption">
+      <div className="msOption" onMouseDown={this.onAddItem}>
         {title}
       </div>
     )
@@ -84,6 +90,7 @@ class MultiSelector extends Component {
   static propTypes ={
     optionList: PropTypes.array.isRequired,
     selectedList: PropTypes.array.isRequired,
+    width: PropTypes.number.isRequired,
   }
 
   constructor (props) {
@@ -100,7 +107,7 @@ class MultiSelector extends Component {
     }
 
     this.state = {
-      selectedList: props.selectedList,
+      selectedList: [...props.selectedList],
       unselected: unselected,
       openOption: false,
       inputText: '',
@@ -121,14 +128,27 @@ class MultiSelector extends Component {
 
   onKeyDown = (ev) => {
     //
-    console.log('onKeyDown', ev.target.selectionStart);
+    console.log('onKeyDown', ev.keyCode, ev.target);
+    if( ev.keyCode == 13 || ev.keyCode == 40 ) {
+      this.showOptions();
+    }
   }
 
-  onStartAdding = () => {
+  onMouseDown = (ev) => {
+    console.log('onMouseDown', ev);
+
+    if( this.state.openOption ) {
+      this.hideOptions();
+    } else {
+      this.showOptions();
+    }
+  }
+
+  showOptions = () => {
     this.setState({ openOption: true });
   }
 
-  onEndAdding = () => {
+  hideOptions = () => {
     this.setState({ openOption: false });
 
     // 추가
@@ -136,26 +156,42 @@ class MultiSelector extends Component {
 
   onInputChange = (ev) => {
     // this.setState({ value: ev.target.value });
-    console.log(ev.target.value);
+    this.setState({ inputText: ev.target.value });
+  }
+
+  handleRemove = (idx) => () => {
+    const { selectedList } = this.state;
+    selectedList.splice(idx, 1);
+    this.setState({ selectedList: selectedList });
+  }
+
+  handleAdd = (idx) => () => {
+    const { selectedList, unselected } = this.state;
+    selectedList.push(unselected[idx]);
+    unselected.splice(idx, 1);
+    this.setState({ selectedList: selectedList, unselected: unselected });
   }
 
   render () {
-    const { selectedList, unselected, openOption } = this.state;
+    const { width } = this.props;
+    const { selectedList, unselected, openOption, inputText } = this.state;
 
     return (
-      <div className="multiSelector">
-        <div className="msTags" onKeyDown={this.onKeyDown}>
-          { selectedList.map((d, i) => (<TagSpan key={`tag-${i}`} title={d} />)) }
-          <input
-            className="msInput bp3-input-ghost"
-            onFocus={this.onStartAdding}
-            onBlur={this.onEndAdding}
-            onKeyDown={this.onKeyDown}
-            onChange={this.onInputChange}
-          />
+      <div tabIndex="1" className="multiSelector" onKeyDown={this.onKeyDown} onMouseDown={this.onMouseDown}>
+        <div className="msTags">
+          { selectedList.map((d, i) => (<TagSpan key={`tag-${i}`} title={d} onRemove={this.handleRemove(i)} />)) }
         </div>
-        <div className="msOptions" style={{ 'width':'580px', 'display': (openOption ? 'block' : 'none') }}>
-          { unselected.map((d, i) => (<TagOption key={`opt-${i}`} title={d} />)) }
+        <div className="msOptionWrap" style={{ 'width':`${width}px`, 'display': (openOption ? 'block' : 'none') }}>
+          <div className="msOptions" style={{ 'width':`${width}px` }}>
+            { unselected.map((d, i) =>
+              {
+                // TODO filtering
+                if( i === 0 ) return null;
+
+                return (<TagOption key={`opt-${i}`} title={d} onAdd={this.handleAdd(i)} />);
+              })
+            }
+          </div>
         </div>
       </div>
     );
