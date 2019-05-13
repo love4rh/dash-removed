@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Dash at Chrome",
-            "url": "http://localhost:3000/working",
+            "url": "http://localhost:3000/dash",
             "webRoot": "${workspaceFolder}"
         }
     ]

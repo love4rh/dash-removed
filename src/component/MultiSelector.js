@@ -177,7 +177,7 @@ class MultiSelector extends Component {
     const { selectedList, unselected, openOption, inputText } = this.state;
 
     return (
-      <div tabIndex="1" className="multiSelector" onKeyDown={this.onKeyDown} onMouseDown={this.onMouseDown}>
+      <div tabIndex="1" className="multiSelector" onKeyDown={this.onKeyDown} onMouseDown={this.onMouseDown} onBlur={this.hideOptions}>
         <div className="msTags">
           { selectedList.map((d, i) => (<TagSpan key={`tag-${i}`} title={d} onRemove={this.handleRemove(i)} />)) }
         </div>
