@@ -596,7 +596,6 @@ export const nm = {
   },
 
   getNodeProperty: (nid) => {
-    console.log('getNodeProperty', nid);
     return isvalid(nodeMeta.node[nid])
       ? [ ...nodeMeta.node['All'], ...nodeMeta.node[nid] ]
       : [ ...nodeMeta.node['All'] ]

@@ -136,8 +136,6 @@ class ProjectEditor extends React.Component {
     const activeProject = activeIndex >= 0 ? appData.getProject(activeIndex) : null;
     const activeNode = appData.getActiveNode();
 
-    console.log('ProjectEditor ActiveNode', activeNode);
-
   	return (
       <div className="editor" style={{ width, height }}>
         <div className="leftPane" style={{ flexBasis:`${leftWidth}px` }}>

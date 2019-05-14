@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import MonacoEditor from 'react-monaco-editor';
 
-import { isvalid, makeid, istrue } from '../common/tool.js';
+import { isvalid, istrue } from '../common/tool.js';
 
 
 
@@ -255,11 +255,13 @@ class SQLEditor extends React.Component {
         }, {
           label: 'testing',
           kind: monaco.languages.CompletionItemKind.Keyword,
+          // eslint-disable-next-line
           insertText: 'testing(${1:condition})'
         }, {
           label: 'ifelse',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: [
+            // eslint-disable-next-line
             'if (${1:condition}) {',
             '\t$0',
             '} else {',

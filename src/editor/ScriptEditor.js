@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 
 import MonacoEditor from 'react-monaco-editor';
 
-import { isvalid, makeid } from '../common/tool.js';
+import { isvalid } from '../common/tool.js';
 
 import './Editor.css';
 
@@ -76,11 +76,13 @@ class ScriptEditor extends React.Component {
         }, {
           label: 'testing',
           kind: monaco.languages.CompletionItemKind.Keyword,
+          // eslint-disable-next-line
           insertText: 'testing(${1:condition})'
         }, {
           label: 'ifelse',
           kind: monaco.languages.CompletionItemKind.Snippet,
           insertText: [
+            // eslint-disable-next-line
             'if (${1:condition}) {',
             '\t$0',
             '} else {',
@@ -101,8 +103,8 @@ class ScriptEditor extends React.Component {
   }
 
   render () {
-    const { height, width, appData } = this.props;
-    const { code, editOn } = this.state;
+    const { height, appData } = this.props;
+    // const { code, editOn } = this.state;
 
     const options = {
       selectOnLineNumbers: true,

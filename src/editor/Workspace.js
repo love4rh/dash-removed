@@ -33,7 +33,7 @@ class Workspace extends React.Component {
   onDiagramEvent = (type, param) => {
     const { appData, pid } = this.props;
 
-    console.log('Workspace Event', type, param);
+    // console.log('Workspace Event', type, param);
 
     if( type === C.evtSelectNode ) {
       appData.displayNode(pid, param.id);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Icon } from '@blueprintjs/core';
 
-import { isIn, isvalid, hasString } from '../common/tool.js';
+import { isIn } from '../common/tool.js';
 
 import './MultiSelector.css';
 
@@ -13,16 +13,6 @@ class TagSpan extends Component {
   static propTypes ={
     onRemove: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
-  }
-
-  constructor (props) {
-    super(props);
-
-    //
-  }
-
-  componentDidMount () {
-    //
   }
 
   onRemoveItem = (ev) => {
@@ -50,16 +40,6 @@ class TagOption extends Component {
   static propTypes ={
     onAdd: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
-  }
-
-  constructor (props) {
-    super(props);
-
-    //
-  }
-
-  componentDidMount () {
-    //
   }
 
   onAddItem = (ev) => {
@@ -129,7 +109,7 @@ class MultiSelector extends Component {
   onKeyDown = (ev) => {
     //
     console.log('onKeyDown', ev.keyCode, ev.target);
-    if( ev.keyCode == 13 || ev.keyCode == 40 ) {
+    if( ev.keyCode === 13 || ev.keyCode === 40 ) {
       this.showOptions();
     }
   }
@@ -174,7 +154,7 @@ class MultiSelector extends Component {
 
   render () {
     const { width } = this.props;
-    const { selectedList, unselected, openOption, inputText } = this.state;
+    const { selectedList, unselected, openOption } = this.state;
 
     return (
       <div tabIndex="1" className="multiSelector" onKeyDown={this.onKeyDown} onMouseDown={this.onMouseDown} onBlur={this.hideOptions}>

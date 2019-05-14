@@ -9,8 +9,8 @@ import { isvalid, makeid2 } from '../common/tool.js';
  * MobX storage: appData
  */
 export default class AppData {
-  // Project List
-  @observable projectList = [];
+  // Project ID List
+  @observable pidList = [];
 
   // id --> project object
   projectMap = {};
@@ -29,11 +29,11 @@ export default class AppData {
 
   // 프로젝트 객체 반환
   getProject = (idx) => {
-    return this.projectList[idx];
+    return this.getProjectDataByID(this.pidList[idx]);
   }
 
   sizeOfProject = () => {
-    return this.projectList.length;
+    return this.pidList.length;
   }
 
   @action
@@ -52,9 +52,9 @@ export default class AppData {
   addProject = (project, cloned) => {
     const pid = makeid2('pid', 16);
     const prjData = cloned ? JSON.parse(JSON.stringify({ ...project, pid })) : { ...project, pid };
-    const newList = [...this.projectList, prjData];
+    const newList = [...this.pidList, pid];
 
-    this.projectList = newList;
+    this.pidList = newList;
     this.activeIndex = newList.length - 1;
     this.activeNode = null;
 
@@ -64,10 +64,11 @@ export default class AppData {
   // 프로젝트를 닫고 닫힘 여부 반환
   @action
   removeProject = (idx) => {
-    const prjData = this.projectList[idx];
+    const pid = this.pidList[idx];
+    const prjData = this.projectMap[pid];
 
-    this.projectList.splice(idx, 1);
-    delete this.projectMap[prjData.pid];
+    this.pidList.splice(idx, 1);
+    delete this.projectMap[pid];
 
     if( idx <= this.activeIndex ) {
       this.activeIndex -= 1;
@@ -98,7 +99,7 @@ export default class AppData {
   }
 
   getProjectData = (idx) => {
-    return this.projectList[idx];
+    return this.getProjectDataByID(this.pidList[idx]);
   }
 
   getProjectDataByID = (pid) => {
@@ -126,6 +127,8 @@ export default class AppData {
   addNode = (pid, nodeMeta, x, y) => {
     const prjData = this.getProjectDataByID(pid);
     const nid = makeid2('nid', 16);
+
+    // console.log('addNode', pid, nodeMeta, nid);
 
     prjData.nodes[nid] = {
       id: nid,
