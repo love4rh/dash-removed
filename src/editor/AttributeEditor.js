@@ -106,6 +106,7 @@ class AttributeEditor extends React.Component {
                   key={`gpe-${idx}`}
                   width={width}
                   propId={p.propKey}
+                  propParam={p.parameter}
                   valueId={`${p.valueKey}`}
                   subGroup={subGroup}
                   getNodeValue={this.getNodeValue}
