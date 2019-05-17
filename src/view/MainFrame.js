@@ -99,7 +99,7 @@ class MainFrame extends Component {
   openProject = (path, name) => {
     const { appData } = this.props;
 
-    /*
+    //*
     if( appData ) {
       appData.addProject(getMockProjectByName(name), true);
       return;
