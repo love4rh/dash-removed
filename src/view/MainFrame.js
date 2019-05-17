@@ -111,7 +111,7 @@ class MainFrame extends Component {
       (res) => {
         // console.log('openProject', res);
         if( res && res.data && isvalid(res.data.project) ) {
-          // console.log('openProject', JSON.stringify(res.data.project));
+          console.log('openProject', JSON.stringify(res.data.project));
           appData.addProject(res.data.project)
         }
       }, (err) => {

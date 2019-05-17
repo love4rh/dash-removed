@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { istrue, nvl, makeid } from '../common/tool.js';
+import { isvalid, istrue, nvl, makeid } from '../common/tool.js';
 import { nm } from '../appMain/NodeMeta.js';
 
 import { InputGroup, NumericInput, Switch, TextArea, Tooltip, Position } from '@blueprintjs/core';
 
 import { SQLEditor } from './SQLEditor.js';
+import { ColumnEditComponent } from './ColumnEditComponent.js';
 
 import './PropertyEditComp.css';
 
@@ -315,6 +316,7 @@ export class GroupedPropEditor extends React.Component {
     getNodeValue: PropTypes.func.isRequired,
     onValueChange: PropTypes.func.isRequired,
     propId: PropTypes.string.isRequired,
+    propParam: PropTypes.object,
     subGroup: PropTypes.bool,
     valueId: PropTypes.string.isRequired,
   }
@@ -339,7 +341,7 @@ export class GroupedPropEditor extends React.Component {
   }
 
   render () {
-    const { propId, subGroup, valueId, getNodeValue, disabled } = this.props;
+    const { propId, propParam, subGroup, valueId, getNodeValue, disabled } = this.props;
     const pmList = nm.getPropMetaList(propId);
 
     const single = pmList.length === 1;
@@ -353,14 +355,17 @@ export class GroupedPropEditor extends React.Component {
           const vid = single ? valueId : `${valueId}/${p.valueKey}`;
           const curVal = getNodeValue(vid);
           const isToggle = (p.vt === 'boolean' || p.vt === 'yesno');
+          const propName = p.vt === 'label' && isvalid(propParam) ? propParam.title : p.title;
+          const propDesc = nvl(p.vt === 'label' && isvalid(propParam) ? propParam.desc : p.desc, '');
 
           return (
             <div key={vid} className={'attrElement' + (subGroup ? ' attrSubGroup' : '')}>
-              <Tooltip content={nvl(p.desc, '')} position={Position.BOTTOM}>
-                <div className={isToggle ? 'attrTitleToogle' : 'attrTitle'}>{p.title}</div>
-              </Tooltip> { p.vt === 'string' &&
+              <Tooltip content={propDesc} position={Position.BOTTOM}>
+                <div className={isToggle ? 'attrTitleToogle' : 'attrTitle'}>{propName}</div>
+              </Tooltip>
+              { p.vt === 'string' &&
                 (<InputComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
-              } { p.vt === 'password' &&
+              }{ p.vt === 'password' &&
                 (<InputComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} password={true} />)
               } { p.vt === 'text' &&
                 (<TextAreaComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
@@ -374,6 +379,8 @@ export class GroupedPropEditor extends React.Component {
                 (<ToogleComponent disabled={readOnly} value={istrue(curVal)} onChange={this.onValueChange(vid)} />)
               } { p.vt === 'sql' &&
                 (<SQLComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
+              } { p.vt === 'columnOperator' &&
+                (<ColumnEditComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
               }
             </div>);
           }
