@@ -13,6 +13,7 @@ import Workspace from './Workspace.js';
 
 import AttributeEditor from './AttributeEditor.js';
 import ScriptEditor from './ScriptEditor.js';
+import ColumnViewer from './ColumnViewer.js';
 
 import './Editor.css';
 
@@ -32,7 +33,8 @@ class ProjectEditor extends React.Component {
     this.state = {
       leftWidth: 250,
       rightWidth: 300,
-      bottomHeight: 250
+      bottomHeight: 250,
+      leftMiddle: 500,
     };
 
     this.handleTabClose = this.handleTabClose.bind(this);
@@ -96,7 +98,7 @@ class ProjectEditor extends React.Component {
   handleLayoutChange = (type) => (f, t) => {
     console.log('Layout Change Event', f, t);
 
-    let { leftWidth, rightWidth, bottomHeight } = this.state;
+    let { leftWidth, rightWidth, bottomHeight, leftMiddle } = this.state;
 
     if( 'gallery' === type ) {
       leftWidth += t - f;
@@ -104,14 +106,16 @@ class ProjectEditor extends React.Component {
       rightWidth -= t - f;
     } else if( 'info' === type ) {
       bottomHeight += t - f;
+    } else if( 'leftMiddle' === type) {
+      leftMiddle -= t - f;
     }
 
-    this.setState({ leftWidth:leftWidth, bottomHeight:bottomHeight, rightWidth:rightWidth });
+    this.setState({ leftWidth:leftWidth, bottomHeight:bottomHeight, rightWidth:rightWidth, leftMiddle:leftMiddle });
   }
 
   render () {
   	const { width, height, appData } = this.props;
-  	const { leftWidth, rightWidth, bottomHeight } = this.state;
+  	const { leftWidth, rightWidth, bottomHeight, leftMiddle } = this.state;
 
     const dividerSize = 3;
     const activeIndex = appData.getActiveProjectIndex();
@@ -139,7 +143,18 @@ class ProjectEditor extends React.Component {
   	return (
       <div className="editor" style={{ width, height }}>
         <div className="leftPane" style={{ flexBasis:`${leftWidth}px` }}>
-        	<GalleryView height={height} />
+          <div style={{ flexBasis:`${leftMiddle}px` }}>
+        	  <GalleryView height={leftMiddle} />
+          </div>
+          <div style={{ flexBasis:`${dividerSize}px` }}>
+            <LayoutDivider direction={DividerDirection.horizontal}
+              size={dividerSize + 1}
+              onLayoutChange={this.handleLayoutChange('leftMiddle')}
+            />
+          </div>
+          <div style={{ flexBasis:`${height - leftMiddle - dividerSize}px` }}>
+        	  <ColumnViewer key={'cview-' + (isvalid(activeNode) ? activeNode.id : 'null')} node={activeNode} />
+          </div>
         </div>
         <div style={{ flexBasis:`${dividerSize}px` }}>
           <LayoutDivider direction={DividerDirection.vertical}
@@ -170,7 +185,6 @@ class ProjectEditor extends React.Component {
               onLayoutChange={this.handleLayoutChange('info')}
             />
           </div>
-
         	<div className="bottomPane" style={{ flexBasis:`${bottomHeight}px` }}>
             <ScriptEditor
               height={bottomHeight}
