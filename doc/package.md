@@ -75,6 +75,8 @@ https://blueprintjs.com/docs/#blueprint/getting-started
 yarn add @blueprintjs/core react react-dom mobx mobx-react monaco-editor monaco-editor-webpack-plugin @babel/plugin-transfor
 m-react-jsx @babel/plugin-transform-react-jsx-self @babel/plugin-proposal-class-properties @babel/plugin-proposal-decorators
 
+yarn add @blueprintjs/table
+
 copy folders -- normalize.css, @blueprintjs to public
 
 yarn upgrade

@@ -153,7 +153,10 @@ class ProjectEditor extends React.Component {
             />
           </div>
           <div style={{ flexBasis:`${height - leftMiddle - dividerSize}px` }}>
-        	  <ColumnViewer key={'cview-' + (isvalid(activeNode) ? activeNode.id : 'null')} node={activeNode} />
+            <ColumnViewer key={'cview-' + (isvalid(activeNode) ? activeNode.id : 'null')}
+              height={height - leftMiddle - dividerSize}
+              node={activeNode}
+            />
           </div>
         </div>
         <div style={{ flexBasis:`${dividerSize}px` }}>

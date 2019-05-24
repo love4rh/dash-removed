@@ -19,7 +19,7 @@ import './Tab.css';
  * 이미 추가된 값은 Intelisense 값으로 나타나지 않음.
  */
 class TagInputer extends Component {
-  static propTypes ={
+  static propTypes = {
     values: PropTypes.array,
     options: PropTypes.array,
     onChange: PropTypes.func,

@@ -1,11 +1,13 @@
 import React from 'react';
 import logo from '../assets/logo.svg';
 
-import FileListView from './FileListView.js';
+import { Icon } from '@blueprintjs/core';
+
 import DataGrid from '../grid/DataGrid.js';
 import { DataSource, DataSource2 } from '../grid/DataSource.js';
 
 import apiProxy from '../common/apiProxy.js';
+import SimpleTable from '../component/SimpleTable.js';
 
 import {
     Alignment,
@@ -60,7 +62,7 @@ class S3Explorer extends React.Component {
     this.setState({ loading:true });
 
     apiProxy.ls((res) => {
-      console.log('api call success', res);
+      // console.log('api call success', res);
       if (res && res.data) {
         this.setState({pageType: 'list', fileList: res.data.list});
       }
@@ -101,6 +103,22 @@ class S3Explorer extends React.Component {
     });
   }
 
+  getCellRender = (col, row) => {
+    const data = this.state.fileList[row];
+
+    if( col === 0) {
+      return (<span><Icon icon="document" iconSize={Icon.SIZE_STANDARD} />{data.name}</span>);
+    } else if( col === 1 ) {
+      return (<span>{data.path}</span>)
+    } else if( col === 2 ) {
+      return (<span>{data.size}</span>)
+    } else if( col === 3 ) {
+      return (<span>{data.mTime}</span>)
+    }
+
+    return (<span></span>);
+  }
+
   handleMenuClick = (type) => (ev) => {
     this.setState({ activeMenu: type });
 
@@ -115,8 +133,21 @@ class S3Explorer extends React.Component {
     }
   }
 
+  handleRowClick = (row) => {
+    const data = this.state.fileList[row];
+
+    this.handleSwitch('grid', { ...data, sampling: true });
+  }
+
   render() {
     const { windowHeight, windowWidth } = this.state;
+
+    const columns = [
+      { name: 'Name', width:250, align:'left' },
+      { name: 'Path', width:250, align:'left' },
+      { name: 'Size', width:150, align:'right' },
+      { name: 'Time', width:150, align:'right' }
+    ];
 
     return (
       <div>
@@ -149,11 +180,13 @@ class S3Explorer extends React.Component {
               showRowNumber={true}
               showColumnNumber={true}
             />
-          : <FileListView
-              fileList={this.state.fileList}
-              compHeight={this.state.windowHeight - 60}
-              compWidth={this.state.windowWidth}
-              switchPage={this.handleSwitch}
+          : <SimpleTable
+              columns={columns}
+              getCellRender={this.getCellRender}
+              height={this.state.windowHeight - 60}
+              width={this.state.windowWidth}
+              onClickRow={this.handleRowClick}
+              recordCount={this.state.fileList.length}
             />
         }
       </div>

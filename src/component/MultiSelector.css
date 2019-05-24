@@ -3,14 +3,25 @@
 }
 
 .msTags {
-  background-color: #fff;
   align-items: flex-start;
-  cursor: pointer;
   height: auto;
   min-height: 30px;
   padding: 4px 4px 6px 4px;
   line-height: inherit;
   border-radius: 4px;
+  max-height: 150px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.msDisabled {
+  cursor: not-allowed;
+  background-color: rgba(57, 75, 89, 0.5);
+}
+
+.msEnabled {
+  background-color: #222d36;
+  cursor: pointer;
 }
 
 .msTagDiv {
@@ -53,8 +64,8 @@
 }
 
 .msOptionWrap {
-  background-color: #fff;
-  position: absolute;
+  margin-top: 2px;
+  background-color: #30404d;
 }
 
 .msOptions {
@@ -62,7 +73,8 @@
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 12rem;
-  background-color: #fff;
+  background-color: #30404d;
+  color: #fff;
 }
 
 .msOption {
@@ -70,6 +82,6 @@
 }
 
 .msOption:hover {
-  background-color: #77F;
+  background-color: rgba(125,188,255,.6);
   cursor: pointer;
 }

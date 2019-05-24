@@ -106,7 +106,13 @@
   overflow-y: auto;
 }
 
+.columnViewMain {
+  margin-bottom: 0;
+  background-color: white;
+  overflow: auto
+}
 
 .columnViewItem {
   overflow: hidden;
 }
+

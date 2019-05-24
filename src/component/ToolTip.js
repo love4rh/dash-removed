@@ -17,7 +17,7 @@ export const ArrowPosition = {
  * ToolTip Component.
  */
 class ToolTip extends Component {
-  static propTypes ={
+  static propTypes = {
     arrowPosition: PropTypes.oneOf(Object.keys(ArrowPosition)),
     x: PropTypes.number,
     y: PropTypes.number,

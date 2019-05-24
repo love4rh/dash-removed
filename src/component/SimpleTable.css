@@ -1,0 +1,42 @@
+.simpleTable {
+  margin: 10px;
+}
+
+.headerTable {
+  border: 1px solid #a0a0a0;
+  border-collapse: collapse;
+}
+
+.headerCell {
+  border: 1px solid #a0a0a0;
+  border-collapse: collapse;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 5px;
+  background-color: #d7d7d7;
+  word-break: break-all;
+}
+
+.recordTableWrap {
+  width: 100%;
+  overflow: auto;
+}
+
+.recordTable {
+  width: 100%;
+  margin-top: -1px;
+  border-left: 1px solid #a0a0a0;
+  border-right: 1px solid #a0a0a0;
+  border-collapse: collapse;
+}
+
+.recordCell {
+  border: 1px solid #a0a0a0;
+  border-collapse: collapse;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 5px;
+  background-color: #fff;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}

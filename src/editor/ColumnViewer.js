@@ -11,8 +11,8 @@ import './Editor.css';
  */
 class ColumnViewer extends React.Component {
 	static propTypes = {
+    height: PropTypes.number.isRequired,
     node: PropTypes.object,
-    // height: PropTypes.number.isRequired,
     // width: PropTypes.number.isRequired,
   }
 
@@ -27,19 +27,22 @@ class ColumnViewer extends React.Component {
   }
 
   render () {
-    const { node } = this.props;
+    const { height } = this.props;
     const { columns } = this.state;
 
     return (
       <div>
-        { columns.map((o, idx) => {
-            return (
-              <div key={`colviewer-${idx}`} className="columnViewItem">
-                {o.name}
-              </div>
-            );
-          })
-        }
+        <div className="paneTitle">Columns</div>
+        <div className="columnViewMain" style={{ height:height - 25 }}>
+          { columns.map((o, idx) => {
+              return (
+                <div key={`colviewer-${idx}`} className="columnViewItem">
+                  {o.name}
+                </div>
+              );
+            })
+          }
+        </div>
       </div>
     );
   }

@@ -123,7 +123,7 @@ export class SelectComponent extends React.Component {
 
   onValueChange = (ev) => {
     this.setState({ value: ev.target.value });
-    this.props.onChange(ev.target.value);
+    this.props.onChange(ev.target.value, true);
   }
 
   render () {
@@ -250,7 +250,7 @@ export class ToogleComponent extends React.Component {
 
   onSwitchChange = (ev) => {
     this.setState({ value: ev.target.checked });
-    this.props.onChange(ev.target.checked);
+    this.props.onChange(ev.target.checked, true);
   }
 
   render () {
@@ -319,6 +319,8 @@ export class GroupedPropEditor extends React.Component {
     propParam: PropTypes.object,
     subGroup: PropTypes.bool,
     valueId: PropTypes.string.isRequired,
+    width: PropTypes.number,
+    node: PropTypes.object,
   }
 
   constructor (props) {
@@ -341,7 +343,7 @@ export class GroupedPropEditor extends React.Component {
   }
 
   render () {
-    const { propId, propParam, subGroup, valueId, getNodeValue, disabled } = this.props;
+    const { propId, propParam, subGroup, valueId, getNodeValue, disabled, width, node } = this.props;
     const pmList = nm.getPropMetaList(propId);
 
     const single = pmList.length === 1;
@@ -380,7 +382,7 @@ export class GroupedPropEditor extends React.Component {
               } { p.vt === 'sql' &&
                 (<SQLComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
               } { p.vt === 'columnOperator' &&
-                (<ColumnEditComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
+                (<ColumnEditComponent disabled={readOnly} value={curVal} node={node} onChange={this.onValueChange(vid)} width={width} />)
               }
             </div>);
           }

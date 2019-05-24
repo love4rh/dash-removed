@@ -51,10 +51,9 @@ class AttributeEditor extends React.Component {
 
     propList[vid] = value;
 
+    // 나중에 일과로 반영합시다.
     if( istrue(redraw) ) {
       this.setState({ propList: propList, redraw: this.state.redraw + 1 });
-    } else {
-      this.setState({ propList: propList });
     }
   }
 
@@ -112,6 +111,7 @@ class AttributeEditor extends React.Component {
                   getNodeValue={this.getNodeValue}
                   onValueChange={this.handleValueChange}
                   disabled={!editOn}
+                  node={node}
                 /> : null;
             })
           }

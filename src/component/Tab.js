@@ -20,7 +20,7 @@ import './Tab.css';
  * panes: {title, icon, closeButton}
  */
 class Tab extends Component {
-  static propTypes ={
+  static propTypes = {
     activeTab: PropTypes.number,
     onTabChange: PropTypes.func.isRequired,
     onTabClose: PropTypes.func,

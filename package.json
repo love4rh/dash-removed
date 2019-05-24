@@ -10,6 +10,7 @@
     "@babel/plugin-transform-react-jsx-self": "^7.2.0",
     "@babel/polyfill": "^7.4.0",
     "@blueprintjs/core": "^3.14.1",
+    "@blueprintjs/table": "^3.5.0",
     "@svgr/webpack": "4.1.0",
     "axios": "^0.18.0",
     "babel-core": "7.0.0-bridge.0",
