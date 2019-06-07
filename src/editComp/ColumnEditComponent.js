@@ -3,10 +3,30 @@ import PropTypes from 'prop-types';
 
 import { nvl } from '../common/tool.js';
 
-import SimpleTable from '../component/SimpleTable.js';
+import { Icon } from '@blueprintjs/core';
 
 import './ColumnEditComponent.css';
 
+
+
+class ColumnLine extends React.Component {
+  static propTypes = {
+    index: PropTypes.number.isRequired,
+    rename: PropTypes.string,
+    title: PropTypes.string.isRequired,
+  }
+
+  render () {
+    const { rename, title } = this.props;
+    return (
+      <div>
+        <span><Icon icon="drag-handle-vertical" /></span>
+        <span>{title}</span>
+        <span>{nvl(rename, '')}</span>
+      </div>
+    );
+  }
+}
 
 
 /**
@@ -46,7 +66,14 @@ export class ColumnEditComponent extends React.Component {
     this.state = {
       selectedList: selectedList,
       renameList: renameList,
+      width: 0,
     };
+  }
+
+  componentDidMount () {
+    const wrapper = this.refs.wrapper;
+    
+    this.setState({ width: wrapper.parentNode.clientWidth });
   }
 
   onValueChange = (ev) => {
@@ -65,23 +92,11 @@ export class ColumnEditComponent extends React.Component {
   }
 
   render () {
-    const { width } = this.props;
-
-    const columns = [
-      { name: 'Column', width:10, align:'left' },
-      { name: 'Rename', width:10, align:'left' }
-    ];
+    const { selectedList, renameList, width } = this.state;
 
     return (
-      <div>
-        <SimpleTable
-          columns={columns}
-          getCellRender={this.getCellRender}
-          height={200}
-          width={width}
-          onClickRow={this.handleRowClick}
-          recordCount={this.state.selectedList.length}
-        />
+      <div ref="wrapper" style={{ 'width':`${width}px` }}>
+        { selectedList.map((dat, idx) => (<ColumnLine key={`column-${idx}`} index={idx} rename={renameList[idx]} title={dat} />)) }
       </div>
     );
   }
