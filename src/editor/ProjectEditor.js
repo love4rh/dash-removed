@@ -32,7 +32,7 @@ class ProjectEditor extends React.Component {
 
     this.state = {
       leftWidth: 250,
-      rightWidth: 300,
+      rightWidth: 400,
       bottomHeight: 250,
       leftMiddle: 500,
     };

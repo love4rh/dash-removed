@@ -86,6 +86,8 @@ class AttributeEditor extends React.Component {
     const { nodeType, editable, editOn } = this.state;
     const groupList = nm.getNodeProperty(nodeType);
 
+    // console.log('AttributeEditor render', groupList);
+
     return (
       <div key={'attr-' + (isvalid(node) ? node.id : 'null')}>
         <div className="paneTitle"><span>Attributes</span>
@@ -100,7 +102,7 @@ class AttributeEditor extends React.Component {
         >
           { groupList.map((p, idx) => {
               const subGroup = hasString(p.enableKey);
-              return (!subGroup || p.enableValue === this.getNodeValue(p.enableKey)) ?
+              return (!subGroup || p.enableValue === 'any' || p.enableValue === this.getNodeValue(p.enableKey)) &&
                 <GroupedPropEditor
                   key={`gpe-${idx}`}
                   width={width}
@@ -112,8 +114,9 @@ class AttributeEditor extends React.Component {
                   onValueChange={this.handleValueChange}
                   disabled={!editOn}
                   node={node}
-                /> : null;
-            })
+                />;
+              }
+            )
           }
         </div>
       </div>

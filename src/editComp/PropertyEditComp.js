@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { isvalid, istrue, nvl, makeid } from '../common/tool.js';
+import { isundef, isvalid, istrue, nvl, makeid } from '../common/tool.js';
 import { nm } from '../appMain/NodeMeta.js';
 
 import { InputGroup, NumericInput, Switch, TextArea, Tooltip, Position } from '@blueprintjs/core';
@@ -306,6 +306,108 @@ export class SQLComponent extends React.Component {
 }
 
 
+/**
+ * Enabled String (Toggle + Input Text)
+ */
+export class ToggleInputComponent extends React.Component {
+  static propTypes = {
+    disabled: PropTypes.bool,
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.bool.isRequired,
+    // value: PropTypes.string.isRequired,
+
+    // onChange: PropTypes.func.isRequired,
+    // password: PropTypes.bool,
+    
+  }
+
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      value: props.value
+    };
+  }
+
+  onSwitchChange = (ev) => {
+    this.setState({ value: ev.target.checked });
+    this.props.onChange(ev.target.checked, true);
+  }
+
+  render () {
+    const { value } = this.state;
+
+    return (
+      <div className="attrValue">
+        <Switch checked={value}
+          label=""
+          large
+          disabled={istrue(this.props.disabled)}
+          style={{ lineHeight:'30px', marginBottom:0 }}
+          onChange={this.onSwitchChange}
+        />
+      </div>
+    );
+  }
+}
+
+
+const _componentMap_ = {
+  'string': ({ disabled, value, onChange }) => {
+    return (<InputComponent disabled={disabled} value={nvl(value, '')} onChange={onChange} />);
+  },
+
+  'password': ({ disabled, value, onChange }) => {
+    return (<InputComponent disabled={disabled} value={nvl(value, '')} onChange={onChange} password={true} />);
+  },
+
+  'text': ({ disabled, value, onChange }) => {
+    return (<TextAreaComponent disabled={disabled} value={nvl(value, '')} onChange={onChange} />);
+  },
+
+  'enum': ({ disabled, value, onChange, optionList, vid }) => {
+    return  (<SelectComponent disabled={disabled} value={nvl(value, '')} onChange={onChange} optionList={optionList} vid={vid} />);
+  },
+
+  'number': ({ disabled, value, onChange }) => {
+    return (<NumericComponent disabled={disabled} value={nvl(value, 0)} onChange={onChange} />);
+  },
+
+  'path': ({ disabled, value, onChange }) => {
+    return (<InputButtonComponent disabled={disabled} value={nvl(value, '')} onChange={onChange} />);
+  },
+
+  'toggle': ({ disabled, value, onChange }) => {
+    return (<ToogleComponent disabled={disabled} value={istrue(value)} onChange={onChange} />);
+  },
+
+  'sql': ({ disabled, value, onChange }) => {
+    return (<SQLComponent disabled={disabled} value={nvl(value, '')} onChange={onChange} />);
+  },
+
+  'columnOperator': ({ disabled, value, onChange, width, node }) => {
+    return (<ColumnEditComponent disabled={disabled} value={value} node={node} onChange={onChange} width={width} />);
+  },
+
+  'enabledString': ({ disabled, value, onChange }) => {
+    return (
+      <>
+        <ToggleInputComponent disabled={disabled} value={istrue(value.set)} onChange={onChange} />
+        <div className="attrElement">
+          <InputComponent disabled={disabled} value={nvl(value, '')} onChange={onChange} />
+        </div>
+      </>
+    );
+  }
+};
+
+
+const generateComponent = (type, param) => {
+  const genFunc = _componentMap_[type];
+  return isundef(genFunc) ? null : genFunc(param);
+};
+
+
 
 /**
  * Node 속성 편집 UI Element.
@@ -360,33 +462,28 @@ export class GroupedPropEditor extends React.Component {
           const propName = p.vt === 'label' && isvalid(propParam) ? propParam.title : p.title;
           const propDesc = nvl(p.vt === 'label' && isvalid(propParam) ? propParam.desc : p.desc, '');
 
-          return (
-            <div key={vid} className={'attrElement' + (subGroup ? ' attrSubGroup' : '')}>
-              <Tooltip content={propDesc} position={Position.BOTTOM}>
-                <div className={isToggle ? 'attrTitleToogle' : 'attrTitle'}>{propName}</div>
-              </Tooltip>
-              { p.vt === 'string' &&
-                (<InputComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
-              }{ p.vt === 'password' &&
-                (<InputComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} password={true} />)
-              } { p.vt === 'text' &&
-                (<TextAreaComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
-              } { p.vt === 'enum' &&
-                (<SelectComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid, true)} optionList={nm.getEnumList(p.vl)} vid={vid} />)
-              } { p.vt === 'number' &&
-                (<NumericComponent disabled={readOnly} value={nvl(curVal, 0)} onChange={this.onValueChange(vid)} />)
-              } { p.vt === 'path' &&
-                (<InputButtonComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
-              } { isToggle &&
-                (<ToogleComponent disabled={readOnly} value={istrue(curVal)} onChange={this.onValueChange(vid)} />)
-              } { p.vt === 'sql' &&
-                (<SQLComponent disabled={readOnly} value={nvl(curVal, '')} onChange={this.onValueChange(vid)} />)
-              } { p.vt === 'columnOperator' &&
-                (<ColumnEditComponent disabled={readOnly} value={curVal} node={node} onChange={this.onValueChange(vid)} width={width} />)
-              }
-            </div>);
+          const compParam = {
+            disabled: readOnly,
+            node: node,
+            value: curVal,
+            onChange: this.onValueChange(vid, p.vt === 'enum'),
+            width: width,
+            vid: vid,
+          };
+
+          if (p.vt === 'enum') {
+            compParam.optionList = nm.getEnumList(p.vl);
           }
-        )}
+
+          return (
+            <div key={vid} className={(p.vt === 'label' ? 'captionElement' : 'attrElement') + (subGroup ? ' attrSubGroup' : '')}>
+              <Tooltip content={propDesc} position={Position.BOTTOM}>
+                <div className={(isToggle || p.vt === 'enabledString') ? 'attrTitleToogle' : 'attrTitle'}>{propName}</div>
+              </Tooltip>
+              { generateComponent(isToggle ? 'toggle' : p.vt, compParam) }
+            </div>
+          );
+        })}
       </div>
     );
   }
