@@ -97,13 +97,13 @@ class MainFrame extends Component {
   }
 
   openProject = (path, name) => {
+    const mockMode = false;
     const { appData } = this.props;
 
-    //*
-    if( appData ) {
+    if( mockMode ) {
       appData.addProject(getMockProjectByName(name), true);
       return;
-    } // */
+    }
 
     this.setState({ loading: true });
 
@@ -111,7 +111,7 @@ class MainFrame extends Component {
       (res) => {
         console.log('openProject', res);
         if( res && res.data && isvalid(res.data.project) ) {
-          console.log('openProject', JSON.stringify(res.data.project));
+          // console.log('openProject', JSON.stringify(res.data.project));
           appData.addProject(res.data.project)
         }
       }, (err) => {

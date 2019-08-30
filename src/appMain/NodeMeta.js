@@ -105,8 +105,8 @@ const nodeMeta = {
       'vt':'boolean',
       'desc':'중복 허용 여부 지정'
     },
-    'backupAndGo':{
-      'valueKey':'backupAndGo',
+    'backup':{
+      'valueKey':'backup',
       'title':'Backup',
       'vt':'enabledString',
       'desc':'받은 데이터를 지정한 위치에 백업한 후 실행함'
@@ -244,8 +244,8 @@ const nodeMeta = {
       'vt':'pair',
       'desc':'필요한 경우, 고정값으로 추가할 컬럼 지정'
     },
-    'gzUnzip':{
-      'valueKey':'gzUnzip',
+    'gzunzip':{
+      'valueKey':'gzunzip',
       'title':'Unzip GZ',
       'vt':'boolean',
       'desc':'GZ로 압축된 경우 선택'
@@ -384,8 +384,8 @@ const nodeMeta = {
       'vt':'string',
       'desc':'오라클 접속용 TNS Name 지정'
     },
-    'unzipFile':{
-      'valueKey':'unzipFile',
+    'unzip':{
+      'valueKey':'unzip',
       'title':'Unzip ZIP',
       'vt':'enabledString',
       'desc':'ZIP으로 압축된 경우 선택하고 추출할 파일명 입력. 파일명이 입력되지 않으면 첫 번째 파일을 사용함'
@@ -396,8 +396,8 @@ const nodeMeta = {
       'vt':'string',
       'desc':'사용자 계정'
     },
-    'virtualRootTag':{
-      'valueKey':'virtualRootTag',
+    'rootWrap':{
+      'valueKey':'rootWrap',
       'title':'Virtual Root',
       'vt':'enabledString',
       'desc':'가상의 Root 태그를 추가할 지 여부 지정.'
@@ -574,16 +574,16 @@ const nodeMeta = {
     ],
     'transform':[
       {
-        'compKey':'gzUnzip'
+        'compKey':'gzunzip'
       },
       {
-        'compKey':'unzipFile'
+        'compKey':'unzip'
       },
       {
-        'compKey':'virtualRootTag'
+        'compKey':'rootWrap'
       },
       {
-        'compKey':'backupAndGo'
+        'compKey':'backup'
       }
     ],
     'recordKeyOption':[

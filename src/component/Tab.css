@@ -51,10 +51,12 @@
   color: #777;
   display: inline-block;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .tabCloseStyle:hover {
   border: 1px solid #777;
+  box-sizing: border-box;
 }
 
 .toolTipDiv {

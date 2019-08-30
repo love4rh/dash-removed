@@ -62,14 +62,11 @@ const scriptSample = [{
         "hp/connectionTimeout":60,
         "hp/readTimeout":60,
         "hp/errorIgnored":"",
-        "transform/backup":{
+        "transform/backupAndGo":{
           "set":true,
           "param":"%24%28GN_DOWN_DIR%29%2FLINEUP%2F%24%28NOW%29%2F%24%28apiCheck%29.xml.gz"
         },
-        "transform/gzunzip":{
-          "set":true,
-          "param":""
-        }
+        "transform/gzUnzip":true
       }
     },
     "nid-Q08g1buBjQHQRwx1":{

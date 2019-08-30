@@ -313,8 +313,7 @@ export class ToggleInputComponent extends React.Component {
   static propTypes = {
     disabled: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
-    value: PropTypes.bool.isRequired,
-    // value: PropTypes.string.isRequired,
+    value: PropTypes.object.isRequired, // {set, param}
 
     // onChange: PropTypes.func.isRequired,
     // password: PropTypes.bool,
@@ -325,28 +324,43 @@ export class ToggleInputComponent extends React.Component {
     super(props);
 
     this.state = {
-      value: props.value
+      enable: props.value.set,
+      text: decodeURIComponent(nvl(props.value.param, ''))
     };
   }
 
   onSwitchChange = (ev) => {
-    this.setState({ value: ev.target.checked });
-    this.props.onChange(ev.target.checked, true);
+    const { text } = this.state;
+
+    this.setState({ enable: ev.target.checked });
+    this.props.onChange({ set: ev.target.checked, param: text }, true);
+  }
+
+  onTextChange = (value) => {
+    const { enable } = this.state;
+    this.props.onChange({ set: enable, param: value });
   }
 
   render () {
-    const { value } = this.state;
+    const {disabled} = this.props;
+    const { enable, text } = this.state;
 
     return (
-      <div className="attrValue">
-        <Switch checked={value}
-          label=""
-          large
-          disabled={istrue(this.props.disabled)}
-          style={{ lineHeight:'30px', marginBottom:0 }}
-          onChange={this.onSwitchChange}
-        />
-      </div>
+      <>
+        <div className="attrValue">
+          <Switch
+            checked={enable}
+            label=""
+            large
+            disabled={istrue(disabled)}
+            style={{ lineHeight:'30px', marginBottom:0 }}
+            onChange={this.onSwitchChange}
+          />
+        </div>
+        <div className="attrElement">
+          <InputComponent disabled={istrue(disabled) || !enable} value={text} onChange={this.onTextChange} />
+        </div>
+      </>
     );
   }
 }
@@ -390,21 +404,22 @@ const _componentMap_ = {
   },
 
   'enabledString': ({ disabled, value, onChange }) => {
-    return (
-      <>
-        <ToggleInputComponent disabled={disabled} value={istrue(value.set)} onChange={onChange} />
-        <div className="attrElement">
-          <InputComponent disabled={disabled} value={nvl(value, '')} onChange={onChange} />
-        </div>
-      </>
-    );
+    if( value === '' ) {
+      value = { set: false };
+    }
+
+    return (<ToggleInputComponent disabled={disabled} value={value} onChange={onChange} />);
   }
 };
 
 
 const generateComponent = (type, param) => {
   const genFunc = _componentMap_[type];
-  return isundef(genFunc) ? null : genFunc(param);
+  const implemented = !isundef(genFunc);
+
+  console.log('CHECK generateComponent', type, implemented, param);
+
+  return implemented && genFunc(param);
 };
 
 
@@ -433,10 +448,10 @@ export class GroupedPropEditor extends React.Component {
     };
   }
 
-
   onValueChange = (propId, redraw) => (value) => {
+    // console.log('CHECK onValueChange', propId, value);
     this.handleValueChange(propId, value, redraw);
-  }  
+  }
 
   handleValueChange = (propId, value, redraw) => {
     if( this.props.onValueChange ) {
@@ -452,7 +467,6 @@ export class GroupedPropEditor extends React.Component {
     const readOnly = istrue(disabled);
 
     // console.log('PropertyEditComp render', propId, valueId, pmList);
-
     return (
       <div key={makeid(4)}>
         { pmList.map((p, idx) => {
@@ -462,6 +476,7 @@ export class GroupedPropEditor extends React.Component {
           const propName = p.vt === 'label' && isvalid(propParam) ? propParam.title : p.title;
           const propDesc = nvl(p.vt === 'label' && isvalid(propParam) ? propParam.desc : p.desc, '');
 
+          // console.log('CHECK PropertyEditor', idx, vid, curVal);
           const compParam = {
             disabled: readOnly,
             node: node,
@@ -480,7 +495,7 @@ export class GroupedPropEditor extends React.Component {
               <Tooltip content={propDesc} position={Position.BOTTOM}>
                 <div className={(isToggle || p.vt === 'enabledString') ? 'attrTitleToogle' : 'attrTitle'}>{propName}</div>
               </Tooltip>
-              { generateComponent(isToggle ? 'toggle' : p.vt, compParam) }
+              { p.vt !== 'label' && generateComponent(isToggle ? 'toggle' : p.vt, compParam) }
             </div>
           );
         })}
