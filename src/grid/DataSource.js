@@ -104,9 +104,6 @@ class DataSource2 {
   getCellValue = (col, row) => {
     const rec = this.state.records['r' + row];
 
-    if( rec )
-      return rec[col];
-
     /*
     const start = Math.max(0, row - 25);
     this.props.getMore(start, 100, (data) => {

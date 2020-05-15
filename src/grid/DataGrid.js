@@ -186,17 +186,28 @@ class DataGrid extends Component {
       loading: false,
     };
 
-    console.log('state', JSON.stringify(this.state));
+    // console.log('state', JSON.stringify(this.state));
   }
 
   componentDidMount () {
     // document.addEventListener('keydown', this.onKeyDown);
   }
 
+  /*
   componentWillReceiveProps (nextProps) {
     const { dataSource, height, showColumnNumber } = nextProps;
 
     this.setState({ rowPerHeight: DataGrid.CalcRowNumPerpage(height, dataSource.getRowHeight(), (showColumnNumber ? 2 : 1)) });
+  } // */
+
+  // see also: https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html
+  static getDerivedStateFromProps(props, state) {
+    const { dataSource, height, showColumnNumber } = props;
+
+    return {
+      ...state,
+      rowPerHeight: DataGrid.CalcRowNumPerpage(height, dataSource.getRowHeight(), (showColumnNumber ? 2 : 1)),
+    };
   }
 
   // eslint-disable-next-line
@@ -283,6 +294,8 @@ class DataGrid extends Component {
       return;
     }
 
+    // TODO 컬럼을 전체 선택한 경우 화면에 나타나지 않은 영역의 값이 null로 복사되는 문제 수정
+    // 전체 컬럼이 선택된 경우는 서버에서 값을 새로 받아야 함.
     let copyText = '';
     for(let r = r1; r <= r2; ++r) {
       copyText += ds.getCellValue(c1, r);
@@ -394,6 +407,7 @@ class DataGrid extends Component {
 
     if( dataSource.isValid && dataSource.isValid(newBegin, newBegin + rowPerHeight) ) {
       this.setState({ beginRow: newBegin, preventVScroll: noScroll, loading: false });
+      return;
     }
 
     if( isvalid(this.dataFetchJob) ) {

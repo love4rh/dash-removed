@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { MainFrame } from '../view/MainFrame.js';
 import { S3Explorer } from '../view/S3Explorer.js';
 import { SampleFrame } from '../view/SampleFrame.js';
+import { JSONReport } from '../jsonTool/JSONReport.js';
 
 import './App.css';
 
@@ -43,8 +44,10 @@ class App extends Component {
       appMain = (<MainFrame />);
     } else if( this.state.page === 'working' ) {
       appMain = (<SampleFrame />);
-    } else {
+    } else if( this.state.page === 's3' ) {
       appMain = (<S3Explorer />);
+    } else {
+      appMain = (<JSONReport />);
     }
 
     return (
