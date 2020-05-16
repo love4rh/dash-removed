@@ -5,7 +5,7 @@ import React from 'react';
 import { JSONTool } from './JSONTool.js';
 import { JNodeTree } from './JNodeTree.js';
 
-import { TextArea, Intent, Button, Spinner, Overlay } from '@blueprintjs/core';
+import { TextArea, Intent, Spinner, Overlay } from '@blueprintjs/core';
 
 import DataGrid from '../grid/DataGrid.js';
 
@@ -13,6 +13,8 @@ import { LayoutDivider, DividerDirection} from '../editor/LayoutDivider.js';
 
 import './css/JSONReport.css';
 
+
+const _headerHeight = 60;
 
 
 class JSONAreaPanel extends React.Component {
@@ -33,11 +35,10 @@ class JSONAreaPanel extends React.Component {
   }
 
   handleJsonChange = (ev) => {
-    this.setState({ jsonText: ev.target.value });
-
     if( this.props.onChange ) {
       this.props.onChange(ev.target.value);
     }
+    this.setState({ jsonText: ev.target.value });
   }
 
   render () {
@@ -60,7 +61,7 @@ class JSONResultPanel extends React.Component {
     super(props);
 
     this.state = {
-      leftWidth: 250,
+      leftWidth: 300,
       dataSource: props.rootNode
     };
   }
@@ -74,30 +75,32 @@ class JSONResultPanel extends React.Component {
   }
 
   handleLayoutChange = (f, t) => {
-    console.log('Layout Change Event', f, t);
-
     let { leftWidth } = this.state;
-
     leftWidth += t - f;
-
     this.setState({ leftWidth: leftWidth });
   }
 
   handleClickNode = (node) => {
-    this.setState({ dataSource: node });
+    let dataNode = node;
+
+    if( node.isInParentData() ) {
+      dataNode = node.getParent();
+    }
+
+    this.setState({ dataSource: dataNode });
   }
 
   render () {
     const { rootNode } = this.props;
     const { leftWidth, dataSource } = this.state;
     const dividerSize = 5;
-    const windowHeight = window.innerHeight - 100 -14,
+    const windowHeight = window.innerHeight - _headerHeight - 14,
       windowWidth = window.innerWidth - leftWidth - dividerSize
     ;
 
     return (
       <div className="jrReportPane">
-        <div className="jrLeftPane" style={{ flexBasis:`${leftWidth}px` }}>
+        <div className="jrLeftPane" style={{ height:`${windowHeight}px`, flexBasis:`${leftWidth}px` }}>
           <JNodeTree rootNode={rootNode} onClickNode={this.handleClickNode} />
         </div>
         <div style={{ flexBasis:`${dividerSize}px` }}>
@@ -154,12 +157,17 @@ class JSONReport extends React.Component {
     this.setState({ jsonText: text });
   }
 
+  handleKeyUp = (ev) => {
+    if( ev.ctrlKey && ev.keyCode === 13 ) {
+      this.handleSwitch();
+    }
+  }
+
   handleSwitch = () => {
     const cMenu = this.state.activeMenu;
 
     if( cMenu === 'text' ) {
       this.setState({ processing: true });
-      console.log('CHECK', 'switch to decomp');
 
       JSONTool.analyze(this.state.jsonText, (res) => {
         if( res.returnCode === 0 ) {
@@ -182,13 +190,15 @@ class JSONReport extends React.Component {
 
     return (
       <div className="bp3-dark jrMain">
-        <div className="jrHeader">
-          JSON Analyzer
-          <Button icon="refresh" onClick={this.handleSwitch}>AAA</Button>
+        <div className="jrHeader" style={{ height:`${_headerHeight}px`}}>
+          <div className="jrTitle">JSON Extractor</div>
+          <div className="jrButton" onClick={this.handleSwitch}>
+            {activeMenu === 'text' ? 'Tabular' : 'JSON'}
+          </div>
         </div>
-        <div className="jrContent">
+        <div className="jrContent" onKeyUp={this.handleKeyUp}>
           {activeMenu === 'text' &&
-            <JSONAreaPanel jsonText={jsonText} onChange={this.handleJsonChange} />
+            <JSONAreaPanel text={jsonText} onChange={this.handleJsonChange} />
           }
           {activeMenu === 'decomp' &&
             <JSONResultPanel rootNode={rootNode} />

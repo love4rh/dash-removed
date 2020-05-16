@@ -467,6 +467,14 @@ module.exports = function(webpackEnv) {
             // Make sure to add the new loader(s) before the "file" loader.
           ],
         },
+        {
+          test: /\.less$/,
+          use: [
+            { loader: 'style-loader' },
+            { loader: 'css-loader' },
+            { loader: 'less-loader' }
+          ]
+        }
       ],
     },
     plugins: [

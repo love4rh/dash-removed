@@ -1,5 +1,6 @@
 # Build and Release Folders
 dist/
+build/
 
 # Other files and folders
 .settings/

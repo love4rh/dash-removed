@@ -106,6 +106,7 @@ yarn add babel-preset-mobx
 yarn add @babel/polyfill @blueprintjs/core react react-dom mobx mobx-react \
 monaco-editor monaco-editor-webpack-plugin react-monaco-editor \
 @babel/plugin-proposal-class-properties @babel/plugin-proposal-decorators \
+@babel/helper-create-regexp-features-plugin\
 axios
 
 
@@ -118,3 +119,9 @@ https://jquense.github.io/react-widgets/api/Multiselect/
 
 Carot Style
 height: 19px; top: 0px; left: 41px; font-family: Consolas, "Courier New", monospace; font-weight: normal; font-size: 14px; line-height: 19px; letter-spacing: 0px; display: block; visibility: hidden; width: 1.81818px;
+
+
+# LESS
+https://jasonwatmore.com/post/2020/02/10/react-how-to-add-global-css-less-styles-to-react-with-webpack
+
+yarn add css-loader less less-loader style-loader

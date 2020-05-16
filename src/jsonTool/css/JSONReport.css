@@ -8,15 +8,34 @@ textarea {
   margin: 0;
   display: flex;
   flex-direction: column;
-
-  background-color: black;
-  color: white;
 }
 
 .jrHeader {
-  height: 100px;
   width: 100%;
-  background-color: red;
+  background-color: black;
+  color: white;
+  padding: 0 10px;
+}
+
+.jrTitle {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 55px;
+  margin: 0 10px;
+}
+
+.jrButton {
+  float: right;
+  font-size: 24px;
+  line-height: 55px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.jrButton:hover {
+  color: darkgrey;
 }
 
 .jrContent {
@@ -44,14 +63,15 @@ textarea {
 }
 
 .jrLeftPane {
-
+  background-color: rgb(41, 55, 66);
+  overflow-x: hidden;
 }
 
 .jrRightPane {
   flex: 1;
 }
 
-.treeNodeBody {
+.treeMain {
   width: 100%;
   flex: 1;
   background-color: rgb(41, 55, 66);
@@ -59,15 +79,18 @@ textarea {
 }
 
 .treeNodeItem {
-  height: 24px;
-  line-height: 24px;
+  height: 30px;
+  line-height: 30px;
   color: #f5f8fa;
   text-overflow: ellipsis;
   white-space: nowrap;
   word-wrap: normal;
   cursor: pointer;
   vertical-align: middle;
-  padding: 0 5px;
+}
+
+.inlineDiv {
+  display: inline-block;
 }
 
 .treeNodeItem:hover {
@@ -76,4 +99,24 @@ textarea {
 
 .treeNodeSelected {
   background-color: #137cbd;
+}
+
+.treeNodeHeader {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+}
+
+.treeNodeContent {
+  display: inline-block;
+  width: 100%;
+}
+
+.treeDataIcon {
+  margin-right: 7px;
+  display: inline-block;
+}
+
+.treeIconRotate {
+  transform: rotate(180deg);
 }

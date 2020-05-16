@@ -2,13 +2,15 @@
  * 
  */
 class JNode {
-  constructor(name, parent) {
+  constructor(name, parent, parentData) {
     this._name = name;
     this._parent = parent;
     this._children = [];
     this._childrenMap = {};
     this._columns = {}; // name --> idx
     this._data = []; // record. this._data[0]는 컬럼명
+    this._expanded = true;
+    this._parentData = parentData;
 
     if( parent ) {
       parent.addChild(this);
@@ -40,7 +42,11 @@ class JNode {
   }
 
   hasChild = (name) => {
-    return name in this._childrenMap;
+    if( name ) {
+      return name in this._childrenMap;
+    }
+
+    return this._children.length > 0;
   }
 
   getChild = (name) => {
@@ -49,6 +55,14 @@ class JNode {
 
   hasData = () => {
     return this._data.length > 0;
+  }
+
+  isInParentData = () => {
+    return typeof this._parentData !== 'undefined' && this._parentData;
+  }
+
+  getParent = () => {
+    return this._parent;
   }
 
   rowCount = () => {
@@ -68,6 +82,8 @@ class JNode {
       colIdx = this._data[0].length;
       this._columns[key] = colIdx;
       this._data[0].push(key);
+
+      new JNode(key, this, true);
     }
 
     let rowIdx = this._data.length - 1;

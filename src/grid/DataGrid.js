@@ -127,7 +127,7 @@ class DataGrid extends Component {
   }
 
   static CalcRowNumPerpage = (height, rowHeight, headerCount) => {
-    return Math.ceil((height - rowHeight * headerCount) / rowHeight);
+    return Math.floor((height - rowHeight * headerCount) / rowHeight);
   }
 
   constructor (props) {
