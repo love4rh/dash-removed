@@ -5,7 +5,7 @@ import React from 'react';
 import { JSONTool } from './JSONTool.js';
 import { JNodeTree } from './JNodeTree.js';
 
-import { TextArea, Intent, Spinner, Overlay } from '@blueprintjs/core';
+import { TextArea, Intent, Spinner, Overlay, Toaster, Position } from '@blueprintjs/core';
 
 import DataGrid from '../grid/DataGrid.js';
 
@@ -47,6 +47,7 @@ class JSONAreaPanel extends React.Component {
         style={{ 'height':'100%' }}
         large={true}
         intent={Intent.PRIMARY}
+        placeholder={'JSON text here...'}
         value={this.state.jsonText}
         onChange={this.handleJsonChange}
       />
@@ -128,6 +129,10 @@ class JSONResultPanel extends React.Component {
 }
 
 
+const appToaster = Toaster.create({
+  position: Position.TOP
+});
+
 
 class JSONReport extends React.Component {
   constructor (props) {
@@ -139,6 +144,8 @@ class JSONReport extends React.Component {
       jsonText: '',
       rootNode: null,
     };
+
+    
   }
 
   componentDidMount () {
@@ -147,6 +154,10 @@ class JSONReport extends React.Component {
 
   componentWillUnmount () {
     //
+  }
+
+  showToast = (msg) => {
+    appToaster.show({ message: msg, intent: Intent.WARNING });
   }
 
   handleTabChange = (tabSel) => {
@@ -174,6 +185,7 @@ class JSONReport extends React.Component {
           this.setState({ processing: false, activeMenu: 'decomp', rootNode: res.rootNode });
         } else {
           this.setState({ processing: false });
+          this.showToast('Invalid JSON!');
         }
       });
     } else if( cMenu === 'decomp' ) {

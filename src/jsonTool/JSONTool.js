@@ -36,7 +36,7 @@ export const JSONTool = {
       // rootNode.print('');
     } catch( ex ) {
       returnCode = -1;
-      console.log('Analyze', ex);
+      // console.log('Analyze', ex);
     }
 
     if( cb ) {
