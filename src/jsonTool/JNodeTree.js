@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './css/JSONReport.css';
+import './css/JSONReport.scss';
 import { Icon } from '@blueprintjs/core';
 
 

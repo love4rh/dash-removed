@@ -11,7 +11,7 @@ import DataGrid from '../grid/DataGrid.js';
 
 import { LayoutDivider, DividerDirection} from '../editor/LayoutDivider.js';
 
-import './css/JSONReport.css';
+import './css/JSONReport.scss';
 
 
 const _headerHeight = 60;
@@ -102,7 +102,10 @@ class JSONResultPanel extends React.Component {
     return (
       <div className="jrReportPane">
         <div className="jrLeftPane" style={{ height:`${windowHeight}px`, flexBasis:`${leftWidth}px` }}>
-          <JNodeTree rootNode={rootNode} onClickNode={this.handleClickNode} />
+          <div className="jrTreeMenu">MENU</div>
+          <div className="jrTreeContent">
+            <JNodeTree rootNode={rootNode} onClickNode={this.handleClickNode} />
+          </div>
         </div>
         <div style={{ flexBasis:`${dividerSize}px` }}>
           <LayoutDivider direction={DividerDirection.vertical}

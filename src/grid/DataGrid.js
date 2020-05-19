@@ -6,7 +6,7 @@ import scrollbarSize from 'dom-helpers/util/scrollbarSize';
 
 import cn from 'classnames';
 
-import './DataGrid.css';
+import './DataGrid.scss';
 
 
 

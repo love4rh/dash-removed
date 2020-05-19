@@ -64,7 +64,24 @@ textarea {
 
 .jrLeftPane {
   background-color: rgb(41, 55, 66);
-  overflow-x: hidden;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .jrTreeMenu {
+    background-color: rgb(41, 55, 66);
+    width: 100%;
+    height: 30px;
+    flex-basis: 36px;
+    line-height: 36px;
+    border-bottom: 1px solid #30404d;
+  }
+
+  .jrTreeContent {
+    overflow-x: hidden;
+    width: 100%;
+    flex: 1
+  }
 }
 
 .jrRightPane {
@@ -72,8 +89,6 @@ textarea {
 }
 
 .treeMain {
-  width: 100%;
-  flex: 1;
   background-color: rgb(41, 55, 66);
   color: #f5f8fa;
 }
